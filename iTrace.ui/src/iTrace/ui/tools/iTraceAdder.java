@@ -587,11 +587,11 @@ public class iTraceAdder {
 		// Llamada a los constructores de los modelos
 		insertSortComment("Llamada a los constructores de los modelos");
 		for (int i = 0; i< sourceModels.length; i++){
-			targetFile.println("	thisModule.createModel_" + sourceModels[i].getName() + "();"); 
+			targetFile.println("	thisModule.createModel_" + sourceModels[i].getModelATL() + "();"); 
 		}
 		// -1 Excluimos el último modelos porque es el de trazabilidad
 		for (int i = 0; i< targetModels.length-1; i++){
-			targetFile.println("	thisModule.createModel_" + targetModels[i].getName() + "();"); 
+			targetFile.println("	thisModule.createModel_" + targetModels[i].getModelATL() + "();"); 
 		}
 		//
 		targetFile.println("	}");
