@@ -1,0 +1,362 @@
+-- @nsURI 		UML=http://www.eclipse.org/uml2/2.1.0/UML
+-- @nsURI 		SQL2003=http://SQL2003.ecore
+-- @path 		AMW=/UML2SQL2003/Metamodels/ORAnnotationMeta.ecore
+
+--BEGIN DOC
+--#About
+-- @name 		UML2SQL2003
+-- @version		2.0
+-- @domains		database, dsl, sql2003, uml, mda, amw, transformation,
+--				metamodel, model
+-- @authors		Alejandro Galindo (Universidad Rey Juan Carlos)
+-- @date       	26-01-2009
+-- @description	Este modelo ATL permite transformar un modelo de entrada
+--				conforme al metamodelo UML en un modelo de salida conforme
+--				al metamodelo SQL2003, teniendo en cuenta las anotaciones
+--              del modelo de weaving definidas con AMW. Éstas recogen las
+--              decisiones de diseño a aplicar.
+--END DOC
+
+module UML2SQL2003;
+create OUT : SQL2003 from IN : UML, ANNOTATIONS : AMW;
+
+-------------------------------------------------------------------------------
+-- IMPORTS         ------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+uses UML2SQL2003_constants;
+uses UML2SQL2003_helpers;
+uses UML2SQL2003_AMW; 
+uses UML;
+
+-------------------------------------------------------------------------------
+-- RULES           ------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Schema' por cada elemento 
+--de entrada 'Package' del modelo de entrada, asignándole como nombre
+--el nombre del paquete.
+--END DOC
+rule Package2Schema {
+	from 
+		p : UML!Package
+	to 
+		s : SQL2003!Schema (
+			name <- p.name
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'XMLType'
+--asociado al tipo XMLType de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo XML de UML.
+--
+--@LIBRARIES UML, UML_constants
+--END DOC
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL2003
+--por cada elemento de entrada 'DataType' asociado a un tipo de dato de UML.
+--
+--Se comprueba que el tipo de dato de entrada no sea ninguno de los predefinidos.
+--
+--En UML hay herencia múltiple pero en SQL:2003 sólo hay herencia simple,
+--por eso se coge el primer elemento de la generalización nada más
+--(sólo puede haber un padre). Además, éste debe ser un elemento 'DataType'.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
+--END DOC
+rule DataType2UDT {
+	from 
+		t : UML!DataType (not t.isPrimitiveDataType())
+	to 
+		udt : SQL2003!StructuredType (
+			name <- t.getUDTName(),
+			is_final <- t.isLeaf,
+			is_instantiable <- not t.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- t.getUDTSuperType()
+			--typed <- NO SE GENERA
+		)
+	do {
+		t.name.debug('rule DataType2UDT -> datatype ');
+	}
+}
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, y dos 'TypedTable'
+--asociados a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class'
+--asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización no tiene
+--anotación de transformarse a una tabla única y 
+--es de tipo parcial y solapada.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule SuperClassWithPartialOverlappingHierarchy2UDTandTTandMergingUDTandMergingTT {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(c.isPartialHierarchy()) and
+			(c.isOverlappingHierarchy()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			--super_type <- NO SE GENERA
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt
+			--supertable <- NO SE GENERA
+		),
+		udt_merge : SQL2003!StructuredType (
+			name <- c.getMergingUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			attributes <- c.getSubClassesProperties()->
+							collect(p | thisModule.CopyProperty2Attribute(p)),
+			methods <- c.getSubClassesOperations()->
+							collect(o | thisModule.CopyOperation2Method(o)),
+			super_type <- udt,
+			typed <- tt_merge
+		),
+		tt_merge : SQL2003!TypedTable (
+			name <- c.getMergingTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt_merge,
+			supertable <- tt
+		)
+	do {
+		c.name.debug('rule SuperClassWithPartialOverlappingHierarchy2' +
+			'UDTandTTandMergingUDTandMergingTT -> class ');		
+	}
+}
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'ReferenceType'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima 1 de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+unique lazy rule generateAttributeREF {
+	from
+		prop : UML!Property
+	to
+		atREF : SQL2003!ReferenceType (
+			name <- prop.getAttributeREFName(),
+			type <- prop.getMemberEndClass(),
+			schema <- thisModule.PACKAGE()
+		)
+	do {
+		prop.name.debug('rule generateAttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'ARRAY'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima N de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!BinaryStringType de salida de la clase
+--'BinaryStringType' por cada paquete del modelo de entrada.
+--
+--@LIBRARIES UML_constants
+--END DOC
+unique lazy rule generateEmptyBinaryStringType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!BinaryStringType (
+			descriptor <- #BINARYLARGEOBJECT,
+			schema <- package,
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Se llama a esta regla al finalizar el matching, 
+--cuando el modelo ya se encuentra definido.
+--Se crean por un lado los tipos de datos que solo existen en el destino y 
+--no están en el origen, y por otro, se comprueba para los tipos que tienen regla
+--asignada si existe algún elemento del modelo de entrada que la use.
+--
+--@LIBRARIES UML_constants, UML
+--END DOC
+endpoint rule generateTypes(){
+	to 
+		datetime_timewithtimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMEWITHTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		datetime_timewithouttimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMEWITHOUTTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		datetime_timestampwithouttimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMESTAMPWITHOUTTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		datetime_timestampwithtimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMESTAMPWITHTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		characterstring_clob : SQL2003!CharacterStringType (
+ 			descriptor <-#CHARACTERLARGEOBJECT,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_STRING_LENGTH_DEF()
+		),
+		numeric_numeric : SQL2003!NumericType (
+ 			descriptor <-#NUMERIC,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_decimal : SQL2003!NumericType (
+ 			descriptor <-#DECIMAL,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_smallint : SQL2003!NumericType (
+ 			descriptor <-#SMALLINT,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_bigint : SQL2003!NumericType (
+ 			descriptor <-#BIGINT,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_float : SQL2003!NumericType (
+ 			descriptor <-#FLOAT,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_doubleprecision : SQL2003!NumericType (
+ 			descriptor <-#DOUBLEPRECISION,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_yearmonth : SQL2003!IntervalType (
+ 			descriptor <-#YEAR_MONTH,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_dayhour : SQL2003!IntervalType (
+ 			descriptor <-#DAY_HOUR,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_dayminute : SQL2003!IntervalType (
+ 			descriptor <-#DAY_MINUTE,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_daysecond : SQL2003!IntervalType (
+ 			descriptor <-#DAY_SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_hourminute : SQL2003!IntervalType (
+ 			descriptor <-#HOUR_MINUTE,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_hoursecond : SQL2003!IntervalType (
+ 			descriptor <-#HOUR_SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_minutesecond : SQL2003!IntervalType (
+ 			descriptor <-#MINUTE_SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_year : SQL2003!IntervalType (
+ 			descriptor <-#YEAR,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_month : SQL2003!IntervalType (
+ 			descriptor <-#MONTH,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_day : SQL2003!IntervalType (
+ 			descriptor <-#DAY,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_hour : SQL2003!IntervalType (
+ 			descriptor <-#HOUR,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_minute : SQL2003!IntervalType (
+ 			descriptor <-#MINUTE,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_second : SQL2003!IntervalType (
+ 			descriptor <-#SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		binarystring_binary : SQL2003!BinaryStringType (
+ 			descriptor <-#BINARY,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		),
+		binarystring_binaryvarying : SQL2003!BinaryStringType (
+ 			descriptor <-#BINARYVARYING,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		)
+	do {
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isXMLPT())->oclIsUndefined()) {
+			thisModule.generateEmptyXMLType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isBooleanPT())->oclIsUndefined()) {
+			thisModule.generateEmptyBooleanType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isStringPT())->oclIsUndefined()) {
+			if (thisModule.CLASSES()->
+				select(c | c.isSuperClassWithOneTableHierarchy())->size() = 0)
+			{
+				thisModule.generateEmptyCharacterVaryingType(thisModule.PACKAGE());
+			}
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isCharPT())->oclIsUndefined()) {
+			thisModule.generateEmptyCharacterType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isDatePT())->oclIsUndefined()) {
+			thisModule.generateEmptyDateType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isIntegerPT())->oclIsUndefined()) {
+			thisModule.generateEmptyIntegerType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isRealPT())->oclIsUndefined()) {
+			thisModule.generateEmptyRealType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isImagePT())->oclIsUndefined()) {
+			thisModule.generateEmptyBinaryStringType(thisModule.PACKAGE());
+		}
+	}
+}

@@ -1,0 +1,362 @@
+-- @nsURI	iTrace=http://www.kybele.es/iTrace
+
+module ASD2WSDL_iTrace;
+create OUT : WSDL, TRACE : iTrace from  IN : ASD;
+
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+--	Incio:	iTrace: creación de la Raiz y Modelos con helper auxiliares
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+
+entrypoint rule CreateTraceModelRoot (){
+to
+	root : iTrace!iTraceModel
+do {
+	root.projectName <- 'ASD2WSDL';
+	root.version <- '1.0';
+
+--_________________________Asignación del root _________________________
+
+	thisModule.getTraceModelRoot <- root;
+
+--_________________________Llamada a los constructores de los modelos _________________________
+
+	thisModule.createModel_b();
+	thisModule.createModel_a();
+	}
+}
+
+helper def: getTraceModelRoot : iTrace!iTraceModel = OclUndefined;
+
+
+--_________________________iTrace, begin creation rule for model IN _________________________
+
+
+rule createModel_IN(){
+to
+	IN : iTrace!Model (
+		aspect <- 'Unspecified',
+		name <- 'b',
+		path <- 'b',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'b',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_IN  <- IN;
+	}
+}
+
+
+helper def: getModel_IN : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model IN _________________________
+
+
+--_________________________iTrace, begin creation rule for model OUT _________________________
+
+
+rule createModel_OUT(){
+to
+	OUT : iTrace!Model (
+		aspect <- 'Unspecified',
+		name <- 'a',
+		path <- 'a',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'a',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_OUT  <- OUT;
+	}
+}
+
+
+helper def: getModel_OUT : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model OUT _________________________
+
+
+uses WSDLHelpersv1;
+
+rule ServiceDescription2Definitions {
+	from
+		i : ASD!ServiceDescription
+	to
+		o : WSDL!Definitions (  
+			name <- i.name,
+			portType <- i.operations,
+			message <- i.operations->collect(e|e.contents),
+			types <- s
+		),
+		
+		s : WSDL!ElementType(
+			schema <- s2
+		),
+		
+		s2: WSDL!Schema(
+			complexType <- ASD!InfoType.allInstances()-> select(e| e.infoType.size()>1 and
+			e.refImmediateComposite().oclType() = ASD!ServiceDescription),
+			
+			simpleType <- ASD!InfoType.allInstances()-> select(e| e.valueType <> #document and 
+			e.oclType()<> ASD!InfoTypeImported and
+			e.refImmediateComposite().oclType() = ASD!ServiceDescription),
+			
+			element <- ASD!InfoType.allInstances()-> select(e| e.infoType.size()=1 and
+			e.refImmediateComposite().oclType() = ASD!ServiceDescription)
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink 
+			ruleName <- 'ServiceDescription2Definitions',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '6/10/112',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- 'D:\Workspaces\Base\iTrace.ui\test\ASD2WSDL.atl',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD)
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL)
+		),
+		elementTarget_s : iTrace!TargetElement (
+			type <- s.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL)
+		),
+		elementTarget_s2 : iTrace!TargetElement (
+			type <- s2.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL)
+		)
+}
+
+do {
+	elementSource_i.refSetValue('object', i);
+	elementTarget_o.refSetValue('object', o);
+	elementTarget_s.refSetValue('object', s);
+	elementTarget_s2.refSetValue('object', s2);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+			name <- i.name,
+			part<-thisModule.getParts(i.infoType)
+		)
+}
+
+rule InfoTypeImported2ElementImported{
+	from
+		i : ASD!InfoTypeImported(
+			i.oclType()= ASD!InfoTypeImported
+		)
+	to
+		o : WSDL!ElementImported(  
+			name <- i.name,
+			url <- i.url
+		)	
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink 
+			ruleName <- 'InfoTypeImported2ElementImported{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '6/10/112',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- 'D:\Workspaces\Base\iTrace.ui\test\ASD2WSDL.atl',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD)
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL)
+		)
+}
+
+do {
+	elementSource_i.refSetValue('object', i);
+	elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+		
+		s: WSDL!SequenceType(  
+			element <- ASD!InfoType.allInstances()-> select(e| e.valueType <> #document and 
+			e.oclType()<> ASD!InfoTypeImported and
+			e.refImmediateComposite().oclType() <> ASD!ServiceDescription)
+		)
+}
+
+
+rule InfoType2SimpleType{
+	from
+		i : ASD!InfoType(
+			i.valueType <> #document and 
+			i.oclType()<> ASD!InfoTypeImported and 
+			if i.refImmediateComposite().oclType() = ASD!ServiceDescription then
+				if i.eContents()= Sequence{} then
+					true
+				else
+					false
+				endif
+			else 
+				if i.refImmediateComposite().infoType.size()=1 then
+					true
+				else
+					false
+				endif
+			endif
+		)
+	to
+		o : WSDL!SimpleType(  
+			name <- i.name,
+			restriction <- o1
+		),
+		o1: WSDL!Restriction(
+			primitiveType <- i.valueType.toString(),
+			minInclusive <- if i.valueRange = '' then OclUndefined else thisModule.InfoType2MinInclusive(i) endif,
+			maxInclusive <- if i.valueRange = '' then OclUndefined else thisModule.InfoType2axInclusive(i) endif
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink 
+			ruleName <- 'InfoType2SimpleType{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '6/10/112',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- 'D:\Workspaces\Base\iTrace.ui\test\ASD2WSDL.atl',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD)
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL)
+		),
+		elementTarget_o1 : iTrace!TargetElement (
+			type <- o1.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL)
+		)
+}
+
+do {
+	elementSource_i.refSetValue('object', i);
+	elementTarget_o.refSetValue('object', o);
+	elementTarget_o1.refSetValue('object', o1);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+								thisModule.getNameTypeOfElement(ASD!InfoType.allInstances(), i.name)->first()
+							else
+								OclUndefined
+							endif
+						else
+							thisModule.getNameTypeOfElement(ASD!InfoType.allInstances(), i.name)->first()
+						endif
+					else
+						OclUndefined
+					endif,
+					
+			simpleType <- i.infoType->select(e|e.valueType <> #document)->first(),
+			
+			complexType <- i.infoType->select(e|e.valueType = #document)->first(), 
+			
+			ref <- i.ref,
+					
+			minOccurs <- if i.valueRange = '' then OclUndefined
+			 			 else thisModule.getMinOccurs(i.valueRange).toInteger()endif,
+			maxOccurs <- if i.valueRange = '' then OclUndefined
+			 			 else thisModule.getMaxOccurs(i.valueRange) endif
+		)
+}
+
+	from
+		i : ASD!InfoType
+	to
+		o : WSDL!Part( 
+			type <- if i.oclType() <> ASD!InfoTypeImported then i->first() else OclUndefined endif,
+			elementImported <- if i.oclType() = ASD!InfoTypeImported then i else OclUndefined endif
+		)
+}
+
+	from
+		i : ASD!Message
+	to
+		o : WSDL!PortTypeInput(  
+			message <- i
+		)
+}
+
+	from
+		i : ASD!Message
+	to
+		o : WSDL!PortTypeOutput(  
+			message <- i
+		)
+}
+
+	from
+		i : ASD!Message
+	to
+		o : WSDL!PortTypeFault(  
+			message <- i
+		)
+}
+
+	from
+		i : ASD!InfoType
+	to
+		o : WSDL!MinInclusive(  
+			value <- thisModule.getMinOccurs(i.valueRange) 
+		)
+}
+
+	from
+		i : ASD!InfoType
+	to
+		o : WSDL!MinInclusive(  
+			value <- thisModule.getMaxOccurs(i.valueRange) 
+		)
+}
