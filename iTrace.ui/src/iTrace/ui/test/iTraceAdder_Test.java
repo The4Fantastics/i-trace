@@ -1,21 +1,16 @@
 package iTrace.ui.test;
 
-
-import iTrace.ui.actions.iTraceAdder;
-import iTrace.ui.tools.MeasureTime;
-
-import java.awt.FileDialog;
-import java.awt.Frame;
+import iTrace.ui.tools.iTraceAdder;
 import java.io.IOException;
 
 
-public class Test_iTraceAdder {
+public class iTraceAdder_Test {
 
 	
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
-			MeasureTime t = new MeasureTime();
+			
 			
 			//Frame f = new Frame();
 			//FileDialog file = new FileDialog(f, "Selecciona el fichero ATL origen", FileDialog.LOAD);
@@ -28,13 +23,11 @@ public class Test_iTraceAdder {
 			//System.out.println("Fichero: "+ file.getFile());
 			System.out.println("Valor de Filename: "+ fileName);
 			
-			t.start();
-			
-			//new iTraceAdder(fileName);
 			
 			
-			t.stop();
+			new iTraceAdder(fileName);
 			
+						
 			
 	
 		

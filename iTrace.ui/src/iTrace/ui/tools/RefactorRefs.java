@@ -1,4 +1,4 @@
-package iTrace.ui.actions;
+package iTrace.ui.tools;
 
 
 import java.io.IOException;
@@ -11,51 +11,18 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-
 import iTrace.Artefact;
 import iTrace.ITracePackage;
 import iTrace.Model;
 import iTrace.TraceLinkElement;
 import iTrace.iTraceModel;
 
-import org.eclipse.core.resources.IFile;
 
-public class RefactorRefs implements IObjectActionDelegate {
+public class RefactorRefs {
 	
-	private ISelection currSelection;
-	private IFile currentFile;
-	private String modelName;
-	
-	public RefactorRefs(){
-		super();
-	}
-	
-	@Override
-	public void run(IAction action) {
-		IStructuredSelection iss = (IStructuredSelection) currSelection;
-		currentFile = (IFile) iss.getFirstElement();
-		modelName = currentFile.getFullPath().toString();
-		refactor();
-		
-	}
-	
-	public void refactor(String modelName){
-		this.modelName = modelName;
-		refactor();
-	}
-	
-	
-	private void refactor() {
+	public RefactorRefs(String modelName) {
 
-		
-
-// ---- Leemos el modelo existente --------
+		// ---- Leemos el modelo existente --------
 			
 		ITracePackage.eINSTANCE.eClass();
 		
@@ -111,18 +78,7 @@ public class RefactorRefs implements IObjectActionDelegate {
 	 	System.out.println("Referencias del modelo actualizadas del modelo " + modelName);
 	 	
 	}
-
 	
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		currSelection = selection;
-		
-	}
-
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		
-	}
 }
 
 

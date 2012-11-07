@@ -18,7 +18,7 @@
             nameFilter="*.iTrace"
             objectClass="org.eclipse.core.resources.IFile">
          <action
-               class="iTrace.ui.actions.RefactorRefs"
+               class="iTrace.ui.actions.RefactorRefs_action"
                icon="icons/refs.png"
                id="RefactorRefs"
                label="Refactor Refs (iTrace)">
@@ -30,7 +30,7 @@
             nameFilter="*.iTrace"
             objectClass="org.eclipse.core.resources.IFile">
          <action
-               class="iTrace.ui.actions.ToSQL"
+               class="iTrace.ui.actions.ToSQL_action"
                icon="icons/toSQL.png"
                id="ToSQL"
                label="iTrace Model to SQL File (iTrace)">
@@ -42,7 +42,7 @@
             nameFilter="*.atl"
             objectClass="org.eclipse.core.resources.IFile">
          <action
-               class="iTrace.ui.actions.iTraceAdder"
+               class="iTrace.ui.actions.iTraceAdder_action"
                id="AddTraceability"
                label="Add Traceability (iTrace)">
          </action>

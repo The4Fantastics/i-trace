@@ -1,4 +1,4 @@
-package iTrace.ui.actions;
+package iTrace.ui.tools;
 
 import iTrace.Mode;
 import iTrace.Type;
@@ -6,8 +6,6 @@ import iTrace.ui.data.ModelData;
 import iTrace.ui.data.TraceLinkData;
 import iTrace.ui.data.TraceLinkElementData;
 import iTrace.ui.dataUI.ModelDataUI;
-import iTrace.ui.tools.MeasureTime;
-import iTrace.ui.tools.Tools;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,17 +19,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-
-public class iTraceAdder implements IObjectActionDelegate {
+public class iTraceAdder {
 
 	// Readers and Writers for Files 
 	private FileReader fr = null;
@@ -46,27 +34,50 @@ public class iTraceAdder implements IObjectActionDelegate {
 	private ModelData [] sourceModels = null;
 	private ModelData [] targetModels = null;
 	
-	// For Trace Links
-	private TraceLinkData traceLink = new TraceLinkData();
-	
 	// For uses Sentences;
 	private ArrayList<String> usesSentences = new ArrayList<String>();
 	
 	// For Determinate is FisrtRule
-	private boolean isFirstRule = true; 
+	private boolean isFirstRule; 
 	
 	// For iTraceModel
 	private String moduleName;
 	private String version = "1.0";
 	
 	//Comportamiento
-	private boolean mTime = false;
-	private boolean printStat = false;
+	private boolean mTime;
+	private boolean printStat;
 	private MeasureTime time = new MeasureTime();
 	
-	//Necesarios por el plugin
-	private static ISelection currSelection;
-	private static IFile currentFile;
+	private void init(){
+		// Readers and Writers for Files 
+		fr = null;
+		bf = null;
+		sourceFileName = new String();
+		
+		fw = null;
+		bw = null;
+		targetFile = null;
+		
+		// For Model Data
+		sourceModels = null;
+		targetModels = null;
+		
+		// For uses Sentences;
+		usesSentences = new ArrayList<String>();
+		
+		// For Determinate is FisrtRule
+		isFirstRule = true; 
+		
+		// For iTraceModel
+		moduleName = new String();
+		version = "1.0";
+		
+		//Comportamiento
+		mTime = true;
+		printStat = false;
+		time = new MeasureTime();
+	}
 	
 //	public iTraceAdder(String fileName){
 //		sourceFileName = fileName;
@@ -89,40 +100,12 @@ public class iTraceAdder implements IObjectActionDelegate {
 //		}
 //	}
 	
-	public iTraceAdder(){
-		super();
-	}
+	public iTraceAdder(String sourceFileName) throws IOException {
 	
-	@Override
-	public void run(IAction action) {
-
-		//MeasureTime time = new MeasureTime();
-		//time.start();
-		IStructuredSelection iss = (IStructuredSelection) currSelection;
-		currentFile = (IFile) iss.getFirstElement();
-		sourceFileName = currentFile.getLocation().toString();
+		this.sourceFileName = sourceFileName;
 		
-		mTime = true;
-		printStat=true;
+		init();
 		
-		
-		try {
-			adder();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		
-		time.partialStop();
-	}
-	
-	
-	private void adder() throws IOException {
-	
 		if (mTime){
 			time.start();
 		}
@@ -692,17 +675,6 @@ public class iTraceAdder implements IObjectActionDelegate {
 		for (Iterator <String> iterator = codigo.iterator(); iterator.hasNext();){
 			targetFile.println(iterator.next());
 		}
-	}
-	
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		currSelection = selection;
-		
-	}
-
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		
 	}
 	
 }

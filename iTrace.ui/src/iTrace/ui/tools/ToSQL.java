@@ -1,4 +1,4 @@
-package iTrace.ui.actions;
+package iTrace.ui.tools;
 
 
 import java.io.BufferedWriter;
@@ -9,9 +9,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -19,11 +16,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
 
 import iTrace.Artefact;
 import iTrace.Block;
@@ -37,18 +29,16 @@ import iTrace.TargetElement;
 import iTrace.TraceLink;
 import iTrace.TraceLinkElement;
 import iTrace.iTraceModel;
-import iTrace.ui.tools.MeasureTime;
 
 
-public class ToSQL implements IObjectActionDelegate {
+public class ToSQL {
 	
 	private static FileWriter fw = null;
 	private static BufferedWriter bw = null;
 	private static PrintWriter script = null;
-	
-	private static ISelection currSelection;
 	private static IFile currentFile;
 	private static String modelName;
+	
 	
 	private static String str_DMLInsert_iTraceModel = "INSERT INTO iTraceModel (uuid_iTraceModel, iTraceModel, projectName, version) VALUES (";
 	private static String str_DMLInsert_TraceLink = "INSERT INTO TraceLink (uuid_TraceLink, traceLink, createdOn, type, " +
@@ -61,32 +51,6 @@ public class ToSQL implements IObjectActionDelegate {
 	private static String str_DMLInsert_Block = "INSERT INTO Block (uuid_block, block, blockNumber, startLine, " +
 												"endLine, startColumn, endColumn, artefact) VALUES (";
 
-	public ToSQL(){
-		super();
-	}
-	
-	@Override
-	public void run(IAction action) {
-
-		MeasureTime time = new MeasureTime();
-		time.start();
-		IStructuredSelection iss = (IStructuredSelection) currSelection;
-		currentFile = (IFile) iss.getFirstElement();
-		modelName = currentFile.getFullPath().toString();
-		try {
-			generateScript();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		
-		time.partialStop();
-	}
-	
 	private static void createFile () throws IOException{
 		fw = new FileWriter(currentFile.getLocation().toString() + ".sql");
 		bw = new BufferedWriter(fw);
@@ -120,7 +84,10 @@ public class ToSQL implements IObjectActionDelegate {
 	}
 
 	
-	public void generateScript() throws IOException {
+	public ToSQL(IFile file) throws IOException {
+		
+		currentFile = file;
+		modelName = currentFile.getFullPath().toString();
 				
 		// ---- Leemos el modelo existente --------
 		
@@ -333,16 +300,7 @@ public class ToSQL implements IObjectActionDelegate {
 
 	}
 
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		currSelection = selection;
-		
-	}
-
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		
-	}
+	
 }
 
 
