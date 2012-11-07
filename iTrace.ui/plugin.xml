@@ -19,7 +19,7 @@
             objectClass="org.eclipse.core.resources.IFile">
          <action
                class="iTrace.ui.actions.RefactorRefs_action"
-               icon="icons/refs.png"
+               icon="icons/refreshRefs.png"
                id="RefactorRefs"
                label="Refactor Refs (iTrace)">
          </action>
@@ -43,6 +43,7 @@
             objectClass="org.eclipse.core.resources.IFile">
          <action
                class="iTrace.ui.actions.iTraceAdder_action"
+               icon="icons/addTraceability2.png"
                id="AddTraceability"
                label="Add Traceability (iTrace)">
          </action>
