@@ -37,6 +37,12 @@ public class iTraceAdder {
 	// For uses Sentences;
 	private ArrayList<String> usesSentences = new ArrayList<String>();
 	
+	//For helpers
+	private ArrayList<String> helperCode = new ArrayList<String>();
+	
+	//For comments
+	//private ArrayList<String> commentLine = new ArrayList<String>();
+	
 	// For Determinate is FisrtRule
 	private boolean isFirstRule; 
 	
@@ -66,6 +72,12 @@ public class iTraceAdder {
 		// For uses Sentences;
 		usesSentences = new ArrayList<String>();
 		
+		// For helpers
+		helperCode =  new ArrayList<String>();
+		
+		//For comments
+		//commentLine = new ArrayList<String>();
+				
 		// For Determinate is FisrtRule
 		isFirstRule = true; 
 		
@@ -75,7 +87,7 @@ public class iTraceAdder {
 		
 		//Comportamiento
 		mTime = true;
-		printStat = false;
+		printStat = true;
 		time = new MeasureTime();
 	}
 	
@@ -155,13 +167,81 @@ public class iTraceAdder {
 			}else if ("uses".equals(palabras[i])){
 				usesSentences.add(sentencia);
 				break;
-		//}else if ("lazy".equals(palabras[0].toLowerCase())){
-		//	System.out.println("------>Sentencia lazy");
+			}else if ("helper".equals(palabras[i])){
+				caseHelper(sentencia);
+				break;
+			}else if ("--".equals(palabras[i]) || palabras[i].startsWith("--") &&
+					!(palabras[i].startsWith("-- @"))){
+				// Los comentarios son copiados directamente al destino
+				// distinguiendo las directivas
+				caseComment(sentencia);
+				break;	
 			}
 		}	
 		
 	}
 	
+
+	private void caseComment(String sentencia) {
+		
+		if (!isFirstRule){
+			// Si ya se imprimio la primera regla, se escriben los comentarios
+			// directamente en la salida
+			targetFile.println(sentencia);
+		}
+	//	else{
+			//guardamos el comentario en el buffer;
+	//		commentLine.add(sentencia);
+	//	}
+		
+		
+	}
+
+	private void caseHelper(String sentencia) {
+
+		String [] palabras = sentencia.split(" ");
+		boolean fin=false;
+			
+		try {
+			do {
+				
+				palabras=sentencia.split(" ");
+				
+				for(int i=0;i<palabras.length;i++){
+					// Eliminamos espacios en blanco
+					palabras[i]=palabras[i].trim();
+					if (palabras[i].equals(";") || palabras[i].endsWith(";")){
+						fin = true;
+						break;
+					}
+					
+				}
+				
+				if (!isFirstRule){
+				// Si ya se imprimio la primera regla,
+				// Escribimos directamente en la salida;
+					targetFile.println(sentencia);
+				}else{
+					//guardamos el helper en el buffer;
+					helperCode.add(sentencia);
+				}
+				
+			} while ((sentencia = bf.readLine())!=null && !fin);
+				
+			// separamos con una línea el blanco cada helper
+			if (!isFirstRule){
+				// Si ya se imprimio la primera regla,
+				// Escribimos directamente en la salida;
+					targetFile.println();
+				}else{
+					//guardamos el helper en el buffer;
+					helperCode.add("");
+				}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void caseRule(String sentencia) {
 				
@@ -204,13 +284,15 @@ public class iTraceAdder {
 			targetFile.println(generateCreate());
 				
 			// Escribimos los uses si los hay
-			insertSortComment("Begin ATL Libraries");
-			for (Iterator <String> iterator = usesSentences.iterator(); iterator.hasNext();){
-				targetFile.println(iterator.next());
+			if (usesSentences.size()>0){
+				insertSortComment("Begin ATL Libraries");
+				for (Iterator <String> iterator = usesSentences.iterator(); iterator.hasNext();){
+					targetFile.println(iterator.next());
+				}
+				insertSortComment("End ATL Libraries");
+				targetFile.println();
 			}
-			insertSortComment("End ATL Libraries");
-			targetFile.println();
-		
+			
 			//Generamos la entry rule para creación del root del modelo
 			insertRootModel();
 				
@@ -225,6 +307,18 @@ public class iTraceAdder {
 				//new ModelUI(targetModels[i]);
 				insertModel(targetModels[i]);
 			}
+					
+			// Imprimimos los comentarios anteriores (si existen)
+			//for (Iterator <String> iterator = commentLine.iterator(); iterator.hasNext();){
+			//	targetFile.println(iterator.next());
+			//}
+			
+			// Imprimimos el codigo de los helpers (si existen)
+			for (Iterator <String> iterator = helperCode.iterator(); iterator.hasNext();){
+				targetFile.println(iterator.next());
+			}
+			
+			helperCode.clear();
 
 			isFirstRule=false;
 		}
@@ -232,16 +326,15 @@ public class iTraceAdder {
 // (1) Buscamos donde aparece la palabra rule, para obtener el nombre de la regla
 		
 		String [] palabras = sentencia.split(" ");
+		boolean firstKey=true;
 		
 		for(i = 0;i<palabras.length;i++){
 			if (palabras[i].equals("rule")){
-		// Obtenemos el nombre de la regla
-			ruleName = palabras [i+1];
-			break;
+				// Obtenemos el nombre de la regla
+				ruleName = palabras [i+1];
+				break;
 			}
 		}
-		// Copiamos la primera fila en destino
-		//targetFile.println(sentencia);
 		
 		//Buscamos from, to, do
 		
@@ -259,6 +352,7 @@ public class iTraceAdder {
 					} else if (palabras[i].equals("{") || palabras[i].startsWith("{") || palabras[i].endsWith("{") &&
 							!(palabras[i].equals("{}") || palabras[i].startsWith("{}") || palabras[i].endsWith("{}"))){
 						countKey++;
+						firstKey=false;
 					} else if ((palabras[i].equals("do"))){
 						doClausule = true;
 						break;
@@ -272,10 +366,11 @@ public class iTraceAdder {
 				
 				codigo.add(sentencia);
 				
-			} while ((sentencia = bf.readLine())!=null && countKey!=0 && !doClausule);
+			} while ((sentencia = bf.readLine())!=null && (countKey!=0 || firstKey) && !doClausule);
 			
 			//fin=false;
 			countKey=1;
+			firstKey=true;
 			
 			
 			// Procesa la clausula DO
@@ -293,12 +388,13 @@ public class iTraceAdder {
 						} else if (palabras[i].equals("{") || palabras[i].startsWith("{") || palabras[i].endsWith("{") &&
 								!(palabras[i].equals("{}") || palabras[i].startsWith("{}") || palabras[i].endsWith("{}"))){
 							countKey++;
+							firstKey=false;
 						}
 					}
 					
 					doSection.add(sentencia);
 					
-				} while ((sentencia = bf.readLine())!=null && countKey!=0);
+				} while ((sentencia = bf.readLine())!=null && (countKey!=0 || firstKey));
 			}
 			
 			getInformationRule(codigo, traceLinkElements);
@@ -340,13 +436,13 @@ public class iTraceAdder {
 		traceLink.setComment("Automatic generation by iTrace");
 		
 		
-// (4) Insertar TraceLink y TraceLink Element
+// (4) Insertar TraceLink 
 		
 		insertSortComment(true);
 		targetFile.println("		,");
 		insertTraceLink(traceLink);
 		
-// (5) Crear un TraceLinkElement por cada source/target Element
+// (5) Insertar TraceLinkElement por cada source/target Element
 		
 		for (Iterator <TraceLinkElementData> iterator = traceLinkElements.iterator(); iterator.hasNext();){
 			insertTraceLinkElement(iterator.next(), iterator.hasNext());
@@ -398,7 +494,9 @@ public class iTraceAdder {
 		for (Iterator <String> iterator = codigo.iterator(); iterator.hasNext();){
 			//palabras = iterator.next().replace(":", "-:-").split(" ");
 			//Tools.printArrayStrings(palabras);
-			palabras=iterator.next().split(" ");
+			
+			// Añadimos espacios a los : por si estuvieran juntos
+			palabras=iterator.next().replace(":", " : ").split(" ");
 			
 			for(int i = 0;i<palabras.length;i++){
 				// Eliminamos espacios en blanco

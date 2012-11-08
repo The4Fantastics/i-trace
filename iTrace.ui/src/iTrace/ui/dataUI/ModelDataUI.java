@@ -80,7 +80,7 @@ public class ModelDataUI extends JDialog {
 		contentPanel.setLayout(null);
 		
 		JLabel lblIconModel = new JLabel("");
-		lblIconModel.setIcon(new ImageIcon(".\\icons\\Model.png"));
+		lblIconModel.setIcon(new ImageIcon("./icons/Model.png"));
 		lblIconModel.setBounds(10, 0, 44, 45);
 		contentPanel.add(lblIconModel);
 		
@@ -100,7 +100,7 @@ public class ModelDataUI extends JDialog {
 			getContentPane().add(buttonPane);
 			{
 				JButton okButton = new JButton("Validate");
-				okButton.setIcon(new ImageIcon("..\\icons\\ok.png"));
+				okButton.setIcon(new ImageIcon("./icons/ok.png"));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 					}
@@ -168,6 +168,7 @@ public class ModelDataUI extends JDialog {
 				FileDialog file = new FileDialog(f, "Select metamodel file for " + model.getMetaATL(), FileDialog.LOAD);
 				file.setVisible(true);
 				String aux = file.getDirectory() + file.getFile();
+				aux=aux.replace("\\", "/");
 					if (aux.equals("nullnull")){
 						aux="";
 					}
@@ -189,6 +190,7 @@ public class ModelDataUI extends JDialog {
 				FileDialog file = new FileDialog(f, "Select model file for " + model.getModelATL(), FileDialog.LOAD);
 				file.setVisible(true);
 				String aux = file.getDirectory() + file.getFile();
+				aux=aux.replace("\\", "/");
 				if (aux.equals("nullnull")){
 					aux="";
 				}
