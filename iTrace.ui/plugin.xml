@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+   
+    <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="RefactorRefs"
+            nameFilter="*.iTrace"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="iTrace.ui.actions.RefactorRefs_action"
+               icon="icons/refreshRefs.png"
+               id="RefactorRefs"
+               label="Refactor Refs (iTrace)">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="ToSQL"
+            nameFilter="*.iTrace"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="iTrace.ui.actions.ToSQL_action"
+               icon="icons/toSQL.png"
+               id="ToSQL"
+               label="iTrace Model to SQL File (iTrace)">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="AddTraceability"
+            nameFilter="*.atl"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="iTrace.ui.actions.iTraceAdder_action"
+               icon="icons/addTraceability2.png"
+               id="AddTraceability"
+               label="Add Traceability (iTrace)">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
