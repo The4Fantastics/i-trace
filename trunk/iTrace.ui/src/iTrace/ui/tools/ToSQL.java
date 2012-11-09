@@ -88,6 +88,11 @@ public class ToSQL {
 		
 		currentFile = file;
 		modelName = currentFile.getFullPath().toString();
+		
+		//Cronometramos el tiempo
+		
+		MeasureTime time = new MeasureTime("To SQL");
+		time.start();
 				
 		// ---- Leemos el modelo existente --------
 		
@@ -295,7 +300,9 @@ public class ToSQL {
 				
 		}
 		close();
-		System.out.println("... Fichero Script sql creado correctamente");
+		time.stop();
+		System.out.println("");
+		System.out.println("iTrace:> SQL script file created successfully.");
 		System.out.println("");
 
 	}

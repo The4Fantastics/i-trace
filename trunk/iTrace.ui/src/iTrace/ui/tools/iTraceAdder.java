@@ -386,12 +386,12 @@ public class iTraceAdder {
 			
 			if (printStat){
 			
-				System.out.println("========================================");
+				System.out.println("iTrace:> ========================================");
 				System.out.println("REGLA: "+ ruleName);
 				Tools.printArrayList(codigo, "Código");
 				TraceLinkElementData.printList(traceLinkElements, "Trace Link Elements");
 				Tools.printArrayList(doSection, "Do Section");
-				System.out.println("========================================");
+				System.out.println("iTrace:> ========================================");
 			
 			}
 	
