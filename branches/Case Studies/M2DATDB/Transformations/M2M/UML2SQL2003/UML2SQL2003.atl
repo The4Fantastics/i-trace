@@ -1,0 +1,2181 @@
+-- @nsURI 		UML=http://www.eclipse.org/uml2/2.1.0/UML
+-- @nsURI 		SQL2003=http://SQL2003.ecore
+-- @path 		AMW=/UML2SQL2003/Metamodels/ORAnnotationMeta.ecore
+
+--BEGIN DOC
+--#About
+-- @name 		UML2SQL2003
+-- @version		2.0
+-- @domains		database, dsl, sql2003, uml, mda, amw, transformation,
+--				metamodel, model
+-- @authors		Alejandro Galindo (Universidad Rey Juan Carlos)
+-- @date       	26-01-2009
+-- @description	Este modelo ATL permite transformar un modelo de entrada
+--				conforme al metamodelo UML en un modelo de salida conforme
+--				al metamodelo SQL2003, teniendo en cuenta las anotaciones
+--              del modelo de weaving definidas con AMW. Éstas recogen las
+--              decisiones de diseño a aplicar.
+--END DOC
+
+module UML2SQL2003;
+create OUT : SQL2003 from IN : UML, ANNOTATIONS : AMW;
+
+-------------------------------------------------------------------------------
+-- IMPORTS         ------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+uses UML2SQL2003_constants;
+uses UML2SQL2003_helpers;
+uses UML2SQL2003_AMW; 
+uses UML;
+
+-------------------------------------------------------------------------------
+-- RULES           ------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Schema' por cada elemento 
+--de entrada 'Package' del modelo de entrada, asignándole como nombre
+--el nombre del paquete.
+--END DOC
+rule Package2Schema {
+	from 
+		p : UML!Package
+	to 
+		s : SQL2003!Schema (
+			name <- p.name
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'XMLType'
+--asociado al tipo XMLType de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo XML de UML.
+--
+--@LIBRARIES UML, UML_constants
+--END DOC
+rule XML2XMLType {
+	from
+		dt : UML!PrimitiveType(dt.isXMLPT())
+	to
+		out : SQL2003!XMLType (
+			descriptor <- #XMLTYPE,
+			schema <- thisModule.PACKAGE()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'BooleanType'
+--asociado al tipo BOOLEAN de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Boolean de UML.
+--
+--@LIBRARIES UML, UML_constants
+--END DOC
+rule Boolean2Boolean {
+	from
+		dt : UML!PrimitiveType(dt.isBooleanPT())
+	to
+		out : SQL2003!BooleanType (
+			descriptor <- #BOOLEAN,
+			schema <- thisModule.PACKAGE()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'CharacterStringType'
+--asociado al tipo CHARACTER VARYING de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo String de UML.
+--
+--@LIBRARIES UML, UML_constants, SQL2003_constants
+--END DOC
+rule String2CharacterVarying {
+	from
+		dt : UML!PrimitiveType(dt.isStringPT())
+	to
+		out : SQL2003!CharacterStringType (
+			descriptor <- #CHARACTERVARYING,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_STRING_LENGTH_DEF()
+		)
+}
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'CharacterStringType'
+--asociado al tipo CHARACTER de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Char de UML.
+--
+--@LIBRARIES UML, UML_constants
+--END DOC
+rule Char2Character {
+	from
+		dt : UML!PrimitiveType(dt.isCharPT())
+	to
+		out : SQL2003!CharacterStringType (
+			descriptor <- #CHARACTER,
+			schema <- thisModule.PACKAGE(),
+			length_def <- 1
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'DatetimeType'
+--asociado al tipo DATE de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Date de UML.
+--
+--@LIBRARIES UML, UML_constants
+--END DOC
+rule Date2Date {
+	from
+		dt : UML!PrimitiveType(dt.isDatePT())
+	to
+		out : SQL2003!DatetimeType (
+			descriptor <- #DATE,
+			schema <- thisModule.PACKAGE()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'NumericType'
+--asociado al tipo INTEGER de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Integer de UML.
+--
+--@LIBRARIES UML, UML_constants, SQL2003_constants
+--END DOC
+rule Integer2Integer {
+	from
+		dt : UML!PrimitiveType(dt.isIntegerPT())
+	to
+		out : SQL2003!NumericType (
+			descriptor <- #INTEGER,
+			schema <- thisModule.PACKAGE()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'NumericType'
+--asociado al tipo REAL de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Real de UML.
+--
+--@LIBRARIES UML, UML_constants, SQL2003_constants
+--END DOC
+rule Real2Real {
+	from
+		dt : UML!PrimitiveType (dt.isRealPT())
+	to
+		out : SQL2003!NumericType (
+			descriptor <- #REAL,
+			schema <- thisModule.PACKAGE()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'BinaryStringType'
+--asociado al tipo BINARYLARGEOBJECT de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo imagen de UML.
+--
+--@LIBRARIES UML, UML_constants, SQL2003_constants
+--END DOC
+rule Image2BinaryStringType {
+	from
+		dt : UML!PrimitiveType (dt.isImagePT())
+	to
+		out : SQL2003!BinaryStringType (
+			descriptor <- #BINARYLARGEOBJECT,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL2003
+--por cada elemento de entrada 'DataType' asociado a un tipo de dato de UML.
+--
+--Se comprueba que el tipo de dato de entrada no sea ninguno de los predefinidos.
+--
+--En UML hay herencia múltiple pero en SQL:2003 sólo hay herencia simple,
+--por eso se coge el primer elemento de la generalización nada más
+--(sólo puede haber un padre). Además, éste debe ser un elemento 'DataType'.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
+--END DOC
+rule DataType2UDT {
+	from 
+		t : UML!DataType (not t.isPrimitiveDataType())
+	to 
+		udt : SQL2003!StructuredType (
+			name <- t.getUDTName(),
+			is_final <- t.isLeaf,
+			is_instantiable <- not t.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- t.getUDTSuperType()
+			--typed <- NO SE GENERA
+		)
+	do {
+		t.name.debug('rule DataType2UDT -> datatype ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al atributo de un tipo de dato de UML.
+--
+--La condición de guarda lo que hace es permitir ejecutar la regla solamente
+--sobre los elementos 'Property' de un 'DataType' de entrada,
+--ya que hay otros elementos que pueden contener elementos 'Property'
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule DataTypeProperty2UDTAttribute {
+	from 
+		pDT : UML!Property (pDT.refImmediateComposite().oclIsTypeOf(UML!DataType))
+	to
+		aUDT : SQL2003!Attribute (
+			name <- pDT.name,
+			type <- pDT.type,
+			structured <- pDT->refImmediateComposite(),
+			default <- pDT.getDefaultValueProperty()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Method'
+--asociado al método de un tipo estructurado o de una clase de SQL:2003
+--por cada elemento de entrada 'Operation'
+--asociado a la operación de un tipo de dato o de una clase de UML.
+--
+--La condición de guarda lo que hace es permitir ejecutar la regla solamente
+--sobre los elementos 'Operation' de una 'Class' o un 'DataType' de entrada,
+--ya que hay otros elementos que pueden contener subelementos 'Operation'.
+--
+--En SQL2003 solamente hay herencia simple así que se coge el primer
+--método redefinido, aunque UML permite redefinir más de un método padre
+--ya que existe herencia múltiple.
+--
+--@LIBRARIES UML2SQL2003_AMW, UML2SQL2003_helpers
+--END DOC
+rule Operation2Method {
+	from
+		op : UML!Operation (
+			op.refImmediateComposite().oclIsTypeOf(UML!DataType) or
+			op.refImmediateComposite().oclIsTypeOf(UML!Class)
+		)
+	to
+		m : SQL2003!Method (
+			name <- op.name,
+			structured <- op.getOwningClass(),
+			override <- op.redefinedOperation->first(),
+			return_type <- op.getOperationReturnType()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL2003
+--por cada elemento de entrada 'Class' asociado a una clase abstracta padre o
+--padre-hija de UML.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
+--END DOC
+rule AbstractSuperClass2UDT {
+	from
+		c : UML!Class (
+			(c.isAbstract) and	
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE()
+			--super_type <- NO SE GENERA
+			--typed <- NO SE GENERA
+		)
+	do {		
+		c.name.debug('rule AbstractSuperClass2UDT -> class ');
+	}
+}
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase no es abstracta y pertenece a una jerarquía 
+--donde actua como clase padre, bien porque su jerarquía se mapea a
+--varias clases, bien porque no tiene información del tipo de jerarquía.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
+--END DOC
+rule SuperClassWithSeveralTablesHierarchy2UDTandTT {
+	from
+		c : UML!Class (
+			(c.hasSubClasses()) and 
+			(c.isMapClassToSeveralTables()) and
+			(not c.isMapClassToOneTable())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getSuperClass(),
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		)
+	do {
+		c.name.debug('rule SuperClassWithSeveralTablesHierarchy2UDTandTT -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase no es abstracta y no pertenece a ninguna jerarquía.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
+--END DOC
+rule ClassWithoutHierarchy2UDTandTT {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(not c.hasSubClasses())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		)
+	do {		
+		c.name.debug('rule ClassWithoutHierarchy2UDTandTT -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una subclase hoja, sin subclases, y cuya generalización no tiene
+--anotación de transformarse a una tabla única.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule LeafChildClass2UDTandTT {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(c.hasSuperClass()) and
+			(not c.hasSubClasses()) and
+			(not c.isChildOfClassToOneTable())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getSuperClass(),
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		)
+	do {		
+		c.name.debug('rule LeafSubClass2UDTandTT -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'View'
+--asociado a una vista de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización no tiene
+--anotación de jerarquía y es de tipo total y exclusiva.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule SuperClassWithCoveringDisjointHierarchy2UDTandView {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(c.isCoveringHierarchy()) and
+			(c.isDisjointHierarchy()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE()
+			--super_type <- NO SE GENERA
+			--typed <- NO SE GENERA
+		),
+		view : SQL2003!View (
+			name <- c.getMergingViewName(),
+			schema <- thisModule.PACKAGE(),
+			query_expression <- c.getQueryExpression(),
+			tables <- c.getDescendantsTypedTables(),
+			components <- c.getDescendantsProperties()
+		)
+	do {
+		c.name.debug('rule SuperClassWithCoveringDisjointHierarchy2UDTandView -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, un elemento de salida 'View'
+--asociado a una vista de SQL2003 y un elemento de salida 'TypedTable'
+--asociado a una tabla tipada de SQL2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización no tiene
+--anotación de jerarquía y es de tipo total y solapada.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule SuperClassWithCoveringOverlappingHierarchy2UDTandMergingUDTandMergingTTandView{
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(c.hasSubClasses()) and			
+			(c.isCoveringHierarchy()) and
+			(c.isOverlappingHierarchy()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE()
+			--super_type <- NO SE GENERA
+			--typed <- NO SE GENERA
+		),
+		udt_merge : SQL2003!StructuredType (
+			name <- c.getMergingUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			attributes <- c.getSubClassesProperties()->
+							collect(p | thisModule.CopyProperty2Attribute(p)),
+			methods <- c.getSubClassesOperations()->
+							collect(o | thisModule.CopyOperation2Method(o)),
+			super_type <- udt,
+			typed <- tt_merge
+		),
+		tt_merge : SQL2003!TypedTable (
+			name <- c.getMergingTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt_merge
+			--supertable <- NO SE GENERA
+		),
+		view : SQL2003!View (
+			name <- c.getMergingViewName(),
+			schema <- thisModule.PACKAGE(),
+			query_expression <- c.getQueryExpression(),
+			tables <- c.getDescendantsTypedTables(),
+			components <- c.getDescendantsProperties()
+		)
+	do {		
+		c.name.debug('rule SuperClassWithCoveringOverlappingHierarchy2' + 
+			'UDTandMergingUDTandMergingTTandView -> class ');
+	}		
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización no tiene
+--anotación de jerarquía y es de tipo parcial y exclusiva.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule SuperClassWithPartialDisjointHierarchy2UDTandTT {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(c.isPartialHierarchy()) and
+			(c.isDisjointHierarchy()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			--super_type <- NO SE GENERA
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt
+			--supertable <- NO SE GENERA
+		)
+	do {
+		c.name.debug('rule SuperClassWithPartialDisjointHierarchy2UDTandTT -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, y dos 'TypedTable'
+--asociados a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class'
+--asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización no tiene
+--anotación de transformarse a una tabla única y 
+--es de tipo parcial y solapada.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule SuperClassWithPartialOverlappingHierarchy2UDTandTTandMergingUDTandMergingTT {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(c.isPartialHierarchy()) and
+			(c.isOverlappingHierarchy()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			--super_type <- NO SE GENERA
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt
+			--supertable <- NO SE GENERA
+		),
+		udt_merge : SQL2003!StructuredType (
+			name <- c.getMergingUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			attributes <- c.getSubClassesProperties()->
+							collect(p | thisModule.CopyProperty2Attribute(p)),
+			methods <- c.getSubClassesOperations()->
+							collect(o | thisModule.CopyOperation2Method(o)),
+			super_type <- udt,
+			typed <- tt_merge
+		),
+		tt_merge : SQL2003!TypedTable (
+			name <- c.getMergingTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt_merge,
+			supertable <- tt
+		)
+	do {
+		c.name.debug('rule SuperClassWithPartialOverlappingHierarchy2' +
+			'UDTandTTandMergingUDTandMergingTT -> class ');		
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, y dos 'TypedTable'
+--asociados a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class'
+--asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización tiene una
+--anotación de jerarquía para mapearse a una única tabla.
+--Se añade un atributo discriminante en la tabla para saber a qué clase
+--pertenece cada objeto de la jerarquía.
+--Solamente se puede usar la anotación en jerarquías finales, donde las subclases
+--no tengan clases hijas.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_constants,
+--UML2SQL2003_AMW
+--END DOC
+rule SuperClassWithOneTableHierarchy2UDTandTTandAttributeandCHECKandNOTNULL {
+	from
+		c : UML!Class (
+			(c.hasSubClasses()) and 
+			(c.isMapClassToOneTable())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			--attributes <-  <- NO SE GENERA
+			--methods <-  <- NO SE GENERA
+			super_type <- c.getSuperClass(),
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		),
+		discriminant : SQL2003!Attribute (
+			name <- 'type_of_' + c.name,
+			type <- thisModule.ELEMENT_TYPE_STRING(),
+			structured <- c
+		),
+		check : SQL2003!TableCheckConstraint (
+			name <- c.getOneTableDiscriminantCheckName(),
+			expression <- c.getOneTableDiscriminantCheckExpression(),
+			columns <- discriminant,
+			table <- tt
+		),
+		notNull : SQL2003!NotNull (
+			table <- tt,
+			columns <- discriminant
+		)		
+	do {
+		c.name.debug('rule SuperClassWithOneTableHierarchy2' + 
+			'UDTandTTandAttributeandCHECKandNOTNULL -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'View'
+--asociado a una vista de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una clase padre-hija (tiene una jerarquía padre y 
+--otra jerarquía hija), cuya jerarquía hija no tiene anotación y 
+--que mapea a UDT solamente. 
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ParentChildClass2UDTandView {
+	from 
+		c : UML!Class(
+			(not c.isAbstract) and
+			(c.mapToUDT()) and
+			(c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getFirstSuperClass()
+			--typed <- NO SE GENERA
+		),
+		view : SQL2003!View (
+			name <- c.getMergingViewName(),
+			schema <- thisModule.PACKAGE(),
+			query_expression <- c.getQueryExpression(),
+			tables <- c.getDescendantsTypedTables(),
+			components <- c.getAncestorsDescendantsProperties()			
+		)		
+	do {
+		c.name.debug('rule ParentChildClass2UDTandView -> class ');
+	}
+}
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, un elemento de salida 'View'
+--asociado a una vista de SQL2003 y un elemento de salida 'TypedTable'
+--asociado a una tabla tipada de SQL2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una clase padre-hija (tiene una jerarquía padre y 
+--otra jerarquía hija), cuya jerarquía hija no tiene anotación y 
+--que mapea a UDT, más un tipo que mezcla los UDTs que mapean las clases
+--hijas de la clase padre-hija que se mapea (y su correspondiente tabla)
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ParentChildClass2UDTandMergingUDTandMergingTTandView {
+	from 
+		c : UML!Class(
+			(not c.isAbstract) and
+			(c.mapToUDTwithMergeUDTandTT()) and 
+			(c.hasSuperClass()) and 
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables()) 
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getFirstSuperClass()
+			--typed <- NO SE GENERA
+		),
+		udt_merge : SQL2003!StructuredType (
+			name <- c.getMergingUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			attributes <- c.getSubClassesProperties()->
+							collect(p | thisModule.CopyProperty2Attribute(p)),
+			methods <- c.getSubClassesOperations()->
+							collect(o | thisModule.CopyOperation2Method(o)),
+			super_type <- udt,
+			typed <- tt_merge
+		),
+		tt_merge : SQL2003!TypedTable(
+			name <- c.getMergingTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt_merge
+			--supertable <- NO SE GENERA
+			),
+		view : SQL2003!View (
+			name <- c.getMergingViewName(),
+			schema <- thisModule.PACKAGE(),
+			query_expression <- c.getQueryExpression(),
+			tables <- c.getDescendantsTypedTables(),
+			components <- c.getAncestorsDescendantsProperties()			
+		)
+	do {
+		c.name.debug('rule ParentChildClass2UDTandMergingUDTandMergingTTandView -> class ');
+	}			
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una clase padre-hija (tiene una jerarquía padre y 
+--otra jerarquía hija), cuya jerarquía hija no tiene anotación y 
+--que mapea a UDT, más un TT sobre dicho UDT.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ParentChildClass2UDTandTT {
+	from 
+		c : UML!Class (
+			(not c.isAbstract) and
+			(c.mapToUDTandTT()) and 
+			(c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getFirstSuperClass(),
+			typed <- tt			
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		)
+	do {
+		c.name.debug('rule ParentChildClass2UDTandTT -> class ');
+	}				
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, y dos 'TypedTable'
+--asociados a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class'
+--asociado al tipo clase de UML.
+--La clase es una clase padre-hija (tiene una jerarquía padre y 
+--otra jerarquía hija), cuya jerarquía hija no tiene anotación y 
+--que mapea a un UDT y una TT sobre dicho UDT, más un 
+--tipo que mezcla los UDTs que mapean las clases
+--hijas de la clase padre-hija que se mapea (y su correspondiente tabla)
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ParentChildClass2UDTandTTandMergingUDTandMergingTT {
+	from 
+		c : UML!Class(
+			(not c.isAbstract) and
+			(c.mapToUDTandTTwithMergeUDTandTT()) and
+			(c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getFirstSuperClass(),
+			typed <- tt	
+		),
+		tt : SQL2003!TypedTable(
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+			),			
+		udt_merge : SQL2003!StructuredType (
+			name <- c.getMergingUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			attributes <- c.getSubClassesProperties()->
+							collect(p | thisModule.CopyProperty2Attribute(p)),
+			methods <- c.getSubClassesOperations()->
+							collect(o | thisModule.CopyOperation2Method(o)),
+			super_type <- udt,
+			typed <- tt_merge	
+		),
+		tt_merge : SQL2003!TypedTable(
+			name <- c.getMergingTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt_merge
+			--supertable <- NO SE GENERA
+			)
+	do {
+		c.name.debug('rule ParentChildClass2UDTandTTandMergingUDTandMergingTT -> class ');
+	}				
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase de UML.
+--
+--La condición de guarda lo que hace es permitir ejecutar la regla solamente
+--sobre los elementos 'Property' de un 'Class' de entrada,
+--ya que hay otros elementos que pueden contener elementos 'Property'.
+--Los atributos no pueden ser ni derivados ni multivaluados ni ser otra clase
+--pero sí tipos de datos definidos o básicos.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassProperty2UDTAttribute {
+	from
+		prop : UML!Property (
+			prop.isClassProperty() and
+			not prop.isDerivedAttribute() and
+			not prop.isMultivaluedAttribute()
+		)
+	to
+		aUDT : SQL2003!Attribute (
+			name <- prop.name,
+			type <- prop.type,
+			structured <- prop.getOwningClass(),
+			default <- prop.getDefaultValueProperty()
+		)
+	do {
+		prop.name.debug('rule ClassProperty2UDTAttribute -> property ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Not Null sobre 
+--la SQL2003!TypedTable que genera la clase de entrada.
+--La condición es que la clase (o alguna de sus ancestros) 
+--contenga a la 'UML!Property'.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassPropertyNotNull2NotNullConstraintOnTT {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(c.generatesTypedTable()) and
+			(c.ownsClassProperty(prop)) and 
+			(prop.isNotNullAttribute())
+		)
+	to
+		notNull : SQL2003!NotNull (
+			table <- thisModule.resolveTemp(c, 'tt'),
+			columns <- prop
+		)
+	do {
+		prop.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnTT -> property ');
+		c.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnTT -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Not Null sobre 
+--la SQL2003!TypedTable de merging que genera la clase de entrada.
+--La condición es que la clase (o alguna de sus ancestros) 
+--contenga a la 'UML!Property'.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassPropertyNotNull2NotNullConstraintOnMergingTT {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(c.generatesMergingTypedTable()) and 
+			(c.ownsClassProperty(prop)) and 
+			(prop.isNotNullAttribute())
+		)
+	to
+		notNull : SQL2003!NotNull (
+			table <- thisModule.resolveTemp(c, 'tt_merge'),
+			columns <- prop
+		)
+	do {
+		prop.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnMergingTT -> property ');
+		c.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnMergingTT -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Primary Key sobre 
+--la SQL2003!TypedTable que genera la clase de entrada.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassPropertyPrimaryKey2PrimaryKeyConstraintOnTT {
+	from
+		a : AMW!Annotation,
+		c : UML!Class
+		(
+			c.generatesTypedTable() and
+            a.getReferredProperties()->forAll(prop |
+            	c.ownsClassProperty(prop) and
+				prop.isPrimaryKeyAttribute()) and
+			a.isPrimaryKeyAnnotation()
+		)
+	to
+		pk : SQL2003!PrimaryKey (
+			name <- c.getPrimaryKeyName(a.getKeyAttributes()),
+			table <- thisModule.resolveTemp(c, 'tt'),
+			columns <- a.getReferredProperties()
+		)
+	do {
+		c.name.debug('rule ClassPropertyPrimaryKey2' +
+			'PrimaryKeyConstraintOnTT -> class ');
+		a.debug('rule ClassPropertyPrimaryKey2' +
+			'PrimaryKeyConstraintOnTT ');
+		a.debug('--> Uso AMW 1');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Primary Key sobre 
+--la SQL2003!TypedTable de merging que genera la clase de entrada.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassPropertyPrimaryKey2PrimaryKeyConstraintOnMergingTT {
+	from
+		a : AMW!Annotation,
+		c : UML!Class
+		(
+			c.generatesMergingTypedTable() and
+            a.getReferredProperties()->forAll(prop |
+            	c.ownsClassProperty(prop) and
+				prop.isPrimaryKeyAttribute()) and
+			a.isPrimaryKeyAnnotation()
+		)
+	to
+		pk : SQL2003!PrimaryKey (
+			name <- c.getPrimaryKeyName(a.getKeyAttributes()),
+			table <- thisModule.resolveTemp(c, 'tt_merge'),
+			columns <- a.getReferredProperties()
+		)
+	do {
+		c.name.debug('rule ClassPropertyPrimaryKey2' + 
+			'PrimaryKeyConstraintOnMergingTT -> class ');
+		a.debug('rule ClassPropertyPrimaryKey2' + 
+			'PrimaryKeyConstraintOnMergingTT ');
+		a.debug('--> Uso AMW 2');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Alternative Key sobre 
+--la SQL2003!TypedTable que genera la clase de entrada.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassPropertyAlternativeKey2UniqueConstraintOnTT {
+	from
+		a : AMW!Annotation,
+		c : UML!Class
+		(
+			c.generatesTypedTable() and
+            a.getReferredProperties()->forAll(prop |
+            	c.ownsClassProperty(prop) and
+				prop.isAlternativeKeyAttribute()) and
+			a.isAlternativeKeyAnnotation()
+		)
+	to
+		ak : SQL2003!UniqueConstraint (
+			name <- c.getAlternativeKeyName(a.getKeyAttributes()),
+			table <- thisModule.resolveTemp(c, 'tt'),
+			columns <- a.getReferredProperties()
+		)
+	do {
+		c.name.debug('rule ClassPropertyAlternativeKey2UniqueConstraintOnTT -> class ');
+		a.debug('rule ClassPropertyAlternativeKey2UniqueConstraintOnTT ');
+		a.debug('--> Uso AMW 3');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Alternative Key sobre 
+--la SQL2003!TypedTable de merging que genera la clase de entrada.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassPropertyAlternativeKey2UniqueConstraintOnMergingTT {
+	from
+		a : AMW!Annotation,
+		c : UML!Class
+		(
+			c.generatesMergingTypedTable() and
+            a.getReferredProperties()->forAll(prop |
+            	c.ownsClassProperty(prop) and
+				prop.isAlternativeKeyAttribute()) and
+			a.isAlternativeKeyAnnotation()
+		)
+	to
+		ak : SQL2003!UniqueConstraint (
+			name <- c.getAlternativeKeyName(a.getKeyAttributes()),
+			table <- thisModule.resolveTemp(c, 'tt_merge'),
+			columns <- a.getReferredProperties()
+		)
+	do {
+		c.name.debug('rule ClassPropertyAlternativeKey2' + 
+			'UniqueConstraintOnMergingTT -> class ');
+		a.debug('rule ClassPropertyAlternativeKey2' + 
+			'UniqueConstraintOnMergingTT ');
+		a.debug('--> Uso AMW 4');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Method'
+--asociado al método de SQL:2003 que genera el valor del atributo derivado 
+--de entrada 'Property' de UML.
+--Se genera solamente el método que calcula el valor del atributo.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule DerivedProperty2Method {
+	from
+		prop : UML!Property (
+			(prop.isDerivedAttribute()) and
+			(prop.isMapDerivedAttributeToMethod())
+		)
+	to
+		m : SQL2003!Method (
+			name <- 'get' + 
+					prop.name.substring(1,1).toUpper() +
+			 		prop.name.substring(2,prop.name.size()),
+			structured <- prop.getOwningClass(),
+			--override <- NO GENERA,
+			return_type <- prop.type
+		)
+	do {
+		prop.name.debug('rule DerivedProperty2Method -> property ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'Trigger'
+--(uno de actualización y otro de inserción)
+--asociado al trigger de SQL:2003 que genera el valor del atributo derivado 
+--de entrada 'Property' de UML.
+--La clase a la que pertenece la propiedad de entrada no puede ser abstracta.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule DerivedProperty2AttributeandTrigger {
+	from
+		prop : UML!Property (
+			(prop.isDerivedAttribute()) and
+			(prop.isMapDerivedAttributeToTrigger()) and
+			(
+				(not prop.isAbstractClassProperty()) or
+				prop.isAbstractClassWithOneTableAnnotation()
+			)
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- prop.type,
+			structured <- prop->refImmediateComposite()
+		),
+		tin : SQL2003!Trigger (
+			name <- 'get' +
+					prop.name.substring(1,1).toUpper() +
+			 		prop.name.substring(2,prop.name.size()) + '_insert',
+			event <- #INSERT,
+			actionTime <- #AFTER,
+			table <- thisModule.resolveTemp(prop.refImmediateComposite(),'tt'),
+			updateColumns <- a
+		),
+		tup : SQL2003!Trigger (
+			name <- 'get' +
+					prop.name.substring(1,1).toUpper() +
+			 		prop.name.substring(2,prop.name.size()) + '_update',
+			event <- #UPDATE,
+			actionTime <- #AFTER,
+			table <- thisModule.resolveTemp(prop.refImmediateComposite(),'tt'),
+			updateColumns <- a
+		)
+	do {
+		prop.name.debug('rule DerivedProperty2AttributeandTrigger -> property ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003 que es multivaluado
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase cuya cardinalidad máxima es fija.
+--El tipo del atributo 'ARRAY' también se genera porque no se ha generado antes
+--en el modelo de salida.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+rule MultivaluedPropertyWithoutGeneratedType2ARRAYAttribute {
+	from
+		prop : UML!Property (
+			(prop.isMultivaluedAttribute()) and
+			(prop.isFixedSizeMultivaluedAttribute()) and
+			(not prop.isGeneratedMultivaluedType())
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- array,
+			structured <- prop->refImmediateComposite()
+		),	
+		array : SQL2003!ARRAY (
+			name <- prop.name,
+			type <- prop.type,
+			num_elements <- prop.getMultivaluedAttributeSize(),
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getARRAYWithMAElemsSuperType()
+		)
+	do {
+		prop.name.debug('rule MultivaluedPropertyWithoutGeneratedType2' + 
+			'ARRAYAttribute -> property ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003 que es multivaluado
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase cuya cardinalidad máxima es fija.
+--El tipo del atributo 'ARRAY' no se genera porque hay otra propiedad con el mismo
+--tipo que ya lo ha generado antes en el modelo de salida.
+--
+--@LIBRARIES UML2SQL2003_helpers
+--END DOC
+rule MultivaluedPropertyWithGeneratedType2ARRAYAttribute {
+	from
+		prop : UML!Property (
+			(prop.isMultivaluedAttribute()) and
+			(prop.isFixedSizeMultivaluedAttribute()) and
+			(prop.isGeneratedMultivaluedType())
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- prop.getGeneratedMultivaluedType(),
+			structured <- prop->refImmediateComposite()
+		)
+	do {
+		prop.name.debug('rule MultivaluedPropertyWithGeneratedType2' + 
+			'ARRAYAttribute -> property ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003 que es multivaluado
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase cuya cardinalidad máxima es ilimitada.
+--El tipo del atributo 'MULTISET' también se genera porque no se ha generado antes
+--en el modelo de salida.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+rule MultivaluedPropertyWithoutGeneratedType2MULTISETAttribute {
+	from
+		prop : UML!Property (
+			(prop.isMultivaluedAttribute()) and
+			(prop.isVarSizeMultivaluedAttribute()) and
+			(not prop.isGeneratedMultivaluedType())
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- multiset,
+			structured <- prop->refImmediateComposite()
+		),
+		multiset : SQL2003!MULTISET (
+			name <- prop.name,
+			type <- prop.type,
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getMULTISETWithMAElemsSuperType()
+		)
+	do {
+		prop.name.debug('rule MultivaluedPropertyWithoutGeneratedType2' + 
+			'MULTISETAttribute -> property ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003 que es multivaluado
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase cuya cardinalidad máxima es ilimitada.
+--El tipo del atributo 'MULTISET' no se genera porque hay otra propiedad 
+--con el mismo tipo que ya lo ha generado antes en el modelo de salida.
+--
+--@LIBRARIES UML2SQL2003_helpers
+--END DOC
+rule MultivaluedPropertyWithGeneratedType2MULTISETAttribute {
+	from
+		prop : UML!Property (
+			(prop.isMultivaluedAttribute()) and
+			(prop.isVarSizeMultivaluedAttribute()) and
+			(prop.isGeneratedMultivaluedType())
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- prop.getGeneratedMultivaluedType(),
+			structured <- prop->refImmediateComposite()
+		)
+	do {
+		prop.name.debug('rule MultivaluedPropertyWithGeneratedType2' + 
+			'MULTISETAttribute -> property ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Parameter'
+--asociado al parámetro de una operacion de un tipo estructurado de SQL:2003
+--por cada elemento de entrada 'Operation'
+--asociado a la operación de una clase de UML.
+--
+--La condición de guarda lo que hace es permitir ejecutar la regla solamente
+--sobre los elementos 'Operation' de una 'Class' de entrada,
+--ya que hay otros elementos que pueden contener elementos 'Operation'.
+--El parámetro de retorno se trata cuando se trata la propia operación.
+--END DOC
+rule OperationParameter2MethodParameter {
+	from
+		paramOp : UML!Parameter (
+			paramOp.refImmediateComposite().oclIsTypeOf(UML!Operation) and
+			(not (paramOp.direction = #return))
+		)
+	to
+		paramUDT : SQL2003!MethodParameter (
+			name <- paramOp.name,
+			type <- paramOp.type,	
+			method <- paramOp->refImmediateComposite()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Not Null sobre 
+--la SQL2003!TypedTable que genera la clase de entrada.
+--La condición es que la clase incluya una 'Property' 
+--asociada al extremo de una asociación de UML
+--con cardinalidad 1..x o N..x, o herede de una clase que la incluya.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEnd2NotNullOnTT {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(prop.isAssociationLowerMoreThanZero()) and
+			(c.generatesTypedTable()) and
+			(c.ownsMemberEnd(prop)) and
+			(not c.isAbstract)
+		)
+	to
+		notNull : SQL2003!NotNull (
+			table <- thisModule.resolveTemp(c, 'tt'),
+			columns <- prop
+		)
+	do {
+		prop.name.debug('rule MemberEnd2NotNullOnTT ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo CHECK sobre 
+--la SQL2003!TypedTable que genera la clase padre de la clase de entrada,
+-- ya que aquella tiene una anotación de jerarquía a una sola tabla.
+--La condición es que la clase incluya una 'Property' 
+--asociada al extremo de una asociación de UML
+--con cardinalidad 1..x o N..x y sea subclase de una jerarquía que se mapea a
+--una única tabla.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule ChildMemberEndNotNull2CheckConstraintOnTTOneTable {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(prop.isAssociationLowerMoreThanZero()) and
+			(not c.generatesTypedTable()) and
+			(c.isDirectMemberEnd(prop)) and
+			(not c.isAbstract) and
+			(c.hasSuperClass()) and
+			(not c.hasSubClasses())
+		)
+	to
+		check : SQL2003!TableCheckConstraint (
+			name <- c.getOneTableChildMemberEndCheckName(prop),
+			expression <- c.getOneTableChildMemberEndNotNullCheckExpression(prop),
+			columns <- Set{
+				thisModule.resolveTemp(c.getSuperClass(), 'discriminant'),
+				thisModule.resolveTemp(prop, 'aREF')
+			},
+			table <- thisModule.resolveTemp(c.getSuperClass(), 'tt')
+		)
+	do {
+		prop.name.debug('rule ChildMemberEndNotNull2CheckConstraintOnTTOneTable ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo CHECK sobre 
+--la SQL2003!TypedTable que genera la clase padre de la clase de entrada,
+-- ya que aquella tiene una anotación de jerarquía a una sola tabla.
+--La condición es que la clase incluya una 'Property' 
+--asociada al extremo de una asociación de UML
+--con cardinalidad 0..x y sea subclase de una jerarquía que se mapea a
+--una única tabla.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule ChildMemberEndNull2CheckConstraintOnTTOneTable {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(prop.isAssociationLowerEqualZero()) and
+			(not c.generatesTypedTable()) and
+			(c.isDirectMemberEnd(prop)) and
+			(not c.isAbstract) and
+			(c.hasSuperClass()) and
+			(not c.hasSubClasses())
+		)
+	to
+		check : SQL2003!TableCheckConstraint (
+			name <- c.getOneTableChildMemberEndCheckName(prop),
+			expression <- c.getOneTableChildMemberEndNullCheckExpression(prop),
+			columns <- Set{
+				thisModule.resolveTemp(c.getSuperClass(), 'discriminant'),
+				thisModule.resolveTemp(prop, 'aREF')
+			},
+			table <- thisModule.resolveTemp(c.getSuperClass(), 'tt')
+		)
+	do {
+		prop.name.debug('rule ChildMemberEndNull2CheckConstraintOnTTOneTable ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Not Null sobre 
+--la SQL2003!MergingTypedTable que genera la clase de entrada.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEnd2NotNullOnMergingTT {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(c.generatesMergingTypedTable()) and
+			(c.ownsMemberEnd(prop))
+		)
+	to
+		notNull : SQL2003!NotNull (
+			table <- thisModule.resolveTemp(c, 'tt_merge'),
+			columns <- prop
+		)
+	do {
+		prop.name.debug('rule MemberEnd2NotNullOnMergingTT ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML con cardinalidad 0..1
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndZeroOne2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalZeroOne() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNullPropertyName(),
+			type <-
+				if (prop.isComposition()) then
+					prop.type
+				else
+					prop.getGeneratedAttributeREFType()
+				endif,
+			structured <- prop.getAttributeREFClass()
+		)
+	do {
+		prop.name.debug('rule MemberEndZeroOne2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML
+--con cardinalidad 0..N, donde N es un numero mayor que 1.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndZeroMulti2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalZeroMulti() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNullPropertyName(),
+			type <- prop.getFixedSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+	do {
+		prop.name.debug('rule MemberEndZeroMulti2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML con cardinalidad 0..*
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndZeroN2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalZeroN() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNullPropertyName(),
+			type <- prop.getVarSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+	do {
+		prop.name.debug('rule MemberEndZeroN2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML con cardinalidad 1..1
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndOneOne2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalOneOne() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNotNullPropertyName(),
+			type <-
+				if (prop.isComposition()) then
+					prop.type
+				else
+					prop.getGeneratedAttributeREFType()
+				endif,
+			structured <- prop.getAttributeREFClass()
+		)
+	do {
+		prop.name.debug('rule MemberEndOneOne2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML
+--con cardinalidad 1..N, donde N es un numero mayor que 1.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndOneMulti2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalOneMulti() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)	
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNotNullPropertyName(),
+			type <- prop.getFixedSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+	do {
+		prop.name.debug('rule MemberEndOneMulti2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML con cardinalidad 1..*
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndOneN2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalOneN() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNotNullPropertyName(),
+			type <- prop.getVarSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+	do {
+		prop.name.debug('rule MemberEndOneN2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML
+--con cardinalidad N..*, donde N es un numero mayor que 1.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndMultiN2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalMultiN() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNotNullPropertyName(),
+			type <- prop.getVarSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+	do {
+		prop.name.debug('rule MemberEndMultiN2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'ReferenceType'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima 1 de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+unique lazy rule generateAttributeREF {
+	from
+		prop : UML!Property
+	to
+		atREF : SQL2003!ReferenceType (
+			name <- prop.getAttributeREFName(),
+			type <- prop.getMemberEndClass(),
+			schema <- thisModule.PACKAGE()
+		)
+	do {
+		prop.name.debug('rule generateAttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'ARRAY'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima N de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+unique lazy rule generateARRAYREF {
+	from
+		prop : UML!Property
+	to
+		array : SQL2003!ARRAY (
+			name <- prop.getMultivaluedAttributeREFTypeName(),
+			num_elements <- prop.getMultivaluedAttributeSize(),
+			type <- prop.getGeneratedAttributeREFType(),
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getARRAYWithMAElemsSuperType()
+		)
+	do {
+		prop.name.debug('rule generateARRAYREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'ARRAY'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima N de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+unique lazy rule generateARRAY {
+	from
+		prop : UML!Property
+	to
+		array : SQL2003!ARRAY (
+			name <- prop.getMultivaluedAttributeTypeName(),
+			num_elements <- prop.getMultivaluedAttributeSize(),
+			type <- prop.type,
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getARRAYWithMAElemsSuperType()
+		)
+	do {
+		prop.name.debug('rule generateARRAY ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'MULTISET'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima N de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+unique lazy rule generateMULTISETREF {
+	from
+		prop : UML!Property
+	to
+		multiset : SQL2003!MULTISET (
+			name <- prop.getMultivaluedAttributeREFTypeName(),
+			type <- prop.getGeneratedAttributeREFType(),
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getMULTISETWithMAElemsSuperType()
+		)
+	do {
+		prop.name.debug('rule generateMULTISETREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'MULTISET'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima N de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+unique lazy rule generateMULTISET {
+	from
+		prop : UML!Property
+	to
+		multiset : SQL2003!MULTISET (
+			name <- prop.getMultivaluedAttributeTypeName(),
+			type <- prop.type,
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getMULTISETWithMAElemsSuperType()
+		)
+	do {
+		prop.name.debug('rule generateMULTISET ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--por cada elemento de entrada 'Property'.
+--Sirve para duplicar atributos en las subclases de una jerarquía.
+--END DOC
+unique lazy rule CopyProperty2Attribute {
+	from
+		p : UML!Property
+	to
+		a : SQL2003!Attribute (
+			name <- p.name,
+			type <- p.type,
+			default <- p.default
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--por cada elemento de entrada 'Property'.
+--Sirve para duplicar operaciones en las subclases de una jerarquía.
+--
+--@LIBRARIES UML
+--END DOC
+unique lazy rule CopyOperation2Method {
+	from
+		op : UML!Operation (
+			op.refImmediateComposite().oclIsTypeOf(UML!DataType) or
+			op.refImmediateComposite().oclIsTypeOf(UML!Class)
+		)
+	to
+		mUDT : SQL2003!Method (
+			name <- op.name,
+			structured <- op->refImmediateComposite(),
+			override <- op.redefinedOperation->first(),
+			return_type <- op.getOperationReturnType()
+		) 
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!XMLType de salida por cada paquete
+--del modelo de entrada.
+--END DOC
+unique lazy rule generateEmptyXMLType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!XMLType (
+			descriptor <- #XMLTYPE,
+			schema <- package
+		) 
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!BooleanType de salida por cada paquete
+--del modelo de entrada.
+--END DOC
+unique lazy rule generateEmptyBooleanType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!BooleanType (
+			descriptor <- #BOOLEAN,
+			schema <- package
+		) 
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!CharacterStringType de salida de la clase
+--'character varying' por cada paquete del modelo de entrada.
+--
+--@LIBRARIES UML_constants
+--END DOC
+unique lazy rule generateEmptyCharacterVaryingType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!CharacterStringType (
+			descriptor <- #CHARACTERVARYING,
+			schema <- package,
+			length_def <- thisModule.DEFAULT_STRING_LENGTH_DEF()
+	)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!CharacterStringType de salida de la clase
+--'character' por cada paquete del modelo de entrada.
+--END DOC
+unique lazy rule generateEmptyCharacterType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!CharacterStringType (
+			descriptor <- #CHARACTER,
+			schema <- package,
+			length_def <- 1
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!DatetimeType de salida de la clase
+--'date' por cada paquete del modelo de entrada.
+--END DOC
+unique lazy rule generateEmptyDateType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!DatetimeType (
+			descriptor <- #DATE,
+			schema <- package.debug('Valor de package')
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!NumericType de salida de la clase
+--'integer' por cada paquete del modelo de entrada.
+--
+--@LIBRARIES UML_constants
+--END DOC
+unique lazy rule generateEmptyIntegerType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!NumericType (
+			descriptor <- #INTEGER,
+			schema <- package
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!NumericType de salida de la clase
+--'real' por cada paquete del modelo de entrada.
+--
+--@LIBRARIES UML_constants
+--END DOC
+unique lazy rule generateEmptyRealType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!NumericType (
+			descriptor <- #REAL,
+			schema <- package
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!BinaryStringType de salida de la clase
+--'BinaryStringType' por cada paquete del modelo de entrada.
+--
+--@LIBRARIES UML_constants
+--END DOC
+unique lazy rule generateEmptyBinaryStringType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!BinaryStringType (
+			descriptor <- #BINARYLARGEOBJECT,
+			schema <- package,
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		)
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Se llama a esta regla al finalizar el matching, 
+--cuando el modelo ya se encuentra definido.
+--Se crean por un lado los tipos de datos que solo existen en el destino y 
+--no están en el origen, y por otro, se comprueba para los tipos que tienen regla
+--asignada si existe algún elemento del modelo de entrada que la use.
+--
+--@LIBRARIES UML_constants, UML
+--END DOC
+endpoint rule generateTypes(){
+	to 
+		datetime_timewithtimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMEWITHTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		datetime_timewithouttimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMEWITHOUTTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		datetime_timestampwithouttimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMESTAMPWITHOUTTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		datetime_timestampwithtimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMESTAMPWITHTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		characterstring_clob : SQL2003!CharacterStringType (
+ 			descriptor <-#CHARACTERLARGEOBJECT,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_STRING_LENGTH_DEF()
+		),
+		numeric_numeric : SQL2003!NumericType (
+ 			descriptor <-#NUMERIC,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_decimal : SQL2003!NumericType (
+ 			descriptor <-#DECIMAL,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_smallint : SQL2003!NumericType (
+ 			descriptor <-#SMALLINT,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_bigint : SQL2003!NumericType (
+ 			descriptor <-#BIGINT,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_float : SQL2003!NumericType (
+ 			descriptor <-#FLOAT,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_doubleprecision : SQL2003!NumericType (
+ 			descriptor <-#DOUBLEPRECISION,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_yearmonth : SQL2003!IntervalType (
+ 			descriptor <-#YEAR_MONTH,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_dayhour : SQL2003!IntervalType (
+ 			descriptor <-#DAY_HOUR,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_dayminute : SQL2003!IntervalType (
+ 			descriptor <-#DAY_MINUTE,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_daysecond : SQL2003!IntervalType (
+ 			descriptor <-#DAY_SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_hourminute : SQL2003!IntervalType (
+ 			descriptor <-#HOUR_MINUTE,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_hoursecond : SQL2003!IntervalType (
+ 			descriptor <-#HOUR_SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_minutesecond : SQL2003!IntervalType (
+ 			descriptor <-#MINUTE_SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_year : SQL2003!IntervalType (
+ 			descriptor <-#YEAR,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_month : SQL2003!IntervalType (
+ 			descriptor <-#MONTH,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_day : SQL2003!IntervalType (
+ 			descriptor <-#DAY,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_hour : SQL2003!IntervalType (
+ 			descriptor <-#HOUR,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_minute : SQL2003!IntervalType (
+ 			descriptor <-#MINUTE,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_second : SQL2003!IntervalType (
+ 			descriptor <-#SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		binarystring_binary : SQL2003!BinaryStringType (
+ 			descriptor <-#BINARY,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		),
+		binarystring_binaryvarying : SQL2003!BinaryStringType (
+ 			descriptor <-#BINARYVARYING,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		)
+	do {
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isXMLPT())->oclIsUndefined()) {
+			thisModule.generateEmptyXMLType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isBooleanPT())->oclIsUndefined()) {
+			thisModule.generateEmptyBooleanType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isStringPT())->oclIsUndefined()) {
+			if (thisModule.CLASSES()->
+				select(c | c.isSuperClassWithOneTableHierarchy())->size() = 0)
+			{
+				thisModule.generateEmptyCharacterVaryingType(thisModule.PACKAGE());
+			}
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isCharPT())->oclIsUndefined()) {
+			thisModule.generateEmptyCharacterType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isDatePT())->oclIsUndefined()) {
+			thisModule.generateEmptyDateType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isIntegerPT())->oclIsUndefined()) {
+			thisModule.generateEmptyIntegerType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isRealPT())->oclIsUndefined()) {
+			thisModule.generateEmptyRealType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isImagePT())->oclIsUndefined()) {
+			thisModule.generateEmptyBinaryStringType(thisModule.PACKAGE());
+		}
+	}
+}

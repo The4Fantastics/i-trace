@@ -1,0 +1,3488 @@
+-- @nsURI iTrace=http://www.kybele.es/iTrace
+-- @path  UML=D:/Workspaces/Case Studies/M2DATDB/Metamodels/UML.ecore
+-- @path  AMW=D:/Workspaces/Case Studies/M2DATDB/Metamodels/ORAnnotationMeta.ecore
+-- @path  SQL2003=D:/Workspaces/Case Studies/M2DATDB/Metamodels/SQL2003.ecore
+
+module UML2SQL2003_iTrace;
+create OUT : SQL2003, TRACE : iTrace from  IN : UML, ANNOTATIONS : AMW;
+
+--_________________________Begin ATL Libraries _________________________
+
+uses UML2SQL2003_constants;
+uses UML2SQL2003_helpers;
+uses UML2SQL2003_AMW; 
+uses UML;
+
+--_________________________End ATL Libraries _________________________
+
+
+
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+--	Incio:	iTrace: creación de la Raiz y Modelos con helper auxiliares
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+
+entrypoint rule CreateTraceModelRoot (){
+to
+	root : iTrace!iTraceModel
+do {
+	root.projectName <- 'UML2SQL2003';
+	root.version <- '1.0';
+
+--_________________________Asignación del root _________________________
+
+	thisModule.getTraceModelRoot <- root;
+
+--_________________________Llamada a los constructores de los modelos _________________________
+
+	thisModule.createModel_IN();
+	thisModule.createModel_ANNOTATIONS();
+	thisModule.createModel_OUT();
+	}
+}
+
+helper def: getTraceModelRoot : iTrace!iTraceModel = OclUndefined;
+
+
+--_________________________iTrace, begin creation rule for model UML _________________________
+
+
+rule createModel_UML(){
+to
+	UML : iTrace!Model (
+		aspect <- 'Content',
+		name <- 'UML',
+		path <- 'D:/Workspaces/Case Studies/M2DATDB/Models/omdb.uml',
+		abstractionLevel <- 'PIM',
+		metamodel <- 'D:/Workspaces/Case Studies/M2DATDB/Metamodels/UML.ecore',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_UML  <- UML;
+	}
+}
+
+
+helper def: getModel_UML : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model UML _________________________
+
+
+--_________________________iTrace, begin creation rule for model AMW _________________________
+
+
+rule createModel_AMW(){
+to
+	AMW : iTrace!Model (
+		aspect <- 'Content',
+		name <- 'AMW',
+		path <- 'D:/Workspaces/Case Studies/M2DATDB/Models/omdb.amw',
+		abstractionLevel <- 'ANNOTATION',
+		metamodel <- 'D:/Workspaces/Case Studies/M2DATDB/Metamodels/ORAnnotationMeta.ecore',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_AMW  <- AMW;
+	}
+}
+
+
+helper def: getModel_AMW : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model AMW _________________________
+
+
+--_________________________iTrace, begin creation rule for model SQL2003 _________________________
+
+
+rule createModel_SQL2003(){
+to
+	SQL2003 : iTrace!Model (
+		aspect <- 'Content',
+		name <- 'SQL2003',
+		path <- 'D:/Workspaces/Case Studies/M2DATDB/Models/omdb.sql2003',
+		abstractionLevel <- 'PSM',
+		metamodel <- 'D:/Workspaces/Case Studies/M2DATDB/Metamodels/SQL2003.ecore',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_SQL2003  <- SQL2003;
+	}
+}
+
+
+helper def: getModel_SQL2003 : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model SQL2003 _________________________
+
+rule Package2Schema {
+	from 
+		p : UML!Package
+	to 
+		s : SQL2003!Schema (
+			name <- p.name
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Package2Schema',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_p : iTrace!SourceElement (
+			type <- p.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_s : iTrace!TargetElement (
+			type <- s.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_p.refSetValue('object', p);
+		elementTarget_s.refSetValue('object', s);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'XMLType'
+--asociado al tipo XMLType de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo XML de UML.
+--
+--@LIBRARIES UML, UML_constants
+--END DOC
+rule XML2XMLType {
+	from
+		dt : UML!PrimitiveType(dt.isXMLPT())
+	to
+		out : SQL2003!XMLType (
+			descriptor <- #XMLTYPE,
+			schema <- thisModule.PACKAGE()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'XML2XMLType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_dt : iTrace!SourceElement (
+			type <- dt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_dt.refSetValue('object', dt);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'BooleanType'
+--asociado al tipo BOOLEAN de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Boolean de UML.
+--
+--@LIBRARIES UML, UML_constants
+--END DOC
+rule Boolean2Boolean {
+	from
+		dt : UML!PrimitiveType(dt.isBooleanPT())
+	to
+		out : SQL2003!BooleanType (
+			descriptor <- #BOOLEAN,
+			schema <- thisModule.PACKAGE()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Boolean2Boolean',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_dt : iTrace!SourceElement (
+			type <- dt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_dt.refSetValue('object', dt);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'CharacterStringType'
+--asociado al tipo CHARACTER VARYING de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo String de UML.
+--
+--@LIBRARIES UML, UML_constants, SQL2003_constants
+--END DOC
+rule String2CharacterVarying {
+	from
+		dt : UML!PrimitiveType(dt.isStringPT())
+	to
+		out : SQL2003!CharacterStringType (
+			descriptor <- #CHARACTERVARYING,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_STRING_LENGTH_DEF()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'String2CharacterVarying',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_dt : iTrace!SourceElement (
+			type <- dt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_dt.refSetValue('object', dt);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'CharacterStringType'
+--asociado al tipo CHARACTER de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Char de UML.
+--
+--@LIBRARIES UML, UML_constants
+--END DOC
+rule Char2Character {
+	from
+		dt : UML!PrimitiveType(dt.isCharPT())
+	to
+		out : SQL2003!CharacterStringType (
+			descriptor <- #CHARACTER,
+			schema <- thisModule.PACKAGE(),
+			length_def <- 1
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Char2Character',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_dt : iTrace!SourceElement (
+			type <- dt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_dt.refSetValue('object', dt);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'DatetimeType'
+--asociado al tipo DATE de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Date de UML.
+--
+--@LIBRARIES UML, UML_constants
+--END DOC
+rule Date2Date {
+	from
+		dt : UML!PrimitiveType(dt.isDatePT())
+	to
+		out : SQL2003!DatetimeType (
+			descriptor <- #DATE,
+			schema <- thisModule.PACKAGE()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Date2Date',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_dt : iTrace!SourceElement (
+			type <- dt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_dt.refSetValue('object', dt);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'NumericType'
+--asociado al tipo INTEGER de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Integer de UML.
+--
+--@LIBRARIES UML, UML_constants, SQL2003_constants
+--END DOC
+rule Integer2Integer {
+	from
+		dt : UML!PrimitiveType(dt.isIntegerPT())
+	to
+		out : SQL2003!NumericType (
+			descriptor <- #INTEGER,
+			schema <- thisModule.PACKAGE()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Integer2Integer',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_dt : iTrace!SourceElement (
+			type <- dt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_dt.refSetValue('object', dt);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'NumericType'
+--asociado al tipo REAL de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo Real de UML.
+--
+--@LIBRARIES UML, UML_constants, SQL2003_constants
+--END DOC
+rule Real2Real {
+	from
+		dt : UML!PrimitiveType (dt.isRealPT())
+	to
+		out : SQL2003!NumericType (
+			descriptor <- #REAL,
+			schema <- thisModule.PACKAGE()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Real2Real',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_dt : iTrace!SourceElement (
+			type <- dt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_dt.refSetValue('object', dt);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'BinaryStringType'
+--asociado al tipo BINARYLARGEOBJECT de SQL2003
+--por cada elemento de entrada 'PrimitiveType' asociado al tipo imagen de UML.
+--
+--@LIBRARIES UML, UML_constants, SQL2003_constants
+--END DOC
+rule Image2BinaryStringType {
+	from
+		dt : UML!PrimitiveType (dt.isImagePT())
+	to
+		out : SQL2003!BinaryStringType (
+			descriptor <- #BINARYLARGEOBJECT,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Image2BinaryStringType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_dt : iTrace!SourceElement (
+			type <- dt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_dt.refSetValue('object', dt);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL2003
+--por cada elemento de entrada 'DataType' asociado a un tipo de dato de UML.
+--
+--Se comprueba que el tipo de dato de entrada no sea ninguno de los predefinidos.
+--
+--En UML hay herencia múltiple pero en SQL:2003 sólo hay herencia simple,
+--por eso se coge el primer elemento de la generalización nada más
+--(sólo puede haber un padre). Además, éste debe ser un elemento 'DataType'.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
+--END DOC
+rule DataType2UDT {
+	from 
+		t : UML!DataType (not t.isPrimitiveDataType())
+	to 
+		udt : SQL2003!StructuredType (
+			name <- t.getUDTName(),
+			is_final <- t.isLeaf,
+			is_instantiable <- not t.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- t.getUDTSuperType()
+			--typed <- NO SE GENERA
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'DataType2UDT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_t : iTrace!SourceElement (
+			type <- t.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		t.name.debug('rule DataType2UDT -> datatype ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al atributo de un tipo de dato de UML.
+--
+--La condición de guarda lo que hace es permitir ejecutar la regla solamente
+--sobre los elementos 'Property' de un 'DataType' de entrada,
+--ya que hay otros elementos que pueden contener elementos 'Property'
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+		elementSource_t.refSetValue('object', t);
+		elementTarget_udt.refSetValue('object', udt);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Method'
+--asociado al método de un tipo estructurado o de una clase de SQL:2003
+--por cada elemento de entrada 'Operation'
+--asociado a la operación de un tipo de dato o de una clase de UML.
+--
+--La condición de guarda lo que hace es permitir ejecutar la regla solamente
+--sobre los elementos 'Operation' de una 'Class' o un 'DataType' de entrada,
+--ya que hay otros elementos que pueden contener subelementos 'Operation'.
+--
+--En SQL2003 solamente hay herencia simple así que se coge el primer
+--método redefinido, aunque UML permite redefinir más de un método padre
+--ya que existe herencia múltiple.
+--
+--@LIBRARIES UML2SQL2003_AMW, UML2SQL2003_helpers
+--END DOC
+rule Operation2Method {
+	from
+		op : UML!Operation (
+			op.refImmediateComposite().oclIsTypeOf(UML!DataType) or
+			op.refImmediateComposite().oclIsTypeOf(UML!Class)
+		)
+	to
+		m : SQL2003!Method (
+			name <- op.name,
+			structured <- op.getOwningClass(),
+			override <- op.redefinedOperation->first(),
+			return_type <- op.getOperationReturnType()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Operation2Method',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_op : iTrace!SourceElement (
+			type <- op.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_m : iTrace!TargetElement (
+			type <- m.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_op.refSetValue('object', op);
+		elementTarget_m.refSetValue('object', m);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL2003
+--por cada elemento de entrada 'Class' asociado a una clase abstracta padre o
+--padre-hija de UML.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
+--END DOC
+rule AbstractSuperClass2UDT {
+	from
+		c : UML!Class (
+			(c.isAbstract) and	
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE()
+			--super_type <- NO SE GENERA
+			--typed <- NO SE GENERA
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'AbstractSuperClass2UDT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule AbstractSuperClass2UDT -> class ');
+	}
+}
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase no es abstracta y pertenece a una jerarquía 
+--donde actua como clase padre, bien porque su jerarquía se mapea a
+--varias clases, bien porque no tiene información del tipo de jerarquía.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
+--END DOC
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase no es abstracta y no pertenece a ninguna jerarquía.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
+--END DOC
+rule ClassWithoutHierarchy2UDTandTT {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(not c.hasSubClasses())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ClassWithoutHierarchy2UDTandTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt : iTrace!TargetElement (
+			type <- tt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule ClassWithoutHierarchy2UDTandTT -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una subclase hoja, sin subclases, y cuya generalización no tiene
+--anotación de transformarse a una tabla única.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_tt.refSetValue('object', tt);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'View'
+--asociado a una vista de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización no tiene
+--anotación de jerarquía y es de tipo total y exclusiva.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule SuperClassWithCoveringDisjointHierarchy2UDTandView {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(c.isCoveringHierarchy()) and
+			(c.isDisjointHierarchy()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE()
+			--super_type <- NO SE GENERA
+			--typed <- NO SE GENERA
+		),
+		view : SQL2003!View (
+			name <- c.getMergingViewName(),
+			schema <- thisModule.PACKAGE(),
+			query_expression <- c.getQueryExpression(),
+			tables <- c.getDescendantsTypedTables(),
+			components <- c.getDescendantsProperties()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'SuperClassWithCoveringDisjointHierarchy2UDTandView',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_view : iTrace!TargetElement (
+			type <- view.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule SuperClassWithCoveringDisjointHierarchy2UDTandView -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, un elemento de salida 'View'
+--asociado a una vista de SQL2003 y un elemento de salida 'TypedTable'
+--asociado a una tabla tipada de SQL2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización no tiene
+--anotación de jerarquía y es de tipo total y solapada.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_view.refSetValue('object', view);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+			--super_type <- NO SE GENERA
+			--typed <- NO SE GENERA
+			--supertable <- NO SE GENERA
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización no tiene
+--anotación de jerarquía y es de tipo parcial y exclusiva.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule SuperClassWithPartialDisjointHierarchy2UDTandTT {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(c.isPartialHierarchy()) and
+			(c.isDisjointHierarchy()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			--super_type <- NO SE GENERA
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt
+			--supertable <- NO SE GENERA
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'SuperClassWithPartialDisjointHierarchy2UDTandTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt : iTrace!TargetElement (
+			type <- tt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule SuperClassWithPartialDisjointHierarchy2UDTandTT -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, y dos 'TypedTable'
+--asociados a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class'
+--asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización no tiene
+--anotación de transformarse a una tabla única y 
+--es de tipo parcial y solapada.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_tt.refSetValue('object', tt);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+			--super_type <- NO SE GENERA
+			--supertable <- NO SE GENERA
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, y dos 'TypedTable'
+--asociados a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class'
+--asociado al tipo clase de UML.
+--La clase es una superclase raiz, cuya generalización tiene una
+--anotación de jerarquía para mapearse a una única tabla.
+--Se añade un atributo discriminante en la tabla para saber a qué clase
+--pertenece cada objeto de la jerarquía.
+--Solamente se puede usar la anotación en jerarquías finales, donde las subclases
+--no tengan clases hijas.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_constants,
+--UML2SQL2003_AMW
+--END DOC
+rule SuperClassWithOneTableHierarchy2UDTandTTandAttributeandCHECKandNOTNULL {
+	from
+		c : UML!Class (
+			(c.hasSubClasses()) and 
+			(c.isMapClassToOneTable())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			--attributes <-  <- NO SE GENERA
+			--methods <-  <- NO SE GENERA
+			super_type <- c.getSuperClass(),
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		),
+		discriminant : SQL2003!Attribute (
+			name <- 'type_of_' + c.name,
+			type <- thisModule.ELEMENT_TYPE_STRING(),
+			structured <- c
+		),
+		check : SQL2003!TableCheckConstraint (
+			name <- c.getOneTableDiscriminantCheckName(),
+			expression <- c.getOneTableDiscriminantCheckExpression(),
+			columns <- discriminant,
+			table <- tt
+		),
+		notNull : SQL2003!NotNull (
+			table <- tt,
+			columns <- discriminant
+		)		
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'SuperClassWithOneTableHierarchy2UDTandTTandAttributeandCHECKandNOTNULL',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt : iTrace!TargetElement (
+			type <- tt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_discriminant : iTrace!TargetElement (
+			type <- discriminant.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_check : iTrace!TargetElement (
+			type <- check.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_notNull : iTrace!TargetElement (
+			type <- notNull.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule SuperClassWithOneTableHierarchy2' + 
+			'UDTandTTandAttributeandCHECKandNOTNULL -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'View'
+--asociado a una vista de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una clase padre-hija (tiene una jerarquía padre y 
+--otra jerarquía hija), cuya jerarquía hija no tiene anotación y 
+--que mapea a UDT solamente. 
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_tt.refSetValue('object', tt);
+		elementTarget_discriminant.refSetValue('object', discriminant);
+		elementTarget_check.refSetValue('object', check);
+		elementTarget_notNull.refSetValue('object', notNull);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+			--typed <- NO SE GENERA
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, un elemento de salida 'View'
+--asociado a una vista de SQL2003 y un elemento de salida 'TypedTable'
+--asociado a una tabla tipada de SQL2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una clase padre-hija (tiene una jerarquía padre y 
+--otra jerarquía hija), cuya jerarquía hija no tiene anotación y 
+--que mapea a UDT, más un tipo que mezcla los UDTs que mapean las clases
+--hijas de la clase padre-hija que se mapea (y su correspondiente tabla)
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ParentChildClass2UDTandMergingUDTandMergingTTandView {
+	from 
+		c : UML!Class(
+			(not c.isAbstract) and
+			(c.mapToUDTwithMergeUDTandTT()) and 
+			(c.hasSuperClass()) and 
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables()) 
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getFirstSuperClass()
+			--typed <- NO SE GENERA
+		),
+		udt_merge : SQL2003!StructuredType (
+			name <- c.getMergingUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			attributes <- c.getSubClassesProperties()->
+							collect(p | thisModule.CopyProperty2Attribute(p)),
+			methods <- c.getSubClassesOperations()->
+							collect(o | thisModule.CopyOperation2Method(o)),
+			super_type <- udt,
+			typed <- tt_merge
+		),
+		tt_merge : SQL2003!TypedTable(
+			name <- c.getMergingTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt_merge
+			--supertable <- NO SE GENERA
+			),
+		view : SQL2003!View (
+			name <- c.getMergingViewName(),
+			schema <- thisModule.PACKAGE(),
+			query_expression <- c.getQueryExpression(),
+			tables <- c.getDescendantsTypedTables(),
+			components <- c.getAncestorsDescendantsProperties()			
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ParentChildClass2UDTandMergingUDTandMergingTTandView',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_udt_merge : iTrace!TargetElement (
+			type <- udt_merge.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt_merge : iTrace!TargetElement (
+			type <- tt_merge.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_view : iTrace!TargetElement (
+			type <- view.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule ParentChildClass2UDTandMergingUDTandMergingTTandView -> class ');
+	}			
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'StructuredType'
+--asociado al tipo estructurado de SQL:2003, y otro 'TypedTable'
+--asociado a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class' asociado al tipo clase de UML.
+--La clase es una clase padre-hija (tiene una jerarquía padre y 
+--otra jerarquía hija), cuya jerarquía hija no tiene anotación y 
+--que mapea a UDT, más un TT sobre dicho UDT.
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_udt_merge.refSetValue('object', udt_merge);
+		elementTarget_tt_merge.refSetValue('object', tt_merge);
+		elementTarget_view.refSetValue('object', view);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'StructuredType'
+--asociados al tipo estructurado de SQL:2003, y dos 'TypedTable'
+--asociados a una tabla tipada de SQL:2003
+--por cada elemento de entrada 'Class'
+--asociado al tipo clase de UML.
+--La clase es una clase padre-hija (tiene una jerarquía padre y 
+--otra jerarquía hija), cuya jerarquía hija no tiene anotación y 
+--que mapea a un UDT y una TT sobre dicho UDT, más un 
+--tipo que mezcla los UDTs que mapean las clases
+--hijas de la clase padre-hija que se mapea (y su correspondiente tabla)
+--
+--@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ParentChildClass2UDTandTTandMergingUDTandMergingTT {
+	from 
+		c : UML!Class(
+			(not c.isAbstract) and
+			(c.mapToUDTandTTwithMergeUDTandTT()) and
+			(c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getFirstSuperClass(),
+			typed <- tt	
+		),
+		tt : SQL2003!TypedTable(
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+			),			
+		udt_merge : SQL2003!StructuredType (
+			name <- c.getMergingUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			attributes <- c.getSubClassesProperties()->
+							collect(p | thisModule.CopyProperty2Attribute(p)),
+			methods <- c.getSubClassesOperations()->
+							collect(o | thisModule.CopyOperation2Method(o)),
+			super_type <- udt,
+			typed <- tt_merge	
+		),
+		tt_merge : SQL2003!TypedTable(
+			name <- c.getMergingTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt_merge
+			--supertable <- NO SE GENERA
+			)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ParentChildClass2UDTandTTandMergingUDTandMergingTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt : iTrace!TargetElement (
+			type <- tt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_udt_merge : iTrace!TargetElement (
+			type <- udt_merge.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt_merge : iTrace!TargetElement (
+			type <- tt_merge.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule ParentChildClass2UDTandTTandMergingUDTandMergingTT -> class ');
+	}				
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase de UML.
+--
+--La condición de guarda lo que hace es permitir ejecutar la regla solamente
+--sobre los elementos 'Property' de un 'Class' de entrada,
+--ya que hay otros elementos que pueden contener elementos 'Property'.
+--Los atributos no pueden ser ni derivados ni multivaluados ni ser otra clase
+--pero sí tipos de datos definidos o básicos.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_tt.refSetValue('object', tt);
+		elementTarget_udt_merge.refSetValue('object', udt_merge);
+		elementTarget_tt_merge.refSetValue('object', tt_merge);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Not Null sobre 
+--la SQL2003!TypedTable que genera la clase de entrada.
+--La condición es que la clase (o alguna de sus ancestros) 
+--contenga a la 'UML!Property'.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassPropertyNotNull2NotNullConstraintOnTT {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(c.generatesTypedTable()) and
+			(c.ownsClassProperty(prop)) and 
+			(prop.isNotNullAttribute())
+		)
+	to
+		notNull : SQL2003!NotNull (
+			table <- thisModule.resolveTemp(c, 'tt'),
+			columns <- prop
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ClassPropertyNotNull2NotNullConstraintOnTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_notNull : iTrace!TargetElement (
+			type <- notNull.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnTT -> property ');
+		c.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnTT -> class ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Not Null sobre 
+--la SQL2003!TypedTable de merging que genera la clase de entrada.
+--La condición es que la clase (o alguna de sus ancestros) 
+--contenga a la 'UML!Property'.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_notNull.refSetValue('object', notNull);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Primary Key sobre 
+--la SQL2003!TypedTable que genera la clase de entrada.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassPropertyPrimaryKey2PrimaryKeyConstraintOnTT {
+	from
+		a : AMW!Annotation,
+		c : UML!Class
+		(
+			c.generatesTypedTable() and
+            a.getReferredProperties()->forAll(prop |
+            	c.ownsClassProperty(prop) and
+				prop.isPrimaryKeyAttribute()) and
+			a.isPrimaryKeyAnnotation()
+		)
+	to
+		pk : SQL2003!PrimaryKey (
+			name <- c.getPrimaryKeyName(a.getKeyAttributes()),
+			table <- thisModule.resolveTemp(c, 'tt'),
+			columns <- a.getReferredProperties()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ClassPropertyPrimaryKey2PrimaryKeyConstraintOnTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_a : iTrace!SourceElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_AMW
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_pk : iTrace!TargetElement (
+			type <- pk.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule ClassPropertyPrimaryKey2' +
+			'PrimaryKeyConstraintOnTT -> class ');
+		a.debug('rule ClassPropertyPrimaryKey2' +
+			'PrimaryKeyConstraintOnTT ');
+		a.debug('--> Uso AMW 1');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Primary Key sobre 
+--la SQL2003!TypedTable de merging que genera la clase de entrada.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_a.refSetValue('object', a);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_pk.refSetValue('object', pk);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Alternative Key sobre 
+--la SQL2003!TypedTable que genera la clase de entrada.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule ClassPropertyAlternativeKey2UniqueConstraintOnTT {
+	from
+		a : AMW!Annotation,
+		c : UML!Class
+		(
+			c.generatesTypedTable() and
+            a.getReferredProperties()->forAll(prop |
+            	c.ownsClassProperty(prop) and
+				prop.isAlternativeKeyAttribute()) and
+			a.isAlternativeKeyAnnotation()
+		)
+	to
+		ak : SQL2003!UniqueConstraint (
+			name <- c.getAlternativeKeyName(a.getKeyAttributes()),
+			table <- thisModule.resolveTemp(c, 'tt'),
+			columns <- a.getReferredProperties()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ClassPropertyAlternativeKey2UniqueConstraintOnTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_a : iTrace!SourceElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_AMW
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_ak : iTrace!TargetElement (
+			type <- ak.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule ClassPropertyAlternativeKey2UniqueConstraintOnTT -> class ');
+		a.debug('rule ClassPropertyAlternativeKey2UniqueConstraintOnTT ');
+		a.debug('--> Uso AMW 3');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Alternative Key sobre 
+--la SQL2003!TypedTable de merging que genera la clase de entrada.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_a.refSetValue('object', a);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_ak.refSetValue('object', ak);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Method'
+--asociado al método de SQL:2003 que genera el valor del atributo derivado 
+--de entrada 'Property' de UML.
+--Se genera solamente el método que calcula el valor del atributo.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+rule DerivedProperty2Method {
+	from
+		prop : UML!Property (
+			(prop.isDerivedAttribute()) and
+			(prop.isMapDerivedAttributeToMethod())
+		)
+	to
+		m : SQL2003!Method (
+			name <- 'get' + 
+					prop.name.substring(1,1).toUpper() +
+			 		prop.name.substring(2,prop.name.size()),
+			structured <- prop.getOwningClass(),
+			--override <- NO GENERA,
+			return_type <- prop.type
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'DerivedProperty2Method',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_m : iTrace!TargetElement (
+			type <- m.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule DerivedProperty2Method -> property ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera dos elementos de salida 'Trigger'
+--(uno de actualización y otro de inserción)
+--asociado al trigger de SQL:2003 que genera el valor del atributo derivado 
+--de entrada 'Property' de UML.
+--La clase a la que pertenece la propiedad de entrada no puede ser abstracta.
+--
+--@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_m.refSetValue('object', m);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003 que es multivaluado
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase cuya cardinalidad máxima es fija.
+--El tipo del atributo 'ARRAY' también se genera porque no se ha generado antes
+--en el modelo de salida.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+rule MultivaluedPropertyWithoutGeneratedType2ARRAYAttribute {
+	from
+		prop : UML!Property (
+			(prop.isMultivaluedAttribute()) and
+			(prop.isFixedSizeMultivaluedAttribute()) and
+			(not prop.isGeneratedMultivaluedType())
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- array,
+			structured <- prop->refImmediateComposite()
+		),	
+		array : SQL2003!ARRAY (
+			name <- prop.name,
+			type <- prop.type,
+			num_elements <- prop.getMultivaluedAttributeSize(),
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getARRAYWithMAElemsSuperType()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MultivaluedPropertyWithoutGeneratedType2ARRAYAttribute',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_a : iTrace!TargetElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_array : iTrace!TargetElement (
+			type <- array.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MultivaluedPropertyWithoutGeneratedType2' + 
+			'ARRAYAttribute -> property ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003 que es multivaluado
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase cuya cardinalidad máxima es fija.
+--El tipo del atributo 'ARRAY' no se genera porque hay otra propiedad con el mismo
+--tipo que ya lo ha generado antes en el modelo de salida.
+--
+--@LIBRARIES UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_a.refSetValue('object', a);
+		elementTarget_array.refSetValue('object', array);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003 que es multivaluado
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase cuya cardinalidad máxima es ilimitada.
+--El tipo del atributo 'MULTISET' también se genera porque no se ha generado antes
+--en el modelo de salida.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+rule MultivaluedPropertyWithoutGeneratedType2MULTISETAttribute {
+	from
+		prop : UML!Property (
+			(prop.isMultivaluedAttribute()) and
+			(prop.isVarSizeMultivaluedAttribute()) and
+			(not prop.isGeneratedMultivaluedType())
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- multiset,
+			structured <- prop->refImmediateComposite()
+		),
+		multiset : SQL2003!MULTISET (
+			name <- prop.name,
+			type <- prop.type,
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getMULTISETWithMAElemsSuperType()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MultivaluedPropertyWithoutGeneratedType2MULTISETAttribute',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_a : iTrace!TargetElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_multiset : iTrace!TargetElement (
+			type <- multiset.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MultivaluedPropertyWithoutGeneratedType2' + 
+			'MULTISETAttribute -> property ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--asociado al atributo de un tipo estructurado de SQL:2003 que es multivaluado
+--por cada elemento de entrada 'Property'
+--asociado al atributo de una clase cuya cardinalidad máxima es ilimitada.
+--El tipo del atributo 'MULTISET' no se genera porque hay otra propiedad 
+--con el mismo tipo que ya lo ha generado antes en el modelo de salida.
+--
+--@LIBRARIES UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_a.refSetValue('object', a);
+		elementTarget_multiset.refSetValue('object', multiset);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Parameter'
+--asociado al parámetro de una operacion de un tipo estructurado de SQL:2003
+--por cada elemento de entrada 'Operation'
+--asociado a la operación de una clase de UML.
+--
+--La condición de guarda lo que hace es permitir ejecutar la regla solamente
+--sobre los elementos 'Operation' de una 'Class' de entrada,
+--ya que hay otros elementos que pueden contener elementos 'Operation'.
+--El parámetro de retorno se trata cuando se trata la propia operación.
+--END DOC
+rule OperationParameter2MethodParameter {
+	from
+		paramOp : UML!Parameter (
+			paramOp.refImmediateComposite().oclIsTypeOf(UML!Operation) and
+			(not (paramOp.direction = #return))
+		)
+	to
+		paramUDT : SQL2003!MethodParameter (
+			name <- paramOp.name,
+			type <- paramOp.type,	
+			method <- paramOp->refImmediateComposite()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'OperationParameter2MethodParameter',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_paramOp : iTrace!SourceElement (
+			type <- paramOp.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_paramUDT : iTrace!TargetElement (
+			type <- paramUDT.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_paramOp.refSetValue('object', paramOp);
+		elementTarget_paramUDT.refSetValue('object', paramUDT);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Not Null sobre 
+--la SQL2003!TypedTable que genera la clase de entrada.
+--La condición es que la clase incluya una 'Property' 
+--asociada al extremo de una asociación de UML
+--con cardinalidad 1..x o N..x, o herede de una clase que la incluya.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEnd2NotNullOnTT {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(prop.isAssociationLowerMoreThanZero()) and
+			(c.generatesTypedTable()) and
+			(c.ownsMemberEnd(prop)) and
+			(not c.isAbstract)
+		)
+	to
+		notNull : SQL2003!NotNull (
+			table <- thisModule.resolveTemp(c, 'tt'),
+			columns <- prop
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MemberEnd2NotNullOnTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_notNull : iTrace!TargetElement (
+			type <- notNull.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MemberEnd2NotNullOnTT ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo CHECK sobre 
+--la SQL2003!TypedTable que genera la clase padre de la clase de entrada,
+-- ya que aquella tiene una anotación de jerarquía a una sola tabla.
+--La condición es que la clase incluya una 'Property' 
+--asociada al extremo de una asociación de UML
+--con cardinalidad 1..x o N..x y sea subclase de una jerarquía que se mapea a
+--una única tabla.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_notNull.refSetValue('object', notNull);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo CHECK sobre 
+--la SQL2003!TypedTable que genera la clase padre de la clase de entrada,
+-- ya que aquella tiene una anotación de jerarquía a una sola tabla.
+--La condición es que la clase incluya una 'Property' 
+--asociada al extremo de una asociación de UML
+--con cardinalidad 0..x y sea subclase de una jerarquía que se mapea a
+--una única tabla.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule ChildMemberEndNull2CheckConstraintOnTTOneTable {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(prop.isAssociationLowerEqualZero()) and
+			(not c.generatesTypedTable()) and
+			(c.isDirectMemberEnd(prop)) and
+			(not c.isAbstract) and
+			(c.hasSuperClass()) and
+			(not c.hasSubClasses())
+		)
+	to
+		check : SQL2003!TableCheckConstraint (
+			name <- c.getOneTableChildMemberEndCheckName(prop),
+			expression <- c.getOneTableChildMemberEndNullCheckExpression(prop),
+			columns <- Set{
+				thisModule.resolveTemp(c.getSuperClass(), 'discriminant'),
+				thisModule.resolveTemp(prop, 'aREF')
+			},
+			table <- thisModule.resolveTemp(c.getSuperClass(), 'tt')
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ChildMemberEndNull2CheckConstraintOnTTOneTable',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_check : iTrace!TargetElement (
+			type <- check.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule ChildMemberEndNull2CheckConstraintOnTTOneTable ');	
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera una restricción de tipo Not Null sobre 
+--la SQL2003!MergingTypedTable que genera la clase de entrada.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_check.refSetValue('object', check);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML con cardinalidad 0..1
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndZeroOne2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalZeroOne() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNullPropertyName(),
+			type <-
+				if (prop.isComposition()) then
+					prop.type
+				else
+					prop.getGeneratedAttributeREFType()
+				endif,
+			structured <- prop.getAttributeREFClass()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MemberEndZeroOne2AttributeREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_aREF : iTrace!TargetElement (
+			type <- aREF.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MemberEndZeroOne2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML
+--con cardinalidad 0..N, donde N es un numero mayor que 1.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_aREF.refSetValue('object', aREF);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML con cardinalidad 0..*
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndZeroN2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalZeroN() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNullPropertyName(),
+			type <- prop.getVarSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MemberEndZeroN2AttributeREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_aREF : iTrace!TargetElement (
+			type <- aREF.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MemberEndZeroN2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML con cardinalidad 1..1
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_aREF.refSetValue('object', aREF);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML
+--con cardinalidad 1..N, donde N es un numero mayor que 1.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndOneMulti2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalOneMulti() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)	
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNotNullPropertyName(),
+			type <- prop.getFixedSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MemberEndOneMulti2AttributeREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_aREF : iTrace!TargetElement (
+			type <- aREF.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MemberEndOneMulti2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML con cardinalidad 1..*
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_aREF.refSetValue('object', aREF);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--de tipo referencia de SQL:2003
+--por cada elemento de entrada 'Property'
+--asociado al extremo de una asociación de UML
+--con cardinalidad N..*, donde N es un numero mayor que 1.
+--
+--@LIBRARIES UML, UML2SQL2003_helpers
+--END DOC
+rule MemberEndMultiN2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalMultiN() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNotNullPropertyName(),
+			type <- prop.getVarSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MemberEndMultiN2AttributeREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_aREF : iTrace!TargetElement (
+			type <- aREF.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MemberEndMultiN2AttributeREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'ReferenceType'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima 1 de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_aREF.refSetValue('object', aREF);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'ARRAY'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima N de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+unique lazy rule generateARRAYREF {
+	from
+		prop : UML!Property
+	to
+		array : SQL2003!ARRAY (
+			name <- prop.getMultivaluedAttributeREFTypeName(),
+			num_elements <- prop.getMultivaluedAttributeSize(),
+			type <- prop.getGeneratedAttributeREFType(),
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getARRAYWithMAElemsSuperType()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateARRAYREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_array : iTrace!TargetElement (
+			type <- array.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule generateARRAYREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'ARRAY'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima N de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_array.refSetValue('object', array);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'MULTISET'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima N de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+unique lazy rule generateMULTISETREF {
+	from
+		prop : UML!Property
+	to
+		multiset : SQL2003!MULTISET (
+			name <- prop.getMultivaluedAttributeREFTypeName(),
+			type <- prop.getGeneratedAttributeREFType(),
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getMULTISETWithMAElemsSuperType()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateMULTISETREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_multiset : iTrace!TargetElement (
+			type <- multiset.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule generateMULTISETREF ');
+	}
+}
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'MULTISET'
+--por cada elemento de entrada 'Association'
+--asociado a las asociaciones con cardinalidad maxima N de UML.
+--
+--@LIBRARIES UML_constants, UML2SQL2003_helpers
+--END DOC
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_multiset.refSetValue('object', multiset);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--por cada elemento de entrada 'Property'.
+--Sirve para duplicar atributos en las subclases de una jerarquía.
+--END DOC
+unique lazy rule CopyProperty2Attribute {
+	from
+		p : UML!Property
+	to
+		a : SQL2003!Attribute (
+			name <- p.name,
+			type <- p.type,
+			default <- p.default
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'CopyProperty2Attribute',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_p : iTrace!SourceElement (
+			type <- p.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_a : iTrace!TargetElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_p.refSetValue('object', p);
+		elementTarget_a.refSetValue('object', a);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Esta regla genera un elemento de salida 'Attribute'
+--por cada elemento de entrada 'Property'.
+--Sirve para duplicar operaciones en las subclases de una jerarquía.
+--
+--@LIBRARIES UML
+--END DOC
+unique lazy rule CopyOperation2Method {
+	from
+		op : UML!Operation (
+			op.refImmediateComposite().oclIsTypeOf(UML!DataType) or
+			op.refImmediateComposite().oclIsTypeOf(UML!Class)
+		)
+	to
+		mUDT : SQL2003!Method (
+			name <- op.name,
+			structured <- op->refImmediateComposite(),
+			override <- op.redefinedOperation->first(),
+			return_type <- op.getOperationReturnType()
+		) 
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'CopyOperation2Method',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_op : iTrace!SourceElement (
+			type <- op.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_mUDT : iTrace!TargetElement (
+			type <- mUDT.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_op.refSetValue('object', op);
+		elementTarget_mUDT.refSetValue('object', mUDT);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!XMLType de salida por cada paquete
+--del modelo de entrada.
+--END DOC
+unique lazy rule generateEmptyXMLType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!XMLType (
+			descriptor <- #XMLTYPE,
+			schema <- package
+		) 
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateEmptyXMLType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_package : iTrace!SourceElement (
+			type <- package.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_type : iTrace!TargetElement (
+			type <- type.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_package.refSetValue('object', package);
+		elementTarget_type.refSetValue('object', type);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!BooleanType de salida por cada paquete
+--del modelo de entrada.
+--END DOC
+unique lazy rule generateEmptyBooleanType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!BooleanType (
+			descriptor <- #BOOLEAN,
+			schema <- package
+		) 
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateEmptyBooleanType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_package : iTrace!SourceElement (
+			type <- package.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_type : iTrace!TargetElement (
+			type <- type.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_package.refSetValue('object', package);
+		elementTarget_type.refSetValue('object', type);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!CharacterStringType de salida de la clase
+--'character varying' por cada paquete del modelo de entrada.
+--
+--@LIBRARIES UML_constants
+--END DOC
+unique lazy rule generateEmptyCharacterVaryingType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!CharacterStringType (
+			descriptor <- #CHARACTERVARYING,
+			schema <- package,
+			length_def <- thisModule.DEFAULT_STRING_LENGTH_DEF()
+	)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateEmptyCharacterVaryingType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_package : iTrace!SourceElement (
+			type <- package.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_type : iTrace!TargetElement (
+			type <- type.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_package.refSetValue('object', package);
+		elementTarget_type.refSetValue('object', type);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!CharacterStringType de salida de la clase
+--'character' por cada paquete del modelo de entrada.
+--END DOC
+unique lazy rule generateEmptyCharacterType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!CharacterStringType (
+			descriptor <- #CHARACTER,
+			schema <- package,
+			length_def <- 1
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateEmptyCharacterType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_package : iTrace!SourceElement (
+			type <- package.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_type : iTrace!TargetElement (
+			type <- type.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_package.refSetValue('object', package);
+		elementTarget_type.refSetValue('object', type);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!DatetimeType de salida de la clase
+--'date' por cada paquete del modelo de entrada.
+--END DOC
+unique lazy rule generateEmptyDateType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!DatetimeType (
+			descriptor <- #DATE,
+			schema <- package.debug('Valor de package')
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateEmptyDateType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_package : iTrace!SourceElement (
+			type <- package.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_type : iTrace!TargetElement (
+			type <- type.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_package.refSetValue('object', package);
+		elementTarget_type.refSetValue('object', type);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!NumericType de salida de la clase
+--'integer' por cada paquete del modelo de entrada.
+--
+--@LIBRARIES UML_constants
+--END DOC
+unique lazy rule generateEmptyIntegerType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!NumericType (
+			descriptor <- #INTEGER,
+			schema <- package
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateEmptyIntegerType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_package : iTrace!SourceElement (
+			type <- package.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_type : iTrace!TargetElement (
+			type <- type.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_package.refSetValue('object', package);
+		elementTarget_type.refSetValue('object', type);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!NumericType de salida de la clase
+--'real' por cada paquete del modelo de entrada.
+--
+--@LIBRARIES UML_constants
+--END DOC
+unique lazy rule generateEmptyRealType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!NumericType (
+			descriptor <- #REAL,
+			schema <- package
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateEmptyRealType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_package : iTrace!SourceElement (
+			type <- package.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_type : iTrace!TargetElement (
+			type <- type.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_package.refSetValue('object', package);
+		elementTarget_type.refSetValue('object', type);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este regla genera un tipo SQL2003!BinaryStringType de salida de la clase
+--'BinaryStringType' por cada paquete del modelo de entrada.
+--
+--@LIBRARIES UML_constants
+--END DOC
+unique lazy rule generateEmptyBinaryStringType {
+	from
+		package : UML!Package
+	to
+		type : SQL2003!BinaryStringType (
+			descriptor <- #BINARYLARGEOBJECT,
+			schema <- package,
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateEmptyBinaryStringType',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_package : iTrace!SourceElement (
+			type <- package.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_type : iTrace!TargetElement (
+			type <- type.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_package.refSetValue('object', package);
+		elementTarget_type.refSetValue('object', type);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Se llama a esta regla al finalizar el matching, 
+--cuando el modelo ya se encuentra definido.
+--Se crean por un lado los tipos de datos que solo existen en el destino y 
+--no están en el origen, y por otro, se comprueba para los tipos que tienen regla
+--asignada si existe algún elemento del modelo de entrada que la use.
+--
+--@LIBRARIES UML_constants, UML
+--END DOC
+endpoint rule generateTypes(){
+	to 
+		datetime_timewithtimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMEWITHTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		datetime_timewithouttimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMEWITHOUTTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		datetime_timestampwithouttimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMESTAMPWITHOUTTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		datetime_timestampwithtimezone : SQL2003!DatetimeType (
+ 			descriptor <-#TIMESTAMPWITHTIMEZONE,
+			schema <- thisModule.PACKAGE()
+		),
+		characterstring_clob : SQL2003!CharacterStringType (
+ 			descriptor <-#CHARACTERLARGEOBJECT,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_STRING_LENGTH_DEF()
+		),
+		numeric_numeric : SQL2003!NumericType (
+ 			descriptor <-#NUMERIC,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_decimal : SQL2003!NumericType (
+ 			descriptor <-#DECIMAL,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_smallint : SQL2003!NumericType (
+ 			descriptor <-#SMALLINT,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_bigint : SQL2003!NumericType (
+ 			descriptor <-#BIGINT,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_float : SQL2003!NumericType (
+ 			descriptor <-#FLOAT,
+			schema <- thisModule.PACKAGE()
+		),
+		numeric_doubleprecision : SQL2003!NumericType (
+ 			descriptor <-#DOUBLEPRECISION,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_yearmonth : SQL2003!IntervalType (
+ 			descriptor <-#YEAR_MONTH,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_dayhour : SQL2003!IntervalType (
+ 			descriptor <-#DAY_HOUR,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_dayminute : SQL2003!IntervalType (
+ 			descriptor <-#DAY_MINUTE,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_daysecond : SQL2003!IntervalType (
+ 			descriptor <-#DAY_SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_hourminute : SQL2003!IntervalType (
+ 			descriptor <-#HOUR_MINUTE,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_hoursecond : SQL2003!IntervalType (
+ 			descriptor <-#HOUR_SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_minutesecond : SQL2003!IntervalType (
+ 			descriptor <-#MINUTE_SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_year : SQL2003!IntervalType (
+ 			descriptor <-#YEAR,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_month : SQL2003!IntervalType (
+ 			descriptor <-#MONTH,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_day : SQL2003!IntervalType (
+ 			descriptor <-#DAY,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_hour : SQL2003!IntervalType (
+ 			descriptor <-#HOUR,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_minute : SQL2003!IntervalType (
+ 			descriptor <-#MINUTE,
+			schema <- thisModule.PACKAGE()
+		),
+		interval_second : SQL2003!IntervalType (
+ 			descriptor <-#SECOND,
+			schema <- thisModule.PACKAGE()
+		),
+		binarystring_binary : SQL2003!BinaryStringType (
+ 			descriptor <-#BINARY,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		),
+		binarystring_binaryvarying : SQL2003!BinaryStringType (
+ 			descriptor <-#BINARYVARYING,
+			schema <- thisModule.PACKAGE(),
+			length_def <- thisModule.DEFAULT_BINARY_LENGTH_DEF()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateTypes(){',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementTarget_datetime_timewithtimezone : iTrace!TargetElement (
+			type <- datetime_timewithtimezone.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_datetime_timewithouttimezone : iTrace!TargetElement (
+			type <- datetime_timewithouttimezone.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_datetime_timestampwithouttimezone : iTrace!TargetElement (
+			type <- datetime_timestampwithouttimezone.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_datetime_timestampwithtimezone : iTrace!TargetElement (
+			type <- datetime_timestampwithtimezone.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_characterstring_clob : iTrace!TargetElement (
+			type <- characterstring_clob.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_numeric_numeric : iTrace!TargetElement (
+			type <- numeric_numeric.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_numeric_decimal : iTrace!TargetElement (
+			type <- numeric_decimal.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_numeric_smallint : iTrace!TargetElement (
+			type <- numeric_smallint.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_numeric_bigint : iTrace!TargetElement (
+			type <- numeric_bigint.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_numeric_float : iTrace!TargetElement (
+			type <- numeric_float.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_numeric_doubleprecision : iTrace!TargetElement (
+			type <- numeric_doubleprecision.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_yearmonth : iTrace!TargetElement (
+			type <- interval_yearmonth.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_dayhour : iTrace!TargetElement (
+			type <- interval_dayhour.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_dayminute : iTrace!TargetElement (
+			type <- interval_dayminute.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_daysecond : iTrace!TargetElement (
+			type <- interval_daysecond.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_hourminute : iTrace!TargetElement (
+			type <- interval_hourminute.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_hoursecond : iTrace!TargetElement (
+			type <- interval_hoursecond.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_minutesecond : iTrace!TargetElement (
+			type <- interval_minutesecond.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_year : iTrace!TargetElement (
+			type <- interval_year.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_month : iTrace!TargetElement (
+			type <- interval_month.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_day : iTrace!TargetElement (
+			type <- interval_day.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_hour : iTrace!TargetElement (
+			type <- interval_hour.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_minute : iTrace!TargetElement (
+			type <- interval_minute.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_interval_second : iTrace!TargetElement (
+			type <- interval_second.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_binarystring_binary : iTrace!TargetElement (
+			type <- binarystring_binary.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_binarystring_binaryvarying : iTrace!TargetElement (
+			type <- binarystring_binaryvarying.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isXMLPT())->oclIsUndefined()) {
+			thisModule.generateEmptyXMLType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isBooleanPT())->oclIsUndefined()) {
+			thisModule.generateEmptyBooleanType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isStringPT())->oclIsUndefined()) {
+			if (thisModule.CLASSES()->
+				select(c | c.isSuperClassWithOneTableHierarchy())->size() = 0)
+			{
+				thisModule.generateEmptyCharacterVaryingType(thisModule.PACKAGE());
+			}
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isCharPT())->oclIsUndefined()) {
+			thisModule.generateEmptyCharacterType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isDatePT())->oclIsUndefined()) {
+			thisModule.generateEmptyDateType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isIntegerPT())->oclIsUndefined()) {
+			thisModule.generateEmptyIntegerType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isRealPT())->oclIsUndefined()) {
+			thisModule.generateEmptyRealType(thisModule.PACKAGE());
+		}
+		if (thisModule.PRIMITIVE_TYPES()->
+				any(e | e.isImagePT())->oclIsUndefined()) {
+			thisModule.generateEmptyBinaryStringType(thisModule.PACKAGE());
+		}
+		elementTarget_datetime_timewithtimezone.refSetValue('object', datetime_timewithtimezone);
+		elementTarget_datetime_timewithouttimezone.refSetValue('object', datetime_timewithouttimezone);
+		elementTarget_datetime_timestampwithouttimezone.refSetValue('object', datetime_timestampwithouttimezone);
+		elementTarget_datetime_timestampwithtimezone.refSetValue('object', datetime_timestampwithtimezone);
+		elementTarget_characterstring_clob.refSetValue('object', characterstring_clob);
+		elementTarget_numeric_numeric.refSetValue('object', numeric_numeric);
+		elementTarget_numeric_decimal.refSetValue('object', numeric_decimal);
+		elementTarget_numeric_smallint.refSetValue('object', numeric_smallint);
+		elementTarget_numeric_bigint.refSetValue('object', numeric_bigint);
+		elementTarget_numeric_float.refSetValue('object', numeric_float);
+		elementTarget_numeric_doubleprecision.refSetValue('object', numeric_doubleprecision);
+		elementTarget_interval_yearmonth.refSetValue('object', interval_yearmonth);
+		elementTarget_interval_dayhour.refSetValue('object', interval_dayhour);
+		elementTarget_interval_dayminute.refSetValue('object', interval_dayminute);
+		elementTarget_interval_daysecond.refSetValue('object', interval_daysecond);
+		elementTarget_interval_hourminute.refSetValue('object', interval_hourminute);
+		elementTarget_interval_hoursecond.refSetValue('object', interval_hoursecond);
+		elementTarget_interval_minutesecond.refSetValue('object', interval_minutesecond);
+		elementTarget_interval_year.refSetValue('object', interval_year);
+		elementTarget_interval_month.refSetValue('object', interval_month);
+		elementTarget_interval_day.refSetValue('object', interval_day);
+		elementTarget_interval_hour.refSetValue('object', interval_hour);
+		elementTarget_interval_minute.refSetValue('object', interval_minute);
+		elementTarget_interval_second.refSetValue('object', interval_second);
+		elementTarget_binarystring_binary.refSetValue('object', binarystring_binary);
+		elementTarget_binarystring_binaryvarying.refSetValue('object', binarystring_binaryvarying);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
