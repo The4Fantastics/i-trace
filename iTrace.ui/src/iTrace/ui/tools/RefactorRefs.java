@@ -22,6 +22,11 @@ public class RefactorRefs {
 	
 	public RefactorRefs(String modelName) {
 
+		//Cronometramos el tiempo
+		
+		MeasureTime time = new MeasureTime("Refactor Refs.");
+		time.start();
+		
 		// ---- Leemos el modelo existente --------
 			
 		ITracePackage.eINSTANCE.eClass();
@@ -75,7 +80,11 @@ public class RefactorRefs {
 	 			}
 	 		}
 	 	}
-	 	System.out.println("Referencias del modelo actualizadas del modelo " + modelName);
+	 	time.stop();
+	 	System.out.println();
+	 	
+	 	System.out.println("iTrace:> " + modelName + " model references updated successfully.");
+	 	
 	 	
 	}
 	

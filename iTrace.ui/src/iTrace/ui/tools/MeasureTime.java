@@ -29,15 +29,22 @@ public class MeasureTime {
 	public void start (){
 		tiempoInicioTotal = System.currentTimeMillis();
 		tiempoInicioParcial = tiempoInicioTotal;
-		System.out.println("============== Start Execution: " + proyect + " ==============");
+		System.out.println(" ============== iTrace:> " + proyect + " - Start Execution: ==============");
 	}
 	
 	public void stop (){
 		tiempoFinalParcial = System.currentTimeMillis() - tiempoInicioParcial;
 		tiempoFinalTotal =  System.currentTimeMillis() - tiempoInicioTotal;
-		System.out.println("==> Parcial Execution Time: " + tiempoFinalParcial/1000.000 + " secs. \n" + 
-						   "==> Total Execution Time: " + tiempoFinalTotal/1000.000 + " secs.");
-		System.out.println("============== End Execution: " + proyect + " ==============");
+		
+		if (tiempoInicioParcial==tiempoInicioTotal){
+			System.out.println("==> Total Execution Time: " + tiempoFinalTotal/1000.000 + " secs.");
+		}else{
+			System.out.println("==> Parcial Execution Time: " + tiempoFinalParcial/1000.000 + " secs. \n" + 
+					   "==> Total Execution Time: " + tiempoFinalTotal/1000.000 + " secs.");
+		
+		}
+		
+		System.out.println("============== iTrace:> " + proyect + " - End Execution: ==============");
 	}
 	
 	public void partialStart (){
