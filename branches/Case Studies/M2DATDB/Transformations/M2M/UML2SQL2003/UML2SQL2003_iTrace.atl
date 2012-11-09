@@ -34,9 +34,9 @@ do {
 
 --_________________________Llamada a los constructores de los modelos _________________________
 
-	thisModule.createModel_IN();
-	thisModule.createModel_ANNOTATIONS();
-	thisModule.createModel_OUT();
+	thisModule.createModel_UML();
+	thisModule.createModel_AMW();
+	thisModule.createModel_SQL2003();
 	}
 }
 
@@ -634,8 +634,13 @@ rule DataType2UDT {
 
 do {
 		t.name.debug('rule DataType2UDT -> datatype ');
+		elementSource_t.refSetValue('object', t);
+		elementTarget_udt.refSetValue('object', udt);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -650,8 +655,46 @@ do {
 --
 --@LIBRARIES UML, UML2SQL2003_helpers
 --END DOC
-		elementSource_t.refSetValue('object', t);
-		elementTarget_udt.refSetValue('object', udt);
+rule DataTypeProperty2UDTAttribute {
+	from 
+		pDT : UML!Property (pDT.refImmediateComposite().oclIsTypeOf(UML!DataType))
+	to
+		aUDT : SQL2003!Attribute (
+			name <- pDT.name,
+			type <- pDT.type,
+			structured <- pDT->refImmediateComposite(),
+			default <- pDT.getDefaultValueProperty()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'DataTypeProperty2UDTAttribute',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_pDT : iTrace!SourceElement (
+			type <- pDT.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_aUDT : iTrace!TargetElement (
+			type <- aUDT.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		elementSource_pDT.refSetValue('object', pDT);
+		elementTarget_aUDT.refSetValue('object', aUDT);
 	}
 }
 
@@ -779,8 +822,12 @@ rule AbstractSuperClass2UDT {
 
 do {
 		c.name.debug('rule AbstractSuperClass2UDT -> class ');
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
 
 
 --BEGIN DOC
@@ -795,8 +842,65 @@ do {
 --
 --@LIBRARIES UML, UML_constants, UML2SQL2003_helpers
 --END DOC
+rule SuperClassWithSeveralTablesHierarchy2UDTandTT {
+	from
+		c : UML!Class (
+			(c.hasSubClasses()) and 
+			(c.isMapClassToSeveralTables()) and
+			(not c.isMapClassToOneTable())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getSuperClass(),
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'SuperClassWithSeveralTablesHierarchy2UDTandTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt : iTrace!TargetElement (
+			type <- tt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule SuperClassWithSeveralTablesHierarchy2UDTandTT -> class ');
 		elementSource_c.refSetValue('object', c);
 		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_tt.refSetValue('object', tt);
 	}
 }
 
@@ -868,8 +972,14 @@ rule ClassWithoutHierarchy2UDTandTT {
 
 do {
 		c.name.debug('rule ClassWithoutHierarchy2UDTandTT -> class ');
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_tt.refSetValue('object', tt);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -882,6 +992,63 @@ do {
 --
 --@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
+rule LeafChildClass2UDTandTT {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(c.hasSuperClass()) and
+			(not c.hasSubClasses()) and
+			(not c.isChildOfClassToOneTable())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getSuperClass(),
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'LeafChildClass2UDTandTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt : iTrace!TargetElement (
+			type <- tt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule LeafSubClass2UDTandTT -> class ');
 		elementSource_c.refSetValue('object', c);
 		elementTarget_udt.refSetValue('object', udt);
 		elementTarget_tt.refSetValue('object', tt);
@@ -963,8 +1130,14 @@ rule SuperClassWithCoveringDisjointHierarchy2UDTandView {
 
 do {
 		c.name.debug('rule SuperClassWithCoveringDisjointHierarchy2UDTandView -> class ');
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_view.refSetValue('object', view);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -978,8 +1151,100 @@ do {
 --
 --@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
+rule SuperClassWithCoveringOverlappingHierarchy2UDTandMergingUDTandMergingTTandView{
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(c.hasSubClasses()) and			
+			(c.isCoveringHierarchy()) and
+			(c.isOverlappingHierarchy()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE()
+			--super_type <- NO SE GENERA
+			--typed <- NO SE GENERA
+		),
+		udt_merge : SQL2003!StructuredType (
+			name <- c.getMergingUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			attributes <- c.getSubClassesProperties()->
+							collect(p | thisModule.CopyProperty2Attribute(p)),
+			methods <- c.getSubClassesOperations()->
+							collect(o | thisModule.CopyOperation2Method(o)),
+			super_type <- udt,
+			typed <- tt_merge
+		),
+		tt_merge : SQL2003!TypedTable (
+			name <- c.getMergingTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt_merge
+			--supertable <- NO SE GENERA
+		),
+		view : SQL2003!View (
+			name <- c.getMergingViewName(),
+			schema <- thisModule.PACKAGE(),
+			query_expression <- c.getQueryExpression(),
+			tables <- c.getDescendantsTypedTables(),
+			components <- c.getDescendantsProperties()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'SuperClassWithCoveringOverlappingHierarchy2UDTandMergingUDTandMergingTTandView{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_udt_merge : iTrace!TargetElement (
+			type <- udt_merge.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt_merge : iTrace!TargetElement (
+			type <- tt_merge.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_view : iTrace!TargetElement (
+			type <- view.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule SuperClassWithCoveringOverlappingHierarchy2' + 
+			'UDTandMergingUDTandMergingTTandView -> class ');
 		elementSource_c.refSetValue('object', c);
 		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_udt_merge.refSetValue('object', udt_merge);
+		elementTarget_tt_merge.refSetValue('object', tt_merge);
 		elementTarget_view.refSetValue('object', view);
 	}
 }
@@ -987,9 +1252,6 @@ do {
 -- ____________________ End Added by iTrace  _________________________
 
 
-			--super_type <- NO SE GENERA
-			--typed <- NO SE GENERA
-			--supertable <- NO SE GENERA
 --BEGIN DOC
 --#DESCRIPTION
 --Esta regla genera un elemento de salida 'StructuredType'
@@ -1061,8 +1323,14 @@ rule SuperClassWithPartialDisjointHierarchy2UDTandTT {
 
 do {
 		c.name.debug('rule SuperClassWithPartialDisjointHierarchy2UDTandTT -> class ');
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_tt.refSetValue('object', tt);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1077,17 +1345,106 @@ do {
 --
 --@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
+rule SuperClassWithPartialOverlappingHierarchy2UDTandTTandMergingUDTandMergingTT {
+	from
+		c : UML!Class (
+			(not c.isAbstract) and
+			(not c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(c.isPartialHierarchy()) and
+			(c.isOverlappingHierarchy()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			--super_type <- NO SE GENERA
+			typed <- tt
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt
+			--supertable <- NO SE GENERA
+		),
+		udt_merge : SQL2003!StructuredType (
+			name <- c.getMergingUDTName(),
+			is_final <- true,
+			is_instantiable <- true,
+			schema <- thisModule.PACKAGE(),
+			attributes <- c.getSubClassesProperties()->
+							collect(p | thisModule.CopyProperty2Attribute(p)),
+			methods <- c.getSubClassesOperations()->
+							collect(o | thisModule.CopyOperation2Method(o)),
+			super_type <- udt,
+			typed <- tt_merge
+		),
+		tt_merge : SQL2003!TypedTable (
+			name <- c.getMergingTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt_merge,
+			supertable <- tt
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'SuperClassWithPartialOverlappingHierarchy2UDTandTTandMergingUDTandMergingTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt : iTrace!TargetElement (
+			type <- tt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_udt_merge : iTrace!TargetElement (
+			type <- udt_merge.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt_merge : iTrace!TargetElement (
+			type <- tt_merge.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule SuperClassWithPartialOverlappingHierarchy2' +
+			'UDTandTTandMergingUDTandMergingTT -> class ');		
 		elementSource_c.refSetValue('object', c);
 		elementTarget_udt.refSetValue('object', udt);
 		elementTarget_tt.refSetValue('object', tt);
+		elementTarget_udt_merge.refSetValue('object', udt_merge);
+		elementTarget_tt_merge.refSetValue('object', tt_merge);
 	}
 }
 
 -- ____________________ End Added by iTrace  _________________________
 
 
-			--super_type <- NO SE GENERA
-			--supertable <- NO SE GENERA
 --BEGIN DOC
 --#DESCRIPTION
 --Esta regla genera dos elementos de salida 'StructuredType'
@@ -1193,8 +1550,17 @@ rule SuperClassWithOneTableHierarchy2UDTandTTandAttributeandCHECKandNOTNULL {
 do {
 		c.name.debug('rule SuperClassWithOneTableHierarchy2' + 
 			'UDTandTTandAttributeandCHECKandNOTNULL -> class ');
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_tt.refSetValue('object', tt);
+		elementTarget_discriminant.refSetValue('object', discriminant);
+		elementTarget_check.refSetValue('object', check);
+		elementTarget_notNull.refSetValue('object', notNull);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1208,19 +1574,75 @@ do {
 --
 --@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
+rule ParentChildClass2UDTandView {
+	from 
+		c : UML!Class(
+			(not c.isAbstract) and
+			(c.mapToUDT()) and
+			(c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getFirstSuperClass()
+			--typed <- NO SE GENERA
+		),
+		view : SQL2003!View (
+			name <- c.getMergingViewName(),
+			schema <- thisModule.PACKAGE(),
+			query_expression <- c.getQueryExpression(),
+			tables <- c.getDescendantsTypedTables(),
+			components <- c.getAncestorsDescendantsProperties()			
+		)		
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ParentChildClass2UDTandView',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_view : iTrace!TargetElement (
+			type <- view.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule ParentChildClass2UDTandView -> class ');
 		elementSource_c.refSetValue('object', c);
 		elementTarget_udt.refSetValue('object', udt);
-		elementTarget_tt.refSetValue('object', tt);
-		elementTarget_discriminant.refSetValue('object', discriminant);
-		elementTarget_check.refSetValue('object', check);
-		elementTarget_notNull.refSetValue('object', notNull);
+		elementTarget_view.refSetValue('object', view);
 	}
 }
 
 -- ____________________ End Added by iTrace  _________________________
 
 
-			--typed <- NO SE GENERA
 --BEGIN DOC
 --#DESCRIPTION
 --Esta regla genera dos elementos de salida 'StructuredType'
@@ -1323,8 +1745,16 @@ rule ParentChildClass2UDTandMergingUDTandMergingTTandView {
 
 do {
 		c.name.debug('rule ParentChildClass2UDTandMergingUDTandMergingTTandView -> class ');
-	}			
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_udt_merge.refSetValue('object', udt_merge);
+		elementTarget_tt_merge.refSetValue('object', tt_merge);
+		elementTarget_view.refSetValue('object', view);
+	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1338,11 +1768,68 @@ do {
 --
 --@LIBRARIES UML, UML_constants, UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
+rule ParentChildClass2UDTandTT {
+	from 
+		c : UML!Class (
+			(not c.isAbstract) and
+			(c.mapToUDTandTT()) and 
+			(c.hasSuperClass()) and
+			(c.hasSubClasses()) and
+			(not c.isMapClassToOneTable()) and
+			(not c.isMapClassToSeveralTables())
+		)
+	to
+		udt : SQL2003!StructuredType (
+			name <- c.getUDTName(),
+			is_final <- c.isLeaf,
+			is_instantiable <- not c.isAbstract,
+			schema <- thisModule.PACKAGE(),
+			super_type <- c.getFirstSuperClass(),
+			typed <- tt			
+		),
+		tt : SQL2003!TypedTable (
+			name <- c.getTypedTableName(),
+			schema <- thisModule.PACKAGE(),
+			structured <- udt,
+			supertable <- c.getSuperTypedTable()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ParentChildClass2UDTandTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_udt : iTrace!TargetElement (
+			type <- udt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tt : iTrace!TargetElement (
+			type <- tt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule ParentChildClass2UDTandTT -> class ');
 		elementSource_c.refSetValue('object', c);
 		elementTarget_udt.refSetValue('object', udt);
-		elementTarget_udt_merge.refSetValue('object', udt_merge);
-		elementTarget_tt_merge.refSetValue('object', tt_merge);
-		elementTarget_view.refSetValue('object', view);
+		elementTarget_tt.refSetValue('object', tt);
 	}
 }
 
@@ -1451,8 +1938,16 @@ rule ParentChildClass2UDTandTTandMergingUDTandMergingTT {
 
 do {
 		c.name.debug('rule ParentChildClass2UDTandTTandMergingUDTandMergingTT -> class ');
-	}				
+		elementSource_c.refSetValue('object', c);
+		elementTarget_udt.refSetValue('object', udt);
+		elementTarget_tt.refSetValue('object', tt);
+		elementTarget_udt_merge.refSetValue('object', udt_merge);
+		elementTarget_tt_merge.refSetValue('object', tt_merge);
+	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1469,11 +1964,51 @@ do {
 --
 --@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
-		elementSource_c.refSetValue('object', c);
-		elementTarget_udt.refSetValue('object', udt);
-		elementTarget_tt.refSetValue('object', tt);
-		elementTarget_udt_merge.refSetValue('object', udt_merge);
-		elementTarget_tt_merge.refSetValue('object', tt_merge);
+rule ClassProperty2UDTAttribute {
+	from
+		prop : UML!Property (
+			prop.isClassProperty() and
+			not prop.isDerivedAttribute() and
+			not prop.isMultivaluedAttribute()
+		)
+	to
+		aUDT : SQL2003!Attribute (
+			name <- prop.name,
+			type <- prop.type,
+			structured <- prop.getOwningClass(),
+			default <- prop.getDefaultValueProperty()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ClassProperty2UDTAttribute',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_aUDT : iTrace!TargetElement (
+			type <- aUDT.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule ClassProperty2UDTAttribute -> property ');
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_aUDT.refSetValue('object', aUDT);
 	}
 }
 
@@ -1538,8 +2073,14 @@ rule ClassPropertyNotNull2NotNullConstraintOnTT {
 do {
 		prop.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnTT -> property ');
 		c.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnTT -> class ');
+		elementSource_prop.refSetValue('object', prop);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_notNull.refSetValue('object', notNull);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1550,6 +2091,55 @@ do {
 --
 --@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
+rule ClassPropertyNotNull2NotNullConstraintOnMergingTT {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(c.generatesMergingTypedTable()) and 
+			(c.ownsClassProperty(prop)) and 
+			(prop.isNotNullAttribute())
+		)
+	to
+		notNull : SQL2003!NotNull (
+			table <- thisModule.resolveTemp(c, 'tt_merge'),
+			columns <- prop
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ClassPropertyNotNull2NotNullConstraintOnMergingTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_notNull : iTrace!TargetElement (
+			type <- notNull.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnMergingTT -> property ');
+		c.name.debug('rule ClassPropertyNotNull2NotNullConstraintOnMergingTT -> class ');
 		elementSource_prop.refSetValue('object', prop);
 		elementSource_c.refSetValue('object', c);
 		elementTarget_notNull.refSetValue('object', notNull);
@@ -1621,8 +2211,14 @@ do {
 		a.debug('rule ClassPropertyPrimaryKey2' +
 			'PrimaryKeyConstraintOnTT ');
 		a.debug('--> Uso AMW 1');
+		elementSource_a.refSetValue('object', a);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_pk.refSetValue('object', pk);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1631,6 +2227,61 @@ do {
 --
 --@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
+rule ClassPropertyPrimaryKey2PrimaryKeyConstraintOnMergingTT {
+	from
+		a : AMW!Annotation,
+		c : UML!Class
+		(
+			c.generatesMergingTypedTable() and
+            a.getReferredProperties()->forAll(prop |
+            	c.ownsClassProperty(prop) and
+				prop.isPrimaryKeyAttribute()) and
+			a.isPrimaryKeyAnnotation()
+		)
+	to
+		pk : SQL2003!PrimaryKey (
+			name <- c.getPrimaryKeyName(a.getKeyAttributes()),
+			table <- thisModule.resolveTemp(c, 'tt_merge'),
+			columns <- a.getReferredProperties()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ClassPropertyPrimaryKey2PrimaryKeyConstraintOnMergingTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_a : iTrace!SourceElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_AMW
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_pk : iTrace!TargetElement (
+			type <- pk.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule ClassPropertyPrimaryKey2' + 
+			'PrimaryKeyConstraintOnMergingTT -> class ');
+		a.debug('rule ClassPropertyPrimaryKey2' + 
+			'PrimaryKeyConstraintOnMergingTT ');
+		a.debug('--> Uso AMW 2');
 		elementSource_a.refSetValue('object', a);
 		elementSource_c.refSetValue('object', c);
 		elementTarget_pk.refSetValue('object', pk);
@@ -1700,8 +2351,14 @@ do {
 		c.name.debug('rule ClassPropertyAlternativeKey2UniqueConstraintOnTT -> class ');
 		a.debug('rule ClassPropertyAlternativeKey2UniqueConstraintOnTT ');
 		a.debug('--> Uso AMW 3');
+		elementSource_a.refSetValue('object', a);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_ak.refSetValue('object', ak);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1710,6 +2367,61 @@ do {
 --
 --@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
+rule ClassPropertyAlternativeKey2UniqueConstraintOnMergingTT {
+	from
+		a : AMW!Annotation,
+		c : UML!Class
+		(
+			c.generatesMergingTypedTable() and
+            a.getReferredProperties()->forAll(prop |
+            	c.ownsClassProperty(prop) and
+				prop.isAlternativeKeyAttribute()) and
+			a.isAlternativeKeyAnnotation()
+		)
+	to
+		ak : SQL2003!UniqueConstraint (
+			name <- c.getAlternativeKeyName(a.getKeyAttributes()),
+			table <- thisModule.resolveTemp(c, 'tt_merge'),
+			columns <- a.getReferredProperties()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ClassPropertyAlternativeKey2UniqueConstraintOnMergingTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_a : iTrace!SourceElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_AMW
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_ak : iTrace!TargetElement (
+			type <- ak.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		c.name.debug('rule ClassPropertyAlternativeKey2' + 
+			'UniqueConstraintOnMergingTT -> class ');
+		a.debug('rule ClassPropertyAlternativeKey2' + 
+			'UniqueConstraintOnMergingTT ');
+		a.debug('--> Uso AMW 4');
 		elementSource_a.refSetValue('object', a);
 		elementSource_c.refSetValue('object', c);
 		elementTarget_ak.refSetValue('object', ak);
@@ -1772,8 +2484,13 @@ rule DerivedProperty2Method {
 
 do {
 		prop.name.debug('rule DerivedProperty2Method -> property ');
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_m.refSetValue('object', m);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1785,8 +2502,83 @@ do {
 --
 --@LIBRARIES UML2SQL2003_helpers, UML2SQL2003_AMW
 --END DOC
+rule DerivedProperty2AttributeandTrigger {
+	from
+		prop : UML!Property (
+			(prop.isDerivedAttribute()) and
+			(prop.isMapDerivedAttributeToTrigger()) and
+			(
+				(not prop.isAbstractClassProperty()) or
+				prop.isAbstractClassWithOneTableAnnotation()
+			)
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- prop.type,
+			structured <- prop->refImmediateComposite()
+		),
+		tin : SQL2003!Trigger (
+			name <- 'get' +
+					prop.name.substring(1,1).toUpper() +
+			 		prop.name.substring(2,prop.name.size()) + '_insert',
+			event <- #INSERT,
+			actionTime <- #AFTER,
+			table <- thisModule.resolveTemp(prop.refImmediateComposite(),'tt'),
+			updateColumns <- a
+		),
+		tup : SQL2003!Trigger (
+			name <- 'get' +
+					prop.name.substring(1,1).toUpper() +
+			 		prop.name.substring(2,prop.name.size()) + '_update',
+			event <- #UPDATE,
+			actionTime <- #AFTER,
+			table <- thisModule.resolveTemp(prop.refImmediateComposite(),'tt'),
+			updateColumns <- a
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'DerivedProperty2AttributeandTrigger',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_a : iTrace!TargetElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tin : iTrace!TargetElement (
+			type <- tin.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_tup : iTrace!TargetElement (
+			type <- tup.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule DerivedProperty2AttributeandTrigger -> property ');
 		elementSource_prop.refSetValue('object', prop);
-		elementTarget_m.refSetValue('object', m);
+		elementTarget_a.refSetValue('object', a);
+		elementTarget_tin.refSetValue('object', tin);
+		elementTarget_tup.refSetValue('object', tup);
 	}
 }
 
@@ -1859,8 +2651,14 @@ rule MultivaluedPropertyWithoutGeneratedType2ARRAYAttribute {
 do {
 		prop.name.debug('rule MultivaluedPropertyWithoutGeneratedType2' + 
 			'ARRAYAttribute -> property ');
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_a.refSetValue('object', a);
+		elementTarget_array.refSetValue('object', array);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1873,9 +2671,51 @@ do {
 --
 --@LIBRARIES UML2SQL2003_helpers
 --END DOC
+rule MultivaluedPropertyWithGeneratedType2ARRAYAttribute {
+	from
+		prop : UML!Property (
+			(prop.isMultivaluedAttribute()) and
+			(prop.isFixedSizeMultivaluedAttribute()) and
+			(prop.isGeneratedMultivaluedType())
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- prop.getGeneratedMultivaluedType(),
+			structured <- prop->refImmediateComposite()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MultivaluedPropertyWithGeneratedType2ARRAYAttribute',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_a : iTrace!TargetElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MultivaluedPropertyWithGeneratedType2' + 
+			'ARRAYAttribute -> property ');	
 		elementSource_prop.refSetValue('object', prop);
 		elementTarget_a.refSetValue('object', a);
-		elementTarget_array.refSetValue('object', array);
 	}
 }
 
@@ -1947,8 +2787,14 @@ rule MultivaluedPropertyWithoutGeneratedType2MULTISETAttribute {
 do {
 		prop.name.debug('rule MultivaluedPropertyWithoutGeneratedType2' + 
 			'MULTISETAttribute -> property ');	
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_a.refSetValue('object', a);
+		elementTarget_multiset.refSetValue('object', multiset);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -1961,9 +2807,51 @@ do {
 --
 --@LIBRARIES UML2SQL2003_helpers
 --END DOC
+rule MultivaluedPropertyWithGeneratedType2MULTISETAttribute {
+	from
+		prop : UML!Property (
+			(prop.isMultivaluedAttribute()) and
+			(prop.isVarSizeMultivaluedAttribute()) and
+			(prop.isGeneratedMultivaluedType())
+		)
+	to
+		a : SQL2003!Attribute (
+			name <- prop.name,
+			type <- prop.getGeneratedMultivaluedType(),
+			structured <- prop->refImmediateComposite()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MultivaluedPropertyWithGeneratedType2MULTISETAttribute',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_a : iTrace!TargetElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MultivaluedPropertyWithGeneratedType2' + 
+			'MULTISETAttribute -> property ');	
 		elementSource_prop.refSetValue('object', prop);
 		elementTarget_a.refSetValue('object', a);
-		elementTarget_multiset.refSetValue('object', multiset);
 	}
 }
 
@@ -2089,8 +2977,14 @@ rule MemberEnd2NotNullOnTT {
 
 do {
 		prop.name.debug('rule MemberEnd2NotNullOnTT ');	
+		elementSource_prop.refSetValue('object', prop);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_notNull.refSetValue('object', notNull);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -2104,9 +2998,65 @@ do {
 --
 --@LIBRARIES UML, UML2SQL2003_helpers
 --END DOC
+rule ChildMemberEndNotNull2CheckConstraintOnTTOneTable {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(prop.isAssociationLowerMoreThanZero()) and
+			(not c.generatesTypedTable()) and
+			(c.isDirectMemberEnd(prop)) and
+			(not c.isAbstract) and
+			(c.hasSuperClass()) and
+			(not c.hasSubClasses())
+		)
+	to
+		check : SQL2003!TableCheckConstraint (
+			name <- c.getOneTableChildMemberEndCheckName(prop),
+			expression <- c.getOneTableChildMemberEndNotNullCheckExpression(prop),
+			columns <- Set{
+				thisModule.resolveTemp(c.getSuperClass(), 'discriminant'),
+				thisModule.resolveTemp(prop, 'aREF')
+			},
+			table <- thisModule.resolveTemp(c.getSuperClass(), 'tt')
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ChildMemberEndNotNull2CheckConstraintOnTTOneTable',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_check : iTrace!TargetElement (
+			type <- check.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule ChildMemberEndNotNull2CheckConstraintOnTTOneTable ');	
 		elementSource_prop.refSetValue('object', prop);
 		elementSource_c.refSetValue('object', c);
-		elementTarget_notNull.refSetValue('object', notNull);
+		elementTarget_check.refSetValue('object', check);
 	}
 }
 
@@ -2181,8 +3131,14 @@ rule ChildMemberEndNull2CheckConstraintOnTTOneTable {
 
 do {
 		prop.name.debug('rule ChildMemberEndNull2CheckConstraintOnTTOneTable ');	
+		elementSource_prop.refSetValue('object', prop);
+		elementSource_c.refSetValue('object', c);
+		elementTarget_check.refSetValue('object', check);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -2191,9 +3147,56 @@ do {
 --
 --@LIBRARIES UML, UML2SQL2003_helpers
 --END DOC
+rule MemberEnd2NotNullOnMergingTT {
+	from
+		prop : UML!Property,
+		c : UML!Class
+		(
+			(c.generatesMergingTypedTable()) and
+			(c.ownsMemberEnd(prop))
+		)
+	to
+		notNull : SQL2003!NotNull (
+			table <- thisModule.resolveTemp(c, 'tt_merge'),
+			columns <- prop
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MemberEnd2NotNullOnMergingTT',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_notNull : iTrace!TargetElement (
+			type <- notNull.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MemberEnd2NotNullOnMergingTT ');	
 		elementSource_prop.refSetValue('object', prop);
 		elementSource_c.refSetValue('object', c);
-		elementTarget_check.refSetValue('object', check);
+		elementTarget_notNull.refSetValue('object', notNull);
 	}
 }
 
@@ -2260,8 +3263,13 @@ rule MemberEndZeroOne2AttributeREF {
 
 do {
 		prop.name.debug('rule MemberEndZeroOne2AttributeREF ');
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_aREF.refSetValue('object', aREF);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -2273,6 +3281,52 @@ do {
 --
 --@LIBRARIES UML, UML2SQL2003_helpers
 --END DOC
+rule MemberEndZeroMulti2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalZeroMulti() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNullPropertyName(),
+			type <- prop.getFixedSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MemberEndZeroMulti2AttributeREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_aREF : iTrace!TargetElement (
+			type <- aREF.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MemberEndZeroMulti2AttributeREF ');
 		elementSource_prop.refSetValue('object', prop);
 		elementTarget_aREF.refSetValue('object', aREF);
 	}
@@ -2336,8 +3390,13 @@ rule MemberEndZeroN2AttributeREF {
 
 do {
 		prop.name.debug('rule MemberEndZeroN2AttributeREF ');
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_aREF.refSetValue('object', aREF);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -2348,6 +3407,57 @@ do {
 --
 --@LIBRARIES UML, UML2SQL2003_helpers
 --END DOC
+rule MemberEndOneOne2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalOneOne() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNotNullPropertyName(),
+			type <-
+				if (prop.isComposition()) then
+					prop.type
+				else
+					prop.getGeneratedAttributeREFType()
+				endif,
+			structured <- prop.getAttributeREFClass()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MemberEndOneOne2AttributeREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_aREF : iTrace!TargetElement (
+			type <- aREF.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MemberEndOneOne2AttributeREF ');
 		elementSource_prop.refSetValue('object', prop);
 		elementTarget_aREF.refSetValue('object', aREF);
 	}
@@ -2412,8 +3522,13 @@ rule MemberEndOneMulti2AttributeREF {
 
 do {
 		prop.name.debug('rule MemberEndOneMulti2AttributeREF ');
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_aREF.refSetValue('object', aREF);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -2424,6 +3539,52 @@ do {
 --
 --@LIBRARIES UML, UML2SQL2003_helpers
 --END DOC
+rule MemberEndOneN2AttributeREF {
+	from
+		prop : UML!Property (
+			prop.isCardinalOneN() and
+			(
+				prop.isAssociationSimple() or
+				prop.isAssociationNavigable() or
+				prop.isAggregation() or
+				prop.isComposition()
+			)
+		)
+	to
+		aREF : SQL2003!Attribute (
+			name <- prop.getNotNullPropertyName(),
+			type <- prop.getVarSizeMultivaluedAttributeType(),
+			structured <- prop.getAttributeREFClass()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MemberEndOneN2AttributeREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_aREF : iTrace!TargetElement (
+			type <- aREF.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule MemberEndOneN2AttributeREF ');
 		elementSource_prop.refSetValue('object', prop);
 		elementTarget_aREF.refSetValue('object', aREF);
 	}
@@ -2488,8 +3649,13 @@ rule MemberEndMultiN2AttributeREF {
 
 do {
 		prop.name.debug('rule MemberEndMultiN2AttributeREF ');
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_aREF.refSetValue('object', aREF);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -2499,8 +3665,46 @@ do {
 --
 --@LIBRARIES UML_constants, UML2SQL2003_helpers
 --END DOC
+unique lazy rule generateAttributeREF {
+	from
+		prop : UML!Property
+	to
+		atREF : SQL2003!ReferenceType (
+			name <- prop.getAttributeREFName(),
+			type <- prop.getMemberEndClass(),
+			schema <- thisModule.PACKAGE()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateAttributeREF',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_atREF : iTrace!TargetElement (
+			type <- atREF.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule generateAttributeREF ');
 		elementSource_prop.refSetValue('object', prop);
-		elementTarget_aREF.refSetValue('object', aREF);
+		elementTarget_atREF.refSetValue('object', atREF);
 	}
 }
 
@@ -2555,8 +3759,13 @@ unique lazy rule generateARRAYREF {
 
 do {
 		prop.name.debug('rule generateARRAYREF ');
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_array.refSetValue('object', array);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -2566,6 +3775,46 @@ do {
 --
 --@LIBRARIES UML_constants, UML2SQL2003_helpers
 --END DOC
+unique lazy rule generateARRAY {
+	from
+		prop : UML!Property
+	to
+		array : SQL2003!ARRAY (
+			name <- prop.getMultivaluedAttributeTypeName(),
+			num_elements <- prop.getMultivaluedAttributeSize(),
+			type <- prop.type,
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getARRAYWithMAElemsSuperType()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateARRAY',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_array : iTrace!TargetElement (
+			type <- array.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule generateARRAY ');
 		elementSource_prop.refSetValue('object', prop);
 		elementTarget_array.refSetValue('object', array);
 	}
@@ -2621,8 +3870,13 @@ unique lazy rule generateMULTISETREF {
 
 do {
 		prop.name.debug('rule generateMULTISETREF ');
+		elementSource_prop.refSetValue('object', prop);
+		elementTarget_multiset.refSetValue('object', multiset);
 	}
 }
+
+-- ____________________ End Added by iTrace  _________________________
+
 
 --BEGIN DOC
 --#DESCRIPTION
@@ -2632,6 +3886,45 @@ do {
 --
 --@LIBRARIES UML_constants, UML2SQL2003_helpers
 --END DOC
+unique lazy rule generateMULTISET {
+	from
+		prop : UML!Property
+	to
+		multiset : SQL2003!MULTISET (
+			name <- prop.getMultivaluedAttributeTypeName(),
+			type <- prop.type,
+			schema <- thisModule.PACKAGE(),
+			super_type <- prop.getMULTISETWithMAElemsSuperType()
+		)
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'generateMULTISET',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '09-11-2012',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_prop : iTrace!SourceElement (
+			type <- prop.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_multiset : iTrace!TargetElement (
+			type <- multiset.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		)
+
+do {
+		prop.name.debug('rule generateMULTISET ');
 		elementSource_prop.refSetValue('object', prop);
 		elementTarget_multiset.refSetValue('object', multiset);
 	}
