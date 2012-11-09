@@ -1,5 +1,6 @@
 package iTrace.ui.tools;
 
+
 import iTrace.Mode;
 import iTrace.Type;
 import iTrace.ui.data.ModelData;
@@ -87,30 +88,9 @@ public class iTraceAdder {
 		
 		//Comportamiento
 		mTime = true;
-		printStat = true;
-		time = new MeasureTime();
+		printStat = false;
+		time = new MeasureTime("iTrace Adder");
 	}
-	
-//	public iTraceAdder(String fileName){
-//		sourceFileName = fileName;
-//		try {
-//			adder();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	public iTraceAdder(String fileName, Boolean printStatics, Boolean measureTimes){
-//		sourceFileName = fileName;
-//		printStat = printStatics;
-//		mTime = measureTimes;
-//				
-//		try {
-//			adder();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 	public iTraceAdder(String sourceFileName) throws IOException {
 	
@@ -143,8 +123,9 @@ public class iTraceAdder {
 		}
 		
 		targetFile.close();
+		
 		if (mTime){
-			time.partialStop();
+			time.stop();
 		}
 	}
 	
@@ -327,6 +308,7 @@ public class iTraceAdder {
 		
 		String [] palabras = sentencia.split(" ");
 		boolean firstKey=true;
+		boolean doKey=false;
 		
 		for(i = 0;i<palabras.length;i++){
 			if (palabras[i].equals("rule")){
@@ -357,10 +339,6 @@ public class iTraceAdder {
 						doClausule = true;
 						break;
 					}
-					
-				//	if (countKey==0){
-				//		break;
-				//	}
 		
 				}
 				
@@ -368,10 +346,17 @@ public class iTraceAdder {
 				
 			} while ((sentencia = bf.readLine())!=null && (countKey!=0 || firstKey) && !doClausule);
 			
-			//fin=false;
-			countKey=1;
-			firstKey=true;
 			
+			// Analizamos la ultima sentencia por si contiene llave de apertura DO
+			if (codigo.get(codigo.size()-1).contains("{")) {
+				countKey=1;
+				firstKey=false;
+				doKey=true;
+			}else{
+				countKey=0;
+				firstKey=true;
+				doKey=false;
+			}
 			
 			// Procesa la clausula DO
 			if (doClausule){
@@ -415,8 +400,8 @@ public class iTraceAdder {
 		}
 // Generación de la salida
 		
-// (2) Copia en fichero todo igual hasta el cierre de TO
-		// eliminamos el cierre }
+
+// (2) Copia en fichero todo igual hasta la última línea que contiene DO
 		codigo.remove(codigo.size()-1);
 		copyCode(codigo);
 		
@@ -451,10 +436,14 @@ public class iTraceAdder {
 // (6) Crear sección DO
 		
 		targetFile.println("");
-		targetFile.println("do {");
+		if (doKey || !doClausule){
+			targetFile.println("do {");
+		}else{
+			targetFile.println("do");
+		}
 				
 		if (doClausule){
-			// Copia en fichero todo igual hasta el cierre de DO eliminamos el cierre }
+			// Copia en fichero todo igual hasta el cierre de DO. Eliminamos el cierre }
 			doSection.remove(doSection.size()-1);
 		}
 		
@@ -469,19 +458,6 @@ public class iTraceAdder {
 		insertSortComment(false);
 		targetFile.println();
 		
-// (6) Avanzamos el buffer de entrada hasta el cierre }
-		
-//		System.out.println("Lineas de la regla: " + codigo.size()+1);
-//		
-//		for (i=0; i<codigo.size(); i++){
-//			try {
-//				sentencia=bf.readLine();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		System.out.println("------>La siguiente línea es: "+ sentencia);
-//		
 	}
 	
 	
@@ -496,25 +472,50 @@ public class iTraceAdder {
 			//Tools.printArrayStrings(palabras);
 			
 			// Añadimos espacios a los : por si estuvieran juntos
-			palabras=iterator.next().replace(":", " : ").split(" ");
+			palabras=iterator.next().split(" ");
+			
 			
 			for(int i = 0;i<palabras.length;i++){
 				// Eliminamos espacios en blanco
 				palabras[i] = palabras[i].trim();
 			
 				if (palabras[i].equals("from")){
-					mode = "source";
+					mode = "Source";
 				}else if (palabras[i].equals("to")){
-					mode = "target";
+					mode = "Target";
+				}else if (palabras[i].contains(":")){
+					
+					TraceLinkElementData tle = new TraceLinkElementData();
+					tle.setType(mode);
+					
+					// los : están separados
+					if (palabras[i].equals(":")){
+						tle.setModel(palabras[i+1].split("!")[0]);
+						tle.setElement(palabras[i-1]);
+					// los : están con el elemento
+					}else if (palabras[i].endsWith(":")){
+						tle.setModel(palabras[i+1].split("!")[0]);
+						tle.setElement(palabras[i].substring(0, palabras[i].length()-1));
+					// los : están junto con el modelo
+					}else if (palabras[i].startsWith(":")){
+						tle.setModel(palabras[i].split("!")[0].substring(1));
+						tle.setElement(palabras[i-1]);
+					// los : están junto al elemento y modelo
+					}else{
+						tle.setModel(palabras[i].split(":")[1].split("!")[0]);
+						tle.setElement(palabras[i].split(":")[0]);
+					}
+					
+					traceLinkElements.add(tle);
+					
+				}	
+					
+			/*		
 				//La segunda condición: Por si no se separaron los dos puntos del elemento	
 				}else if (palabras[i].equals(":") || palabras[i].endsWith(":") ){
 					TraceLinkElementData tle = new TraceLinkElementData();
 					tle.setModel(palabras[i+1].split("!")[0]);
-					if (mode.equals("source")){
-						tle.setType("Source");
-					}else{
-						tle.setType("Target");
-					}
+					tle.setType(mode);
 					
 					if (palabras[i].equals(":")){
 						tle.setElement(palabras[i-1]);
@@ -522,9 +523,31 @@ public class iTraceAdder {
 					}else{
 						tle.setElement(palabras[i].substring(0, palabras[i].length()-1));
 					}
+															
+					traceLinkElements.add(tle);
+					
+				}else if (palabras[i].startsWith(":") ){
+					TraceLinkElementData tle = new TraceLinkElementData();
+					tle.setType(mode);
+					
+					tle.setModel(palabras[i].split("!")[0].substring(1));
+					tle.setElement(palabras[i-1]);
+																				
+					traceLinkElements.add(tle);
+				
+					
+				}else if (palabras[i].contains(":") && !(palabras[i].endsWith(":")) &&
+						!(palabras[i].startsWith(":"))){
+					
+					TraceLinkElementData tle = new TraceLinkElementData();
+					tle.setElement(palabras[i].split(":")[0]);
+					tle.setModel(palabras[i].split(":")[1].split("!")[0]);
+					tle.setType(mode);
 					
 					traceLinkElements.add(tle);
 				}
+				
+				*/
 			}
 		}
 		
@@ -546,7 +569,6 @@ public class iTraceAdder {
 		// introducciendo información por el usuario
 		if (mTime){
 			time.partialStop();
-			time.start();
 		} 
 		
 		// Almacenamos los modelos de entrada y de salida
@@ -556,7 +578,7 @@ public class iTraceAdder {
 		
 		// Volvemos a activar el cronometro
 		if (mTime){
-			time.start();
+			time.partialStart();
 		}
 		
 	}
@@ -685,11 +707,11 @@ public class iTraceAdder {
 		// Llamada a los constructores de los modelos
 		insertSortComment("Llamada a los constructores de los modelos");
 		for (int i = 0; i< sourceModels.length; i++){
-			targetFile.println("	thisModule.createModel_" + sourceModels[i].getModelATL() + "();"); 
+			targetFile.println("	thisModule.createModel_" + sourceModels[i].getMetaATL() + "();"); 
 		}
 		// -1 Excluimos el último modelos porque es el de trazabilidad
 		for (int i = 0; i< targetModels.length-1; i++){
-			targetFile.println("	thisModule.createModel_" + targetModels[i].getModelATL() + "();"); 
+			targetFile.println("	thisModule.createModel_" + targetModels[i].getMetaATL() + "();"); 
 		}
 		//
 		targetFile.println("	}");
@@ -701,11 +723,11 @@ public class iTraceAdder {
 	
 
 	private void insertModel(ModelData model){
-		insertSortComment("iTrace, begin creation rule for model " + model.getModelATL() );
+		insertSortComment("iTrace, begin creation rule for model " + model.getMetaATL() );
 		targetFile.println("");
-		targetFile.println("rule createModel_" + model.getModelATL() + "(){");
+		targetFile.println("rule createModel_" + model.getMetaATL() + "(){");
 		targetFile.println("to");
-		targetFile.println("	" +  model.getModelATL() + " : iTrace!Model (");
+		targetFile.println("	" +  model.getMetaATL() + " : iTrace!Model (");
 		targetFile.println("		aspect <- '" +  model.getAspect() + "',");
 		targetFile.println("		name <- '" +  model.getName() + "',");
 		targetFile.println("		path <- '" +  model.getPath() + "',");
@@ -715,13 +737,13 @@ public class iTraceAdder {
 		targetFile.println("	)");
 		targetFile.println("do {");
 		targetFile.println("");
-		targetFile.println("	thisModule.getModel_" +  model.getModelATL() + "  <- " +  model.getModelATL() + ";");
+		targetFile.println("	thisModule.getModel_" +  model.getMetaATL() + "  <- " +  model.getMetaATL() + ";");
 		targetFile.println("	}");
 		targetFile.println("}");
 		targetFile.println("");
 		targetFile.println("");
-		targetFile.println("helper def: getModel_" +  model.getModelATL() + " : iTrace!Model = OclUndefined;");
-		insertSortComment("iTrace, end creation rule for model " + model.getModelATL() );
+		targetFile.println("helper def: getModel_" +  model.getMetaATL() + " : iTrace!Model = OclUndefined;");
+		insertSortComment("iTrace, end creation rule for model " + model.getMetaATL() );
 	}
 
 	private void insertTraceLink (TraceLinkData tracelink){

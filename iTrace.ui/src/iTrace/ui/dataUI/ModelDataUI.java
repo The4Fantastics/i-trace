@@ -58,7 +58,7 @@ public class ModelDataUI extends JDialog {
 	}
 
 	private boolean checkValues(){
-		System.out.println("Valor de metamodel: " + model.getMetamodel());
+		//System.out.println("Valor de metamodel: " + model.getMetamodel());
 		if 	(model.getMetamodel().equals("") || model.getName().equals("") || model.getPath().equals("")){
 			return false;
 		}else{
