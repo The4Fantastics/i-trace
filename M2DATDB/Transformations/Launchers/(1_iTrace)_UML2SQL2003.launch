@@ -44,8 +44,8 @@
 <mapEntry key="supportUML2Stereotypes" value="false"/>
 </mapAttribute>
 <listAttribute key="OrderedInput">
-<listEntry value="IN"/>
 <listEntry value="ANNOTATIONS"/>
+<listEntry value="IN"/>
 </listAttribute>
 <listAttribute key="OrderedOutput">
 <listEntry value="OUT"/>
