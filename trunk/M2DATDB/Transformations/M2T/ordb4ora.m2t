@@ -4,16 +4,16 @@
  *
  */
 
-texttransformation codigo (in eco:"http:///ORDB4ORA.ecore") {
+texttransformation ORDBD4ORA2CODE (in eco:"http:///ORDB4ORA.ecore") {
    eco.Model::main(){
      println("--> Time Start: " + time())
      var nombre:String
+    
      
-     
-     if (self.Name.size()=0)
-     	nombre="codigo_ORDB4ORA.sql"
-     else
-     	nombre=self.Name + "_ORDB4ORA.sql"
+  //   if (self.Name.size()=0)
+     	nombre="omdb.sql"
+  //   else
+  //   	nombre=self.Name + "_ORDB4ORA.sql"
      file (nombre)
                    
      //genera codigo para los Structured Type
