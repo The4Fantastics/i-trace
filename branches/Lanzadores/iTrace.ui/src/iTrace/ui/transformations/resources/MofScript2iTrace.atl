@@ -1,0 +1,116 @@
+module MofScript2iTrace;
+create OUT : iTrace from IN : MofTrace;
+
+
+helper def: blockCounter : Integer = 1; 
+
+helper context MofTrace!Block def : getFileName() : MofTrace!File =
+	self.refImmediateComposite().name;
+
+helper context MofTrace!TraceableSegment def : getFile() : MofTrace!File =
+	self.refImmediateComposite().refImmediateComposite();
+
+helper context MofTrace!Block def : getFile() : MofTrace!File =
+	self.refImmediateComposite();
+
+helper def : getPathFile(fullPath: String, fileName: String) : String =
+	fullPath.split(fileName).first().toString();
+
+rule root2root{
+	from
+		mt: MofTrace!TraceModel
+	to
+		root : iTrace!iTraceModel(
+			projectName <- 'Name of proyect',
+			version <- '1.0'
+		)
+	do {
+		thisModule.getTraceModelRoot <- root;
+	}
+}
+
+rule trace2m2t{
+	from 
+		trace: MofTrace!Trace
+	to
+		TraceLink: iTrace!M2TLink(
+			createdOn <- '11-10-2012',
+			type <- 'Transformation',
+			comment <- 'iTrace for M2T Transformation with MofScript',
+			createdBy <- 'iTrace',
+			mode <- 'Automatic',
+			technicalBinding <- 'MofScript',
+			ruleName <- trace.sourceOperationName,
+			fromFileName <- MofTrace!EPackage.generateModelRef('IN'),
+			
+			sourceElements <- thisModule.modelElementRef2SourceElement(trace.originatinElement),
+			targetBlocks <- thisModule.traceablesegment2block(trace.segment),
+		
+			iTraceModel <- thisModule.getTraceModelRoot
+		)
+					
+}
+
+unique lazy rule metamodel2model{
+	from
+		mm: MofTrace!MetaModel
+	to
+		model: iTrace!Model(
+			aspect <- 'Content',
+			name <- mm.name,
+			abstractionLevel <- 'PSM',
+			path <- '',
+			metamodel <- mm.nsUri,
+			
+			iTraceModel <- thisModule.getTraceModelRoot
+		)
+}
+
+unique lazy rule file2code{
+	from
+		file: MofTrace!File
+	to
+		code: iTrace!Code(
+			aspect <- 'Content',
+			name <- file.name,
+			abstractionLevel <- 'CODE',
+			path <- thisModule.getPathFile(file.URI, file.name),
+			
+			iTraceModel <- thisModule.getTraceModelRoot
+			
+		)
+}
+
+
+
+lazy rule modelElementRef2SourceElement{
+	from 
+		mer: MofTrace!ModelElementRef
+	to
+		se: iTrace!SourceElement(
+			ref <- mer.uri.split('#').last(),
+			type <- mer.oclType().toString(),
+			model <- thisModule.metamodel2model(mer.metaModel)
+		)
+}
+
+
+
+lazy rule traceablesegment2block{
+	from
+		ts: MofTrace!TraceableSegment
+	to
+		block: iTrace!Block(
+			blockNumber <- thisModule.blockCounter,
+			startLine <- ts.startLine.toString().toInteger(),
+			endLine <- ts.endLine.toString().toInteger(),
+			startColumn <- ts.startColumn.toString().toInteger(),
+			endColumn <- ts.endColumn.toString().toInteger(),
+			
+			code <- thisModule.file2code(ts.getFile())
+	)
+	
+	do {
+			thisModule.blockCounter <- thisModule.blockCounter + 1; 
+		}
+}
