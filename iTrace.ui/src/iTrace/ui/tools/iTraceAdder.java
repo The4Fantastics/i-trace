@@ -3,6 +3,7 @@ package iTrace.ui.tools;
 
 import iTrace.Mode;
 import iTrace.Type;
+import iTrace.ui.Constants;
 import iTrace.ui.data.ModelData;
 import iTrace.ui.data.TraceLinkData;
 import iTrace.ui.data.TraceLinkElementData;
@@ -417,8 +418,8 @@ public class iTraceAdder {
 		traceLink.setFromFileName(sourceFileName.replace("\\", "/"));
 		traceLink.setMode(Mode.AUTOMATIC);
 		traceLink.setTechnicalBinding("ATL");
-		traceLink.setCreatedBy("iTrace Tool");
-		traceLink.setComment("Automatic generation by iTrace");
+		traceLink.setCreatedBy(Constants.TraceLink_CreatedBy);
+		traceLink.setComment(Constants.TraceLink_Comment);
 		
 		
 // (4) Insertar TraceLink 
