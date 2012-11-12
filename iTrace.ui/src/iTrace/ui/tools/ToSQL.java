@@ -46,7 +46,7 @@ public class ToSQL {
 	private static String str_DMLInsert_Artefact = "INSERT INTO Artefact (uuid_Artefact, artefact, aspect, name, " +
 												"abstractionLevel, metamodel, path, artefactType, iTraceModel) VALUES (";
 	private static String str_DMLInsert_TraceLinkElement = "INSERT INTO TraceLinkElement (uuid_TraceLinkElement, traceLinkElement, " + 
-												"ref, type, artefact, relationType, traceLink) VALUES (";
+												"ref, type, relationType, artefact, traceLink) VALUES (";
 	private static String str_DMLInsert_Feature = "INSERT INTO Feature (uuid_Feature, feature, groupName, attribute, value, iTraceModel) VALUES (" ;
 	private static String str_DMLInsert_Block = "INSERT INTO Block (uuid_block, block, blockNumber, startLine, " +
 												"endLine, startColumn, endColumn, artefact) VALUES (";
