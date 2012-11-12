@@ -12,7 +12,6 @@ import iTrace.Aspect;
 import iTrace.Block;
 import iTrace.Code;
 import iTrace.Feature;
-import iTrace.File;
 import iTrace.ITraceFactory;
 import iTrace.ITracePackage;
 import iTrace.M2MLink;
@@ -31,7 +30,6 @@ import iTrace.iTraceModel;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 

@@ -88,6 +88,7 @@ public abstract class TraceLinkImpl extends CDOObjectImpl implements TraceLink {
 	public void setCreatedOn(String newCreatedOn) {
 		eSet(ITracePackage.Literals.TRACE_LINK__CREATED_ON, newCreatedOn);
 	}
+	
 
 	/**
 	 * <!-- begin-user-doc -->

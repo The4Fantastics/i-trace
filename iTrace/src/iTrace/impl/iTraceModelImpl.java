@@ -6,10 +6,7 @@
  */
 package iTrace.impl;
 
-import java.io.IOException;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
 
 import iTrace.Artefact;
 import iTrace.ITracePackage;
@@ -18,16 +15,10 @@ import iTrace.SpecificFeature;
 import iTrace.TraceLink;
 import iTrace.TraceLinkElement;
 import iTrace.iTraceModel;
-
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
-
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+
 
 import org.eclipse.emf.internal.cdo.CDOObjectImpl;
 
