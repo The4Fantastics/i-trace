@@ -48,18 +48,25 @@ public class Transformations {
 	}
 		
 	public void MofScriptTrace(String inFilePath, String outFilePath) throws Exception {
+		
 		try{
-		Map<String, Object> models=loadModels_MofScriptTrace(inFilePath);
-		do_MofScriptTrace(models,new NullProgressMonitor());
-		saveModels(((IModel)models.get("OUT")),outFilePath);
+			Map<String, Object> models=loadModels_MofScriptTrace(inFilePath);
+			do_MofScriptTrace(models,new NullProgressMonitor());
+			saveModels(((IModel)models.get("OUT")),outFilePath);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
 		// Register ATL metamodel
 		Bundle b = Activator.getDefault().getBundle();
-		InputStream input = FileLocator.openStream(b, new Path(Constants.iTrace_Metamodel_File), false);
+		
+	
+		//TODO por aqui
+		new Message("...Antes de crear el imput string");
+		InputStream input = FileLocator.openStream(b,  new Path(getClass().getResource("resources/iTrace.ecore").toString()), false);
+		new Message("...Despues del input stream y Antes de registrar el mm");
 		Tools.registerMetamodel(Constants.iTrace_URI, input);
+		new Message("...metamodelo registrado");
 		input.close();	
 		
 	}
@@ -88,13 +95,8 @@ public class Transformations {
 
 		
 		IModel MofScript_InputModel = factory.newModel(MofScriptMetamodel);
-		
-		new Message("Valor de MofScript_InputModel: " + MofScript_InputModel.getReferenceModel().toString());
-		new Message("Valor de inFilePath: " + inFilePath);
-		
 		injector.inject(MofScript_InputModel, inFilePath);
 		models.put("IN", MofScript_InputModel);
-		
 		
 		IModel iTrace_OutputModel = factory.newModel(iTraceMetamodel);
 		models.put("OUT", iTrace_OutputModel);
@@ -125,8 +127,6 @@ public class Transformations {
 			String[] moduleNames = modulesList.split(",");
 			modules = new InputStream[moduleNames.length];
 			for (int i = 0; i < moduleNames.length; i++) {
-				//TODO Mirar por aqui, imprimir la lista moduleNames, no encuentra
-				//TODO  MofScript2iTrace.asm
 				String asmModulePath = new Path(moduleNames[i].trim()).removeFileExtension().addFileExtension("asm").toString();
 				modules[i] = Tools.getFileURL(asmModulePath).openStream();
 			}

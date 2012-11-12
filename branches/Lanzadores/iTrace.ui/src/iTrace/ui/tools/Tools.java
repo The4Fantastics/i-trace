@@ -120,6 +120,8 @@ public class Tools {
 			
 			Resource.Factory myEcoreFactory = new EcoreResourceFactoryImpl();
 			Resource mmExtent = myEcoreFactory.createResource(URI.createURI(URImetaModel));
+			
+			
 			try {
 				mmExtent.load(input,Collections.EMPTY_MAP);
 			} catch (IOException e) {
@@ -188,25 +190,19 @@ public class Tools {
 		public static URL getFileURL(String fileName) throws IOException {
 			final URL fileURL;
 			
-			new Message("Llegé a get File URL");
-			new Message("Valor de filename " + fileName);
-			
 			if (isEclipseRunning()) {
-				new Message("Eclipse ejecuando");
 				URL resourceURL = Transformations.class.getResource(fileName);
-				new Message("Obtengo resourceURL");
+				
 				if (resourceURL != null) {
 					fileURL = FileLocator.toFileURL(resourceURL);
 				} else {
 					fileURL = null;
 				}
-				new Message("Pase la comprobación de URL");
 				
 			} else {
 				fileURL = Transformations.class.getResource(fileName);
 			}
 			if (fileURL == null) {
-				new Message("'" + fileName + "' not found");
 				throw new IOException("'" + fileName + "' not found");
 			} else {
 				return fileURL;
