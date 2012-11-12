@@ -46,10 +46,10 @@ public class ToSQL {
 	private static String str_DMLInsert_Artefact = "INSERT INTO Artefact (uuid_Artefact, artefact, aspect, name, " +
 												"abstractionLevel, metamodel, path, artefactType, iTraceModel) VALUES (";
 	private static String str_DMLInsert_TraceLinkElement = "INSERT INTO TraceLinkElement (uuid_TraceLinkElement, traceLinkElement, " + 
-												"ref, type, relationType, artefact, traceLink) VALUES (";
+												"ref, objectType, relationType, artefact, traceLink) VALUES (";
 	private static String str_DMLInsert_Feature = "INSERT INTO Feature (uuid_Feature, feature, groupName, attribute, value, iTraceModel) VALUES (" ;
 	private static String str_DMLInsert_Block = "INSERT INTO Block (uuid_block, block, blockNumber, startLine, " +
-												"endLine, startColumn, endColumn, artefact) VALUES (";
+												"endLine, startColumn, endColumn, artefact, traceLink) VALUES (";
 
 	private static void createFile () throws IOException{
 		fw = new FileWriter(currentFile.getLocation().toString() + ".sql");
@@ -242,7 +242,7 @@ public class ToSQL {
 			 		param_tle[0] = EcoreUtil.generateUUID().toString(); // Universal Unique ID
 			 		param_tle[1] = EcoreUtil.getURI(tle).toString();  // URI
 			 		param_tle[2] = tle.getRef(); // ref
-			 		param_tle[3] = tle.getType(); // type
+			 		param_tle[3] = tle.getType(); // objectType
 			 		
 			 		param_tle[5] = EcoreUtil.getURI(tle.getModel()).toString(); // model
 					
@@ -259,7 +259,8 @@ public class ToSQL {
 			 		// Almacenamos en la bd los trace link elements
 			 		addStatement(query, param_tle);
 			 		
-				} // end TraceLinkElement desde Model		
+				} // end TraceLinkElement desde Model	
+				
 			// Artifact es code
 			} else {
 				Code code = (Code) art;
@@ -276,7 +277,7 @@ public class ToSQL {
 					
 					// DML para Block desde Code		 		
 					query = str_DMLInsert_Block;
-					String param_block[] = new String[8];
+					String param_block[] = new String[9];
 							 		
 					param_block[0] = EcoreUtil.generateUUID().toString(); // Universal Unique ID
 					param_block[1] = EcoreUtil.getURI(block).toString();  // Block
@@ -286,6 +287,7 @@ public class ToSQL {
 					param_block[5] = String.valueOf(block.getStartColumn()); // start column		
 					param_block[6] = String.valueOf(block.getEndColumn()); // end column
 					param_block[7] = EcoreUtil.getURI(code).toString(); //Artefact
+					param_block[8] = block.getTraceLink().toString(); // TraceLink
 					
 					// Almacenamos en la bd los trace link elements
 			 		addStatement(query, param_block);
