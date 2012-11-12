@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ORDB4ORA:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ORDB4ORA="http:///ORDB4ORA.ecore" Name="Online Movie Database">
+  <datatype xsi:type="ORDB4ORA:DatetimeType"/>
+  <datatype xsi:type="ORDB4ORA:ANSINumberType"/>
+  <datatype xsi:type="ORDB4ORA:ANSICharacterType"/>
+  <datatype xsi:type="ORDB4ORA:ANSICharacterType" Descriptor="CHARACTERVARYING"/>
+  <datatype xsi:type="ORDB4ORA:BuiltInCharacterType"/>
+  <datatype xsi:type="ORDB4ORA:DatetimeType" Descriptor="TIMESTAMPWITHTIMEZONE"/>
+  <datatype xsi:type="ORDB4ORA:DatetimeType" Descriptor="TIMESTAMP"/>
+  <datatype xsi:type="ORDB4ORA:XMLType"/>
+  <datatype xsi:type="ORDB4ORA:LOBType"/>
+  <datatype xsi:type="ORDB4ORA:LOBType"/>
+  <datatype xsi:type="ORDB4ORA:LOBType"/>
+  <datatype xsi:type="ORDB4ORA:LOBType" Descriptor="CLOB"/>
+  <datatype xsi:type="ORDB4ORA:ANSINumberType" Descriptor="DECIMAL"/>
+  <datatype xsi:type="ORDB4ORA:ANSINumberType" Descriptor="SMALLINT"/>
+  <datatype xsi:type="ORDB4ORA:ANSINumberType" Descriptor="INTEGER"/>
+  <datatype xsi:type="ORDB4ORA:ANSINumberType" Descriptor="FLOAT"/>
+  <datatype xsi:type="ORDB4ORA:ANSINumberType" Descriptor="REAL"/>
+  <datatype xsi:type="ORDB4ORA:ANSINumberType" Descriptor="DOUBLEPRECISION"/>
+  <datatype xsi:type="ORDB4ORA:DatetimeType" Descriptor="INTERVALDAYTOSECOND"/>
+  <datatype xsi:type="ORDB4ORA:AnyType" Descriptor="SYSANYTYPE"/>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="OID" is_instantiable="true"/>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="Person_type" is_instantiable="true" typed="//@table.0">
+    <attribute Name="country" Type="//@datatype.3"/>
+    <attribute Name="dob" Type="//@datatype.0"/>
+    <attribute Name="name" Type="//@datatype.3"/>
+    <attribute Name="sex" Type="//@datatype.2"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="product_type" is_instantiable="true" typed="//@table.1">
+    <attribute Name="availability" Type="//@datatype.3"/>
+    <attribute Name="list_price" Type="//@datatype.16"/>
+    <attribute Name="our_price" Type="//@datatype.16"/>
+    <attribute Name="production_company" Type="//@datatype.3"/>
+    <attribute Name="rating" Type="//@datatype.3"/>
+    <attribute Name="release_date" Type="//@datatype.0"/>
+    <attribute Name="runtime" Type="//@datatype.14"/>
+    <attribute Name="movie" Type="//@datatype.37" restrictions="//@table.1/@restriction.0 //@table.13/@restriction.0 //@table.14/@restriction.0"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="people" is_instantiable="true" typed="//@table.2">
+    <attribute Name="id" Type="//@datatype.20"/>
+    <attribute Name="persons" Type="//@datatype.45" restrictions="//@table.2/@restriction.0"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="movies" is_instantiable="true" typed="//@table.3">
+    <attribute Name="id" Type="//@datatype.20"/>
+    <attribute Name="movies" Type="//@datatype.47" restrictions="//@table.3/@restriction.0"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="movie_type" is_instantiable="true" typed="//@table.4">
+    <attribute Name="genre" Type="//@datatype.3"/>
+    <attribute Name="studio" Type="//@datatype.3"/>
+    <attribute Name="synopsis" Type="//@datatype.3"/>
+    <attribute Name="title" Type="//@datatype.3"/>
+    <attribute Name="website" Type="//@datatype.3"/>
+    <attribute Name="ext_review" Type="//@datatype.43"/>
+    <attribute Name="user_review" Type="//@datatype.44"/>
+    <attribute Name="director" Type="//@datatype.36" restrictions="//@table.4/@restriction.0"/>
+    <attribute Name="playwriter_ref" Type="//@datatype.38" restrictions="//@table.4/@restriction.1"/>
+    <attribute Name="cast" Type="//@datatype.39" restrictions="//@table.4/@restriction.2"/>
+    <attribute Name="products" Type="//@datatype.48" restrictions="//@table.4/@restriction.3"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="cast_type" is_instantiable="true" typed="//@table.5">
+    <attribute Name="casting_order" Type="//@datatype.14"/>
+    <attribute Name="role" Type="//@datatype.3"/>
+    <attribute Name="movie" Type="//@datatype.37" restrictions="//@table.5/@restriction.1"/>
+    <attribute Name="actors" Type="//@datatype.49" restrictions="//@table.5/@restriction.0"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="castings" is_instantiable="true" typed="//@table.6">
+    <attribute Name="id" Type="//@datatype.20"/>
+    <attribute Name="casts" Type="//@datatype.46" restrictions="//@table.6/@restriction.0"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="products" is_instantiable="true" typed="//@table.7">
+    <attribute Name="id" Type="//@datatype.20"/>
+    <attribute Name="products" Type="//@datatype.48" restrictions="//@table.7/@restriction.0"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="external_review_type" is_instantiable="true" typed="//@table.8">
+    <attribute Name="review_source" Type="//@datatype.3"/>
+    <attribute Name="review_url" Type="//@datatype.3"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="user_review_type" is_instantiable="true" typed="//@table.9">
+    <attribute Name="review_date" Type="//@datatype.0"/>
+    <attribute Name="review_text" Type="//@datatype.3"/>
+    <attribute Name="reviewer" Type="//@datatype.3"/>
+    <attribute Name="score" Type="//@datatype.14"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="director_type" supertype="//@datatype.21" is_instantiable="true" typed="//@table.10">
+    <attribute Name="movies" Type="//@datatype.47" restrictions="//@table.10/@restriction.0"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="actor_type" supertype="//@datatype.21" is_instantiable="true" typed="//@table.11">
+    <attribute Name="casts" Type="//@datatype.46" restrictions="//@table.11/@restriction.0"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="playwriter_type" supertype="//@datatype.21" is_instantiable="true" typed="//@table.12">
+    <attribute Name="movies" Type="//@datatype.37" restrictions="//@table.12/@restriction.0"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="video_type" supertype="//@datatype.22" is_instantiable="true" typed="//@table.13">
+    <attribute Name="format" Type="//@datatype.3"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:StructuredType" Name="dvd_type" supertype="//@datatype.22" is_instantiable="true" typed="//@table.14">
+    <attribute Name="acpect_ratio" Type="//@datatype.3"/>
+    <attribute Name="dvd_encoding" Type="//@datatype.3"/>
+    <attribute Name="number_of_disos" Type="//@datatype.14"/>
+  </datatype>
+  <datatype xsi:type="ORDB4ORA:ReferenceType" Name="Ref_director_type" Type="//@datatype.31"/>
+  <datatype xsi:type="ORDB4ORA:ReferenceType" Name="Ref_movie_type" Type="//@datatype.25"/>
+  <datatype xsi:type="ORDB4ORA:ReferenceType" Name="Ref_playwriter_type" Type="//@datatype.33"/>
+  <datatype xsi:type="ORDB4ORA:ReferenceType" Name="Ref_cast_type" Type="//@datatype.26"/>
+  <datatype xsi:type="ORDB4ORA:ReferenceType" Name="Ref_Person_type" Type="//@datatype.21"/>
+  <datatype xsi:type="ORDB4ORA:ReferenceType" Name="Ref_product_type" Type="//@datatype.22"/>
+  <datatype xsi:type="ORDB4ORA:ReferenceType" Name="Ref_actor_type" Type="//@datatype.32"/>
+  <datatype xsi:type="ORDB4ORA:Varray" Name="VARRAY_external_review_type" NumElements="5" Type="//@datatype.29"/>
+  <datatype xsi:type="ORDB4ORA:NestedTableType" Name="NT_user_review_type" Type="//@datatype.30"/>
+  <datatype xsi:type="ORDB4ORA:NestedTableType" Name="NT_Ref_Person_type" Type="//@datatype.40"/>
+  <datatype xsi:type="ORDB4ORA:NestedTableType" Name="NT_Ref_cast_type" Type="//@datatype.39"/>
+  <datatype xsi:type="ORDB4ORA:NestedTableType" Name="NT_Ref_movie_type" Type="//@datatype.37"/>
+  <datatype xsi:type="ORDB4ORA:NestedTableType" Name="NT_Ref_product_type" Type="//@datatype.41"/>
+  <datatype xsi:type="ORDB4ORA:NestedTableType" Name="NT_Ref_actor_type" Type="//@datatype.42"/>
+  <datatype xsi:type="ORDB4ORA:BuiltInCharacterType" Descriptor="VARCHAR2"/>
+  <datatype xsi:type="ORDB4ORA:BuiltInCharacterType" Descriptor="NCHAR"/>
+  <datatype xsi:type="ORDB4ORA:BuiltInCharacterType" Descriptor="NVARCHAR2"/>
+  <datatype xsi:type="ORDB4ORA:BuiltInNumberType"/>
+  <datatype xsi:type="ORDB4ORA:BuiltInNumberType" Descriptor="BINARY_FLOAT"/>
+  <datatype xsi:type="ORDB4ORA:BuiltInNumberType" Descriptor="BINARY_DOUBLE"/>
+  <datatype xsi:type="ORDB4ORA:LongAndRawType"/>
+  <datatype xsi:type="ORDB4ORA:LongAndRawType" Descriptor="LONGRAW"/>
+  <datatype xsi:type="ORDB4ORA:LongAndRawType" Descriptor="RAW"/>
+  <datatype xsi:type="ORDB4ORA:DatetimeType" Descriptor="TIMESTAMPWITHLOCALTIMEZONE"/>
+  <datatype xsi:type="ORDB4ORA:ROWIDType"/>
+  <datatype xsi:type="ORDB4ORA:ROWIDType" Descriptor="UROWID"/>
+  <datatype xsi:type="ORDB4ORA:ANSICharacterType" Descriptor="CHARVARYING"/>
+  <datatype xsi:type="ORDB4ORA:ANSICharacterType" Descriptor="NCHARVARYING"/>
+  <datatype xsi:type="ORDB4ORA:ANSICharacterType" Descriptor="VARCHAR"/>
+  <datatype xsi:type="ORDB4ORA:ANSICharacterType" Descriptor="NATIONALCHARACTERVARYING"/>
+  <datatype xsi:type="ORDB4ORA:ANSICharacterType" Descriptor="NATIONALCHARVARYING"/>
+  <datatype xsi:type="ORDB4ORA:ANSICharacterType" Descriptor="NATIONALCHARACTER"/>
+  <datatype xsi:type="ORDB4ORA:ANSICharacterType" Descriptor="NATIONALCHAR"/>
+  <datatype xsi:type="ORDB4ORA:ANSINumberType" Descriptor="DEC"/>
+  <datatype xsi:type="ORDB4ORA:ANSINumberType" Descriptor="INT"/>
+  <datatype xsi:type="ORDB4ORA:AnyType"/>
+  <datatype xsi:type="ORDB4ORA:AnyType" Descriptor="SYSANYDATASET"/>
+  <datatype xsi:type="ORDB4ORA:MediaType"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="ORDImage"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="ORDDoc"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="ORDVideo"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="ORDImageSignature"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="SI_STILLIMAGE"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="SI_AVERAGECOLOR"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="SI_POSITIONALCOLOR"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="SI_COLORHISTOGRAM"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="SI_TEXTURE"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="SI_FEATURELIST"/>
+  <datatype xsi:type="ORDB4ORA:MediaType" Descriptor="SI_COLOR"/>
+  <datatype xsi:type="ORDB4ORA:XMLType" Descriptor="URITYPE"/>
+  <datatype xsi:type="ORDB4ORA:SpacialType"/>
+  <datatype xsi:type="ORDB4ORA:SpacialType" Descriptor="SDO_TOPO_GEOMETRY"/>
+  <datatype xsi:type="ORDB4ORA:SpacialType" Descriptor="SDO_RASTER"/>
+  <datatype xsi:type="ORDB4ORA:LOBType" Descriptor="BFILE"/>
+  <datatype xsi:type="ORDB4ORA:LOBType" Descriptor="NLOB"/>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="Person_type_table" structured="//@datatype.21"/>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="product_type_table" structured="//@datatype.22">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.22/@attribute.7" Name="&lt;...>"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="people_table" structured="//@datatype.23">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.23/@attribute.1" Name="&lt;...>"/>
+    <storedNested Name="Ref_Person_type_Table" attribute="//@datatype.23/@attribute.1"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="movies_table" structured="//@datatype.24">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.24/@attribute.1" Name="&lt;...>"/>
+    <storedNested Name="Ref_movie_type_Table" attribute="//@datatype.24/@attribute.1"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="movie_type_table" structured="//@datatype.25">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.25/@attribute.7" Name="&lt;...>"/>
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.25/@attribute.8" Name="&lt;...>"/>
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.25/@attribute.9" Name="&lt;...>"/>
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.25/@attribute.10" Name="&lt;...>"/>
+    <storedNested Name="user_review_type_Table" attribute="//@datatype.25/@attribute.6"/>
+    <storedNested Name="Ref_product_type_Table" attribute="//@datatype.25/@attribute.10"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="cast_type_table" structured="//@datatype.26">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.26/@attribute.3" Name="&lt;...>"/>
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.26/@attribute.2" Name="&lt;...>"/>
+    <storedNested Name="Ref_actor_type_Table" attribute="//@datatype.26/@attribute.3"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="castings_table" structured="//@datatype.27">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.27/@attribute.1" Name="&lt;...>"/>
+    <storedNested Name="Ref_cast_type_Table" attribute="//@datatype.27/@attribute.1"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="products_table" structured="//@datatype.28">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.28/@attribute.1" Name="&lt;...>"/>
+    <storedNested Name="Ref_product_type_Table" attribute="//@datatype.28/@attribute.1"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="external_review_type_table" structured="//@datatype.29"/>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="user_review_type_table" structured="//@datatype.30"/>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="director_type_table" structured="//@datatype.31">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.31/@attribute.0" Name="&lt;...>"/>
+    <storedNested Name="Ref_movie_type_Table" attribute="//@datatype.31/@attribute.0"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="actor_type_table" structured="//@datatype.32">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.32/@attribute.0" Name="&lt;...>"/>
+    <storedNested Name="Ref_cast_type_Table" attribute="//@datatype.32/@attribute.0"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="playwriter_type_table" structured="//@datatype.33">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.33/@attribute.0" Name="&lt;...>"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="video_type_table" structured="//@datatype.34">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.22/@attribute.7" Name="&lt;...>"/>
+  </table>
+  <table xsi:type="ORDB4ORA:TypedTable" Name="dvd_type_table" structured="//@datatype.35">
+    <restriction xsi:type="ORDB4ORA:NotNull" attributes="//@datatype.22/@attribute.7" Name="&lt;...>"/>
+  </table>
+</ORDB4ORA:Model>
