@@ -1,5 +1,13 @@
 package iTrace.ui;
 
+import iTrace.Mode;
+import iTrace.Type;
+import iTrace.ui.data.TraceLinkData;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class Constants {
 
@@ -18,5 +26,9 @@ public class Constants {
 	public static int NOT_SHOW_DIALOG = 1;
 	public static int SHOW_WARNING = 2;
 	
+	// Constantes para iTrace
+
+	public static String TraceLink_CreatedBy = "iTrace Tool";
+	public static String TraceLink_Comment = "Automatic generation by iTrace";
 	
 }

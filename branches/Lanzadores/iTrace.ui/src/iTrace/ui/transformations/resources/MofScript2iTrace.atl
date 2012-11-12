@@ -21,7 +21,7 @@ rule root2root{
 		mt: MofTrace!TraceModel
 	to
 		root : iTrace!iTraceModel(
-			projectName <- 'Name of proyect',
+			projectName <- 'ProjectName',
 			version <- '1.0'
 		)
 	do {
@@ -34,10 +34,10 @@ rule trace2m2t{
 		trace: MofTrace!Trace
 	to
 		TraceLink: iTrace!M2TLink(
-			createdOn <- '11-10-2012',
+			createdOn <- '01-01-2012',
 			type <- 'Transformation',
-			comment <- 'iTrace for M2T Transformation with MofScript',
-			createdBy <- 'iTrace',
+			comment <- 'Automatic generation by iTrace',
+			createdBy <- 'iTrace Tool',
 			mode <- 'Automatic',
 			technicalBinding <- 'MofScript',
 			ruleName <- trace.sourceOperationName,
@@ -48,7 +48,7 @@ rule trace2m2t{
 		
 			iTraceModel <- thisModule.getTraceModelRoot
 		)
-					
+						
 }
 
 unique lazy rule metamodel2model{

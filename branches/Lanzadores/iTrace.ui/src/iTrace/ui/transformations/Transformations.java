@@ -2,18 +2,15 @@ package iTrace.ui.transformations;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import iTrace.ui.Activator;
 import iTrace.ui.Constants;
 import iTrace.ui.tools.Message;
 import iTrace.ui.tools.Tools;
 
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -29,7 +26,6 @@ import org.eclipse.m2m.atl.core.emf.EMFInjector;
 import org.eclipse.m2m.atl.core.emf.EMFModelFactory;
 import org.eclipse.m2m.atl.core.launch.ILauncher;
 import org.eclipse.m2m.atl.engine.emfvm.launch.EMFVMLauncher;
-import org.osgi.framework.Bundle;
 
 public class Transformations {
 	
@@ -50,23 +46,34 @@ public class Transformations {
 	public void MofScriptTrace(String inFilePath, String outFilePath) throws Exception {
 		
 		try{
-			Map<String, Object> models=loadModels_MofScriptTrace(inFilePath);
+			Map<String, Object> models = loadModels_MofScriptTrace(inFilePath);
 			do_MofScriptTrace(models,new NullProgressMonitor());
-			saveModels(((IModel)models.get("OUT")),outFilePath);
+			
+			IModel outModel = ((IModel)models.get("OUT")); 
+			// TODO Modelo de salida. Podemos reescribir las propiedades
+			saveModels(outModel,outFilePath);
+			
+			// Unicamente actualizamos la fecha,
+			
+			// Pedir ubicación de código
+			
+			// Refrescar
+			
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
 		// Register ATL metamodel
-		Bundle b = Activator.getDefault().getBundle();
 		
+		// Antiguo.....
+		// Bundle b = Activator.getDefault().getBundle();
+		// InputStream input = FileLocator.openStream(b,  new Path(getClass().getResource("resources/iTrace.ecore").toString()), false);
 	
-		//TODO por aqui
-		new Message("...Antes de crear el imput string");
-		InputStream input = FileLocator.openStream(b,  new Path(getClass().getResource("resources/iTrace.ecore").toString()), false);
-		new Message("...Despues del input stream y Antes de registrar el mm");
+		// Funciona con esto
+		InputStream input = Tools.getFileURL("resources/iTrace.ecore").openStream();
+		
 		Tools.registerMetamodel(Constants.iTrace_URI, input);
-		new Message("...metamodelo registrado");
 		input.close();	
 		
 	}
@@ -75,7 +82,7 @@ public class Transformations {
 		ILauncher launcher = new EMFVMLauncher();
 		Map<String, Object> launcherOptions = getOptions(_MofScriptTrace);
 		launcher.initialize(launcherOptions);
-		launcher.addInModel(((IModel)models.get("IN")), "IN", "MofScript");
+		launcher.addInModel(((IModel)models.get("IN")), "IN", "MofTrace");
 		launcher.addOutModel(((IModel)models.get("OUT")), "OUT", "iTrace");
 		launcher.launch("run", nullProgressMonitor, launcherOptions, (Object[]) getModulesList(_MofScriptTrace));
 	}
@@ -118,6 +125,7 @@ public class Transformations {
 	protected InputStream[] getModulesList(int process) throws IOException {
 		InputStream[] modules = null;
 		String modulesList="";
+		
 		switch (process){
 		case 1: modulesList = MofScriptTrace_properties.getProperty("MofScriptTrace.modules");
 					break;
@@ -126,11 +134,17 @@ public class Transformations {
 		if (modulesList != null) {
 			String[] moduleNames = modulesList.split(",");
 			modules = new InputStream[moduleNames.length];
+			
 			for (int i = 0; i < moduleNames.length; i++) {
+				
+				new Message("Module Name: " + moduleNames[i]);
+				
 				String asmModulePath = new Path(moduleNames[i].trim()).removeFileExtension().addFileExtension("asm").toString();
 				modules[i] = Tools.getFileURL(asmModulePath).openStream();
 			}
 		}
+		
+		
 		return modules;
 	}
 	
