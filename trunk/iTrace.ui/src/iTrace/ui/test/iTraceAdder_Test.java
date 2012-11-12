@@ -1,10 +1,13 @@
 package iTrace.ui.test;
 
+import iTrace.ui.tools.Tools;
 import iTrace.ui.tools.iTraceAdder;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 
 public class iTraceAdder_Test {
@@ -24,14 +27,11 @@ public class iTraceAdder_Test {
 		//	String fileName = "D:\\Workspaces\\Base\\iTrace.ui\\test\\UML2SQL2003.atl";
 			//System.out.println("Directorio: "+ file.getDirectory());
 			//System.out.println("Fichero: "+ file.getFile());
-			System.out.println("Valor de Filename: "+ fileName);
+			//System.out.println("Valor de Filename: "+ fileName);
 			
 			
 			
 			new iTraceAdder(fileName);
-						
-			
-	
 		
 	}
 
