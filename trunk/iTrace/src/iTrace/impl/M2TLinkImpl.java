@@ -7,7 +7,6 @@
 package iTrace.impl;
 
 import iTrace.Block;
-import iTrace.Code;
 import iTrace.ITracePackage;
 import iTrace.M2TLink;
 

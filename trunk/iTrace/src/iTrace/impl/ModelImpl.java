@@ -8,8 +8,6 @@ package iTrace.impl;
 
 import java.util.Iterator;
 
-import iTrace.AbstractionLevel;
-import iTrace.Artefact;
 import iTrace.ITracePackage;
 import iTrace.Model;
 import iTrace.ModelType;
@@ -19,7 +17,6 @@ import iTrace.TraceLinkElement;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc -->

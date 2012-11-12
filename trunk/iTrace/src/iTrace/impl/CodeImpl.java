@@ -8,10 +8,7 @@ package iTrace.impl;
 
 import iTrace.Block;
 import iTrace.Code;
-import iTrace.File;
 import iTrace.ITracePackage;
-import iTrace.M2TLink;
-
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;

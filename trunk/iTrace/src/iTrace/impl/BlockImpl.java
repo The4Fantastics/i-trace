@@ -7,7 +7,6 @@
 package iTrace.impl;
 
 import iTrace.Block;
-import iTrace.File;
 import iTrace.Code;
 import iTrace.ITracePackage;
 
