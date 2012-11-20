@@ -80,7 +80,7 @@ public class TargetElementItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((TargetElement)object).getRef();
+		String label = ((TargetElement)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_TargetElement_type") :
 			getString("_UI_TargetElement_type") + " " + label;

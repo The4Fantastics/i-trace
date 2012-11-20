@@ -80,7 +80,7 @@ public class SourceElementItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((SourceElement)object).getRef();
+		String label = ((SourceElement)object).getName();
 		return label == null || label.length() == 0 ?
 			getString("_UI_SourceElement_type") :
 			getString("_UI_SourceElement_type") + " " + label;
