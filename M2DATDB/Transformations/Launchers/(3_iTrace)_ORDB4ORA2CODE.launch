@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<launchConfiguration type="iTrace.ui.transformations.MofScriptTrace_LCT">
-<stringAttribute key="Transformation_IN" value="D:\Workspaces\Case Studies\M2DATDB\Models\ORDBD4ORA2CODE.traceabilitymodel"/>
-<stringAttribute key="Transformation_OUT" value="D:\Workspaces\Case Studies\M2DATDB\Models\ORDBD4ORA2CODE.iTrace"/>
-</launchConfiguration>
