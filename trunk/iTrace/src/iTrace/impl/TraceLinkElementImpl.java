@@ -25,6 +25,7 @@ import org.eclipse.emf.internal.cdo.CDOObjectImpl;
  * <ul>
  *   <li>{@link iTrace.impl.TraceLinkElementImpl#getRef <em>Ref</em>}</li>
  *   <li>{@link iTrace.impl.TraceLinkElementImpl#getModel <em>Model</em>}</li>
+ *   <li>{@link iTrace.impl.TraceLinkElementImpl#getName <em>Name</em>}</li>
  *   <li>{@link iTrace.impl.TraceLinkElementImpl#getType <em>Type</em>}</li>
  *   <li>{@link iTrace.impl.TraceLinkElementImpl#getObject <em>Object</em>}</li>
  * </ul>
@@ -103,6 +104,24 @@ public abstract class TraceLinkElementImpl extends CDOObjectImpl implements Trac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getName() {
+		return (String)eGet(ITracePackage.Literals.TRACE_LINK_ELEMENT__NAME, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setName(String newName) {
+		eSet(ITracePackage.Literals.TRACE_LINK_ELEMENT__NAME, newName);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public String getType() {
 		return (String)eGet(ITracePackage.Literals.TRACE_LINK_ELEMENT__TYPE, true);
 	}
@@ -134,17 +153,5 @@ public abstract class TraceLinkElementImpl extends CDOObjectImpl implements Trac
 		eSet(ITracePackage.Literals.TRACE_LINK_ELEMENT__OBJECT, newObject);
 	}
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @NOT generated
-	 */
-	public void getRefObject(EObject object) {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		String [] newRef = EcoreUtil.getURI(object).toString().split("#");
-		setRef(newRef[1]);
-		setObject(null);
-	}
 
 } //TraceLinkElementImpl
