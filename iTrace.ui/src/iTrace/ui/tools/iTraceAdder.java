@@ -652,19 +652,7 @@ public class iTraceAdder {
 		return salida;
 	}
 	
-//	private void insertParamenters(){
-//	
-//		targetFile.println("-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬");
-//		targetFile.println("--	Incio:	iTrace: Uso de la biblioteca iTrace_parameters para ASD2WSDL");
-//		targetFile.println("-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬");
-//		targetFile.println("uses iTrace_parameters;");
-//		targetFile.println("-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬");
-//		targetFile.println("--	Fin:	iTrace: Uso de la biblioteca iTrace_parameters para ASD2WSDL");
-//		targetFile.println("-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬");
-//	
-//		targetFile.println();
-//	}
-//	
+
 	private void insertComment(String sms){
 		
 		targetFile.println();
@@ -788,7 +776,6 @@ public class iTraceAdder {
 		}else{
 			targetFile.println("		elementTarget_" + element.getElement() +
 					".refSetValue('object', " + element.getElement() + ");");
-
 		}
 	}
 	

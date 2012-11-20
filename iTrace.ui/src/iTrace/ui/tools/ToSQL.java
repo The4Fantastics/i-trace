@@ -30,6 +30,8 @@ import iTrace.TraceLink;
 import iTrace.TraceLinkElement;
 import iTrace.iTraceModel;
 
+import iTrace.ui.Constants;
+
 
 public class ToSQL {
 	
@@ -39,20 +41,45 @@ public class ToSQL {
 	private static IFile currentFile;
 	private static String modelName;
 	
-	
-	private static String str_DMLInsert_iTraceModel = "INSERT INTO iTraceModel (uuid_iTraceModel, iTraceModel, projectName, version) VALUES (";
-	private static String str_DMLInsert_TraceLink = "INSERT INTO TraceLink (uuid_TraceLink, traceLink, createdOn, type, " +
-												"fromFileName, comment, createdBy, mode, technicalBinding, ruleName, linkType, iTraceModel) VALUES (";
-	private static String str_DMLInsert_Artefact = "INSERT INTO Artefact (uuid_Artefact, artefact, aspect, name, " +
-												"abstractionLevel, metamodel, path, artefactType, iTraceModel) VALUES (";
-	private static String str_DMLInsert_TraceLinkElement = "INSERT INTO TraceLinkElement (uuid_TraceLinkElement, traceLinkElement, " + 
-												"ref, objectType, relationType, artefact, traceLink) VALUES (";
-	private static String str_DMLInsert_Feature = "INSERT INTO Feature (uuid_Feature, feature, groupName, attribute, value, iTraceModel) VALUES (" ;
-	private static String str_DMLInsert_Block = "INSERT INTO Block (uuid_block, block, blockNumber, startLine, " +
-												"endLine, startColumn, endColumn, artefact, traceLink) VALUES (";
+	private static String str_DMLInsert_iTraceModel = null;
+	private static String str_DMLInsert_TraceLink = null; 
+	private static String str_DMLInsert_Artefact = null;
+	private static String str_DMLInsert_TraceLinkElement = null; 
+	private static String str_DMLInsert_Feature = null;
+	private static String str_DMLInsert_Block = null;
 
+	
+	
+	private static void init (){
+	
+		str_DMLInsert_iTraceModel = "INSERT INTO iTraceModel (uuid_iTraceModel, iTraceModel, projectName, version) VALUES (";
+		
+		str_DMLInsert_TraceLink = "INSERT INTO TraceLink (uuid_TraceLink, traceLink, createdOn, type, " +
+													"fromFileName, comment, createdBy, mode, technicalBinding, ruleName, linkType, iTraceModel) VALUES (";
+		str_DMLInsert_TraceLink = "INSERT INTO TraceLink (uuid_TraceLink, traceLink, createdOn, type, " +
+					"fromFileName, tl_comment, createdBy, tl_mode, technicalBinding, ruleName, linkType, iTraceModel) VALUES (";
+		str_DMLInsert_Artefact = "INSERT INTO Artefact (uuid_Artefact, artefact, aspect, name, " +
+													"abstractionLevel, metamodel, path, artefactType, iTraceModel) VALUES (";
+		str_DMLInsert_TraceLinkElement = "INSERT INTO TraceLinkElement (uuid_TraceLinkElement, traceLinkElement, " + 
+													"ref, objectType, relationType, artefact, traceLink, id) VALUES (";
+		str_DMLInsert_Feature = "INSERT INTO Feature (uuid_Feature, feature, groupName, attribute, value, iTraceModel) VALUES (" ;
+		str_DMLInsert_Block = "INSERT INTO Block (uuid_block, block, blockNumber, startLine, " +
+													"endLine, startColumn, endColumn, artefact, traceLink, id) VALUES (";
+
+	}
+	
 	private static void createFile () throws IOException{
-		fw = new FileWriter(currentFile.getLocation().toString() + ".sql");
+		
+		String fileName = null;
+		
+		if (Constants.database_Type.equals(Constants.Database_Types.MySQL)){
+			fileName=currentFile.getLocation().toString() + "_forMySQL.sql";
+		}else{
+			fileName=currentFile.getLocation().toString() + "_forOracle.sql";
+		}
+		
+		
+		fw = new FileWriter(fileName);
 		bw = new BufferedWriter(fw);
 		script = new PrintWriter(bw);
 		script.println("-- iTrace SQL Script Generation --" );
@@ -66,10 +93,19 @@ public class ToSQL {
 		script.print(query);
 		
 		for (int i = 0; i< args.length; i++){
-			if (i!=args.length-1){
-				script.print("\"" + args[i] + "\",");
+			
+			if (Constants.database_Type.equals(Constants.Database_Types.MySQL)) {
+				if (i!=args.length-1){
+					script.print("\"" + args[i] + "\",");
+				}else{
+					script.print("\"" + args[i] + "\"");
+				}
 			}else{
-				script.print("\"" + args[i] + "\"");
+				if (i!=args.length-1){
+					script.print("'" + args[i] + "',");
+				}else{
+					script.print("'" + args[i] + "'");
+				}
 			}
 		}
 		
@@ -88,12 +124,14 @@ public class ToSQL {
 		
 		currentFile = file;
 		modelName = currentFile.getFullPath().toString();
-		
+				
 		//Cronometramos el tiempo
 		
 		MeasureTime time = new MeasureTime("To SQL");
 		time.start();
-				
+		
+		init();
+		
 		// ---- Leemos el modelo existente --------
 		
 				ITracePackage.eINSTANCE.eClass();
@@ -237,7 +275,7 @@ public class ToSQL {
 					// DML para TraceLinkElement desde Model
 			 		
 			 		query = str_DMLInsert_TraceLinkElement;
-			 		String param_tle[] = new String[7];
+			 		String param_tle[] = new String[8];
 			 		
 			 		param_tle[0] = EcoreUtil.generateUUID().toString(); // Universal Unique ID
 			 		param_tle[1] = EcoreUtil.getURI(tle).toString();  // URI
@@ -245,6 +283,7 @@ public class ToSQL {
 			 		param_tle[3] = tle.getType(); // objectType
 			 		
 			 		param_tle[5] = EcoreUtil.getURI(tle.getModel()).toString(); // model
+			 		param_tle[7] = param_art[3] + param_tle[2];
 					
 			 		if (tle instanceof SourceElement) {
 						SourceElement tlse = (SourceElement) tle;
@@ -277,7 +316,7 @@ public class ToSQL {
 					
 					// DML para Block desde Code		 		
 					query = str_DMLInsert_Block;
-					String param_block[] = new String[9];
+					String param_block[] = new String[10];
 							 		
 					param_block[0] = EcoreUtil.generateUUID().toString(); // Universal Unique ID
 					param_block[1] = EcoreUtil.getURI(block).toString();  // Block
@@ -287,7 +326,8 @@ public class ToSQL {
 					param_block[5] = String.valueOf(block.getStartColumn()); // start column		
 					param_block[6] = String.valueOf(block.getEndColumn()); // end column
 					param_block[7] = EcoreUtil.getURI(code).toString(); //Artefact
-					param_block[8] = block.getTraceLink().toString(); // TraceLink
+					param_block[8] = EcoreUtil.getURI(block.getTraceLink()).toString(); 
+					param_block[9] = param_art[3]+param_block[0]; // id 	
 					
 					// Almacenamos en la bd los trace link elements
 			 		addStatement(query, param_block);

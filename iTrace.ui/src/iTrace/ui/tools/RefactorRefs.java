@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+
 import iTrace.Artefact;
 import iTrace.ITracePackage;
 import iTrace.Model;
@@ -66,10 +68,7 @@ public class RefactorRefs {
 			 			
 			 			tle.setRef(newRef[1]);
 			 			tle.setObject(null);
-			 		
-			 			//System.out.println(" Valor del ref: " + tle.getRef().toString());
-			 			//System.out.println(" Valor del obj: " +  EcoreUtil.getURI(tle.getObject()).toString());
-			 		
+			 			
 			 			// Now save the content.
 			 			try {
 			 				resource.save(Collections.EMPTY_MAP);
