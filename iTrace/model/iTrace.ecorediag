@@ -79,6 +79,10 @@
         <element xmi:type="ecore:EAttribute" href="iTrace.ecore#//TraceLinkElement/ref"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_mAH4sctKEeGyxL8RSiYD6A"/>
       </children>
+      <children xmi:type="notation:Node" xmi:id="_OuEhsDAXEeK71IXjEDc0Xw" type="2001">
+        <element xmi:type="ecore:EAttribute" href="iTrace.ecore#//TraceLinkElement/name"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_OuEhsTAXEeK71IXjEDc0Xw"/>
+      </children>
       <children xmi:type="notation:Node" xmi:id="_kdDkIRXgEeKWJ_HlLhb-bQ" type="2001">
         <element xmi:type="ecore:EAttribute" href="iTrace.ecore#//TraceLinkElement/type"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_kdELMBXgEeKWJ_HlLhb-bQ"/>
@@ -487,7 +491,7 @@
   </edges>
   <edges xmi:type="notation:Edge" xmi:id="_mAVUHMtKEeGyxL8RSiYD6A" type="3002" source="_mAGDgstKEeGyxL8RSiYD6A" target="_mAMxNMtKEeGyxL8RSiYD6A">
     <children xmi:type="notation:Node" xmi:id="_mAVUIMtKEeGyxL8RSiYD6A" type="4011">
-      <layoutConstraint xmi:type="notation:Location" xmi:id="_mAVUIctKEeGyxL8RSiYD6A" x="-28" y="-7"/>
+      <layoutConstraint xmi:type="notation:Location" xmi:id="_mAVUIctKEeGyxL8RSiYD6A" x="-24" y="-17"/>
     </children>
     <children xmi:type="notation:Node" xmi:id="_mAV7IMtKEeGyxL8RSiYD6A" type="4012">
       <layoutConstraint xmi:type="notation:Location" xmi:id="_mAV7IctKEeGyxL8RSiYD6A" x="1" y="8"/>

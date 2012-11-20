@@ -262,13 +262,22 @@ public interface ITracePackage extends EPackage {
 	int TRACE_LINK_ELEMENT__MODEL = 1;
 
 	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRACE_LINK_ELEMENT__NAME = 2;
+
+	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TRACE_LINK_ELEMENT__TYPE = 2;
+	int TRACE_LINK_ELEMENT__TYPE = 3;
 
 	/**
 	 * The feature id for the '<em><b>Object</b></em>' reference.
@@ -277,7 +286,7 @@ public interface ITracePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TRACE_LINK_ELEMENT__OBJECT = 3;
+	int TRACE_LINK_ELEMENT__OBJECT = 4;
 
 	/**
 	 * The number of structural features of the '<em>Trace Link Element</em>' class.
@@ -286,7 +295,7 @@ public interface ITracePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TRACE_LINK_ELEMENT_FEATURE_COUNT = 4;
+	int TRACE_LINK_ELEMENT_FEATURE_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link iTrace.impl.M2MLinkImpl <em>M2M Link</em>}' class.
@@ -854,6 +863,15 @@ public interface ITracePackage extends EPackage {
 	int SOURCE_ELEMENT__MODEL = TRACE_LINK_ELEMENT__MODEL;
 
 	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOURCE_ELEMENT__NAME = TRACE_LINK_ELEMENT__NAME;
+
+	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -916,6 +934,15 @@ public interface ITracePackage extends EPackage {
 	 * @ordered
 	 */
 	int TARGET_ELEMENT__MODEL = TRACE_LINK_ELEMENT__MODEL;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TARGET_ELEMENT__NAME = TRACE_LINK_ELEMENT__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute.
@@ -1313,6 +1340,17 @@ public interface ITracePackage extends EPackage {
 	 * @generated
 	 */
 	EReference getTraceLinkElement_Model();
+
+	/**
+	 * Returns the meta object for the attribute '{@link iTrace.TraceLinkElement#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see iTrace.TraceLinkElement#getName()
+	 * @see #getTraceLinkElement()
+	 * @generated
+	 */
+	EAttribute getTraceLinkElement_Name();
 
 	/**
 	 * Returns the meta object for the attribute '{@link iTrace.TraceLinkElement#getType <em>Type</em>}'.
@@ -1948,6 +1986,14 @@ public interface ITracePackage extends EPackage {
 		 * @generated
 		 */
 		EReference TRACE_LINK_ELEMENT__MODEL = eINSTANCE.getTraceLinkElement_Model();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRACE_LINK_ELEMENT__NAME = eINSTANCE.getTraceLinkElement_Name();
 
 		/**
 		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.

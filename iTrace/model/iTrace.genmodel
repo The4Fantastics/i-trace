@@ -61,6 +61,7 @@
     <genClasses image="false" ecoreClass="iTrace.ecore#//TraceLinkElement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute iTrace.ecore#//TraceLinkElement/ref"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference iTrace.ecore#//TraceLinkElement/model"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute iTrace.ecore#//TraceLinkElement/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute iTrace.ecore#//TraceLinkElement/type"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference iTrace.ecore#//TraceLinkElement/object"/>
     </genClasses>

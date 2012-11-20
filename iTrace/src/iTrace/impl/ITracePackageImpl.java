@@ -414,7 +414,7 @@ public class ITracePackageImpl extends EPackageImpl implements ITracePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTraceLinkElement_Type() {
+	public EAttribute getTraceLinkElement_Name() {
 		return (EAttribute)traceLinkElementEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -423,8 +423,17 @@ public class ITracePackageImpl extends EPackageImpl implements ITracePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getTraceLinkElement_Type() {
+		return (EAttribute)traceLinkElementEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getTraceLinkElement_Object() {
-		return (EReference)traceLinkElementEClass.getEStructuralFeatures().get(3);
+		return (EReference)traceLinkElementEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -837,6 +846,7 @@ public class ITracePackageImpl extends EPackageImpl implements ITracePackage {
 		traceLinkElementEClass = createEClass(TRACE_LINK_ELEMENT);
 		createEAttribute(traceLinkElementEClass, TRACE_LINK_ELEMENT__REF);
 		createEReference(traceLinkElementEClass, TRACE_LINK_ELEMENT__MODEL);
+		createEAttribute(traceLinkElementEClass, TRACE_LINK_ELEMENT__NAME);
 		createEAttribute(traceLinkElementEClass, TRACE_LINK_ELEMENT__TYPE);
 		createEReference(traceLinkElementEClass, TRACE_LINK_ELEMENT__OBJECT);
 
@@ -951,6 +961,7 @@ public class ITracePackageImpl extends EPackageImpl implements ITracePackage {
 		initEClass(traceLinkElementEClass, TraceLinkElement.class, "TraceLinkElement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTraceLinkElement_Ref(), ecorePackage.getEString(), "ref", null, 1, 1, TraceLinkElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTraceLinkElement_Model(), this.getModel(), this.getModel_Elements(), "model", null, 1, 1, TraceLinkElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTraceLinkElement_Name(), ecorePackage.getEString(), "name", null, 0, 1, TraceLinkElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getTraceLinkElement_Type(), ecorePackage.getEString(), "type", null, 0, 1, TraceLinkElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getTraceLinkElement_Object(), ecorePackage.getEObject(), null, "object", null, 0, 1, TraceLinkElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
