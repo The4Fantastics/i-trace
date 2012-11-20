@@ -1,16 +1,12 @@
 package iTrace.ui;
 
-import iTrace.Mode;
-import iTrace.Type;
-import iTrace.ui.data.TraceLinkData;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 
 public class Constants {
 
+	//Enumerados y constantes para la BD de destino
+	public enum Database_Types{MySQL,Oracle};
+	public static String database_Type = Database_Types.Oracle.toString();
+	
 	//
 	
 	public static String iTrace_Prompt = "iTrace:>";
