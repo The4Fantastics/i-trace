@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<weaver>
+<weaving>
+<relative-path>/M2DATBD/models/omdb.amw</relative-path>
+<panel>DefaultWeavingPanelExtension</panel>
+<wmodel>AnnotationModel</wmodel>
+</weaving>
+<metamodels>
+<plugin/>
+<local/>
+<complete>/M2DATDB/metamodels/ORAnnotationMeta.ecore</complete>
+</metamodels>
+<woven id="0">
+<model-relative-path>/M2DATDB/models/omdb.uml</model-relative-path>
+<metamodel-relative-path>/M2DATDB/metamodels/UML.ecore</metamodel-relative-path>
+<reference>referencedModel</reference>
+<title>referencedModel</title>
+<panel>DefaultWovenPanelExtension</panel>
+<wmodelref>AnnotatedModel</wmodelref>
+</woven>
+</weaver>

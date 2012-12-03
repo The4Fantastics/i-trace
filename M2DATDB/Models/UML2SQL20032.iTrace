@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<iTrace:iTraceModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iTrace="org.eclipse.kybele.iTrace" version="1.0" projectName="UML2SQL2003">
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="17-11-2012" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Package2Schema">
+    <sourceElements ref="_jopigPxQEd2qTILnYStnJQ" model="//@artefacts.0" type="UML!Package"/>
+    <targetElements ref="/" model="//@artefacts.1" type="SQL2003!Schema"/>
+  </traceLinks>
+  <artefacts xsi:type="iTrace:Model" aspect="Content" name="UML" abstractionLevel="PIM" path="/M2DATDB/Models/omdb.uml" elements="//@traceLinks.0/@sourceElements.0" metamodel="/M2DATDB/Metamodels/UML.ecore"/>
+  <artefacts xsi:type="iTrace:Model" aspect="Content" name="SQL2003" abstractionLevel="PSM" path="/M2DATDB/Models/omdb.sql2003" elements="//@traceLinks.0/@targetElements.0" metamodel="/M2DATDB/Metamodels/SQL2003.ecore"/>
+</iTrace:iTraceModel>
