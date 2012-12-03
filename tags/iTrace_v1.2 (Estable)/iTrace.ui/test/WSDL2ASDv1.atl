@@ -1,0 +1,193 @@
+module WSDL2ASDv1;
+create OUT : ASD from IN : WSDL;
+
+uses ASDHelpersv1;
+
+-- Rule 'Definitions2ServiceDescription'
+-- Create ASD ServiceDescription from WSDL Root Definitions
+
+rule Definitions2ServiceDescription {
+	from
+		i : WSDL!Definitions
+	to
+		o : ASD!ServiceDescription (  
+			name <- i.name,
+			operations <- if i.portType <> OclUndefined then 
+						  i.portType->collect(e| e.operation) else OclUndefined
+						  endif,
+			infotypes <- if i.types <> OclUndefined then
+							if i.types.schema<> OclUndefined then
+								i.types.schema->collect(e|e.element)
+							else
+								OclUndefined
+							endif
+						else
+							OclUndefined
+						endif
+		)	
+}
+
+-- Rule 'PortTypeOperation2Operation'
+-- Create ASD Operation from WSDL PortType Operation
+
+rule PortTypeOperation2Operation {
+	from
+		i : WSDL!PortTypeOperation
+	to
+		o : ASD!Operation (  
+				name <- i.name,
+				messagePattern <- thisModule.getMessagePattern(i),
+				contents <- Sequence{i.input,i.output,i.fault}
+		)
+}
+
+-- Rule 'PortTypeInput2Message'
+-- Create ASD Message from WSDL PortType Input 
+rule PortTypeInput2Message{
+	from
+		i : WSDL!PortTypeInput
+	to
+		o : ASD!Message(  
+			name <- if i.message<>OclUndefined then i.message.name else OclUndefined
+					endif,
+			role <- #input,
+			subset <- #req,
+			infoType <- if i.message<>OclUndefined then
+							if i.message.part <> OclUndefined then 
+								thisModule.getInfoType(i.message.part)
+							else
+								OclUndefined
+							endif	
+						else
+							OclUndefined
+						endif	
+		)
+}
+
+-- Rule 'PortTypeOutput2Message'
+-- Create ASD Message from WSDL PortType Output
+
+rule PortTypeOutput2Message{
+	from
+		i : WSDL!PortTypeOutput
+	to
+		o : ASD!Message(  
+			name <- if i.message<>OclUndefined then i.message.name else OclUndefined
+					endif,
+			role <- #output,
+			subset <- #pro,
+			infoType <- if i.message<>OclUndefined then
+							if i.message.part <> OclUndefined then 
+								thisModule.getInfoType(i.message.part)
+							else
+								OclUndefined
+							endif	
+						else
+							OclUndefined
+						endif				
+		)
+}
+
+-- Rule 'PortTypeFault2Message'
+-- Create ASD Message from WSDL PortType Fault that are children of WSDL PortType
+rule PortTypeFault2Message{
+	from
+		i : WSDL!PortTypeFault
+	to
+		o : ASD!Message(  
+			name <- if i.message<>OclUndefined then i.message.name else OclUndefined
+					endif,
+			role <- #fault,
+			subset <- #pro,
+			infoType <- if i.message<>OclUndefined then
+							if i.message.part <> OclUndefined then 
+								thisModule.getInfoType(i.message.part)
+							else
+								OclUndefined
+							endif	
+						else
+							OclUndefined
+						endif	 
+		)
+}
+
+-- Rule 'ElementImported2InfoTypeImported'
+-- Create ASD InfoTypeImported from WSDL ElementImported
+rule ElementImported2InfoTypeImported{
+	from
+		i : WSDL!ElementImported(
+			i.oclType()= WSDL!ElementImported and i.name<>'#none'
+		)
+	to
+		o : ASD!InfoTypeImported(  
+			name <- i.name,
+			url <- i.url,
+			valueType <- thisModule.getType(i.name),
+			service <- WSDL!Definitions.allInstances().first(),
+			subset <- if o.message <> Sequence {} then o.message->collect(e|e.subset)->first() else #unset endif
+		)
+}
+
+-- Rule 'ComplexType2InfoType'
+-- Create ASD InfoType from WSDL ComplexType that are children of WSDL Schema
+rule ComplexType2InfoType{
+	from
+		i : WSDL!ComplexType(
+			i.refImmediateComposite().oclType()= WSDL!Schema
+		)
+	to
+		o : ASD!InfoType(  
+			name <- i.name,
+			infoType <- thisModule.getChildrenType(i),
+			service <- WSDL!Definitions.allInstances().first(),
+			subset <- if o.message <> Sequence{} then o.message->collect(e|e.subset)->first() else #unset endif
+		)
+}
+
+-- Rule 'Element2InfoType'
+-- Create ASD InfoType from WSDL Element 
+rule Element2InfoType{
+	from
+		i : WSDL!Element(
+			i.oclType()= WSDL!Element 
+		)
+	to
+		o : ASD!InfoType(  
+			name <- i.name,
+			valueType <- thisModule.getValueType(i),
+			valueRange <- thisModule.getValueRange(i),
+			infoType <- if thisModule.getChildrenType(i.complexType)=OclUndefined then Sequence{} else thisModule.getChildrenType(i.complexType) endif,
+			ref <- if i.ref <> OclUndefined then 
+						i.ref 
+				   else 
+				   		if i.type.oclIsTypeOf(WSDL!ComplexType) then
+							i.type
+						else
+							if i.type.oclIsTypeOf(WSDL!SimpleType) then
+								thisModule.getRefComplexTypeOfSimpleType(i.type)
+							else
+								OclUndefined
+							endif
+						endif
+				   endif,
+			subset <- if o.message <> Sequence{} then o.message->collect(e|e.subset)->first() else #unset endif
+		)
+}
+
+-- Rule 'SimpleType2InfoType'
+-- Create ASD InfoType from SimpleType that the base is a primitive type.
+rule SimpleType2InfoType{
+	from
+		i : WSDL!SimpleType(
+			thisModule.getPrimitiveTypeOfSimpleType(i) <> OclUndefined
+		)
+	to
+		o : ASD!InfoType(  
+			name <- i.name,
+			valueType <- thisModule.getType(thisModule.getPrimitiveTypeOfSimpleType(i)),
+			valueRange <- thisModule.getRange(thisModule.getMaxOccursOfSimpleType(i),
+			thisModule.getMinOccursOfSimpleType(i)),
+			service <- WSDL!Definitions.allInstances().first(),
+			subset <- if o.message <> Sequence{} then o.message->collect(e|e.subset)->first() else #unset endif
+		)
+}
