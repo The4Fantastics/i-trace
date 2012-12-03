@@ -1,12 +1,9 @@
-/**
- * <copyright>
- * </copyright>
- *
- * $Id$
- */
 package iTrace.presentation;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -55,11 +52,14 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.TextPresentation;
+import org.eclipse.jface.text.TextViewer;
 import org.eclipse.swt.SWT;
 
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyleRange;
 
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
@@ -67,6 +67,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 
 
@@ -157,6 +158,8 @@ import org.eclipse.emf.edit.ui.util.EditUIUtil;
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
 
 import iTrace.Artefact;
+import iTrace.M2MLink;
+import iTrace.TargetElement;
 import iTrace.TraceLink;
 import iTrace.TraceLinkElement;
 import iTrace.impl.ArtefactImpl;
@@ -194,6 +197,13 @@ public class ITraceEditorMulti
 	protected TreeViewer sourceViewer;
 	protected TreeViewer iTraceViewer;
 	protected TreeViewer targetViewer;
+	protected TextViewer textViewer;
+
+	// Save Last Block
+	protected iTrace.impl.BlockImpl lastBlock = null;
+	protected Boolean DataCharged = false;
+	
+	SashForm topSashForm = null;
 	
 	/**
 	 * This is the one adapter factory used for providing views of the model.
@@ -722,6 +732,7 @@ public class ITraceEditorMulti
 		commandStack.addCommandStackListener
 			(new CommandStackListener() {
 				 public void commandStackChanged(final EventObject event) {
+					 
 					 getContainer().getDisplay().asyncExec
 						 (new Runnable() {
 							  public void run() {
@@ -1021,7 +1032,7 @@ public class ITraceEditorMulti
 
 		//Nuevas/////////////////////////////////////////////////////////////
 		Composite container = getContainer();
-		final SashForm topSashForm = new SashForm(container,SWT.HORIZONTAL);
+		topSashForm = new SashForm(container,SWT.HORIZONTAL);
 		/////////////////////////////////////////////////////////////////////
 		
 		
@@ -1169,6 +1180,32 @@ public class ITraceEditorMulti
 			targetViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
 			targetViewer.addDragSupport(DND.DROP_LINK , transfers, new ViewerDragAdapter(targetViewer));
 			
+		
+
+			///////////////////////////////////////////////////////////////////////////
+			///////////////////////////////////////////////////////////////////////////
+			// EXTENSIÓN M2T														 //
+			// ^^^^^^^^^^^^^                                                         //
+			// Revisión : 2012.11.28.13.11											 //
+			// Autor:     Ángel M.												     //
+			///////////////////////////////////////////////////////////////////////////
+			
+			// Creamos un TextViewer para mostrar el código
+			textViewer = new TextViewer(topSashForm, SWT.MULTI | SWT.V_SCROLL);
+			
+			// Le asignamos un documento vacío en un primer momento
+			textViewer.setDocument(new Document(""));
+			
+			// Ocultamos el TextViewer hasta que sea usado.
+			int []sizes = {33,33,34,0};
+			this.topSashForm.setWeights(sizes);
+			
+			///////////////////////////////////////////////////////////////////////////
+			///////////////////////////////////////////////////////////////////////////
+			///////////////////////////////////////////////////////////////////////////
+			///////////////////////////////////////////////////////////////////////////
+			
+			
 			//ArrayList<String> paths_target=new ArrayList<String>();
 			for(int i=0;i<targets.size();i++){
 				if (targets.get(i) instanceof ModelImpl){
@@ -1248,6 +1285,9 @@ public class ITraceEditorMulti
 					 updateProblemIndication();
 				 }
 			 });
+		
+
+		
 	}
 			
 	
@@ -1693,7 +1733,6 @@ public class ITraceEditorMulti
 	 */
 	public void setSelection(ISelection selection) {
 		editorSelection = selection;
-
 		for (ISelectionChangedListener listener : selectionChangedListeners) {
 			listener.selectionChanged(new SelectionChangedEvent(this, selection));
 		}
@@ -1718,8 +1757,149 @@ public class ITraceEditorMulti
 						break;
 					}
 					case 1: {
-						String text = new AdapterFactoryItemDelegator(adapterFactory).getText(collection.iterator().next());
+						
+						///////////////////////////////////////////////////////////////////////////
+						///////////////////////////////////////////////////////////////////////////
+						// EXTENSIÓN M2T														 //
+						// ^^^^^^^^^^^^^                                                         //
+						// Revisión : 2012.11.28.13.11											 //
+						// Autor:     Ángel M.												     //
+						///////////////////////////////////////////////////////////////////////////
+						///////////////////////////////////////////////////////////////////////////		
+						
+						// 1º - Obtenemos el objeto que se selecciona en cualquiera de los árboles
+						Object obj = collection.iterator().next();
+						
+						String text = new AdapterFactoryItemDelegator(adapterFactory).getText(obj);
+						
+						// 2º - Discriminamos en base al tipo del objeto que se selecciona,
+						//      en nuestro caso, en base a un BlockImpl.
+						if (obj instanceof iTrace.impl.BlockImpl)
+						{
+							// Creamos un nuevo Document, que usaremos posteriormente para asignárselo
+							// al TextViewer
+							Document d = new Document();
+							
+							// Desencapsulamos el obj dandaloe forma de BlockImpl
+							// para poder acceder a los datos que contiene como objeto
+							iTrace.impl.BlockImpl block = (iTrace.impl.BlockImpl) obj;
+
+							// Verificamos si la información se ha cargado con anterioridad,
+							// para evitar cargas reduntantes del fichero de código.
+							if (!this.DataCharged)
+							{
+								// Visualizamos el TextViewer, para ello ocultamos el 3º TreeViewer, y
+								// mostramos el TextViewer. Esta operación se realiza mediante porcentajes
+								// sobre el contenedor principal, el topSashForm.
+								int []sizes = {33,33,0,34};
+								this.topSashForm.setWeights(sizes);
+
+								// Procedemos a la carga del fichero asociado al BlockImpl
+								FileReader fr = null;
+								
+								// Declaramos una variable String para guardar los datos leidos desde el fichero
+								String file = "";
+								try
+								{									
+									// Obtenemos el path del fichero, a través del objeto Code, que nos suministra
+									// el método getCode()
+									String path = block.getCode().getPath()+block.getCode().getName();
+									
+									// Leemos el fichero "caracter a caracter", para no afectar la integridad
+									// del fichero orignial, y evitarnos problemas de offsets
+									fr = new FileReader(path); 
+									BufferedReader br = new BufferedReader(fr); 
+									int s; 
+									while((s = br.read()) > 0) { 
+										file += (char) s;				
+									}
+									fr.close();
+									
+									// Asignamos el contenido leido al TextViewer a través de su Document
+									this.textViewer.getDocument().set(file);
+
+									// Ponemos el flag DataCharged a true para evitar lecturas redundantes
+									this.DataCharged = true;
+									
+								}
+								catch (Exception e)
+								{
+
+
+								}
+								finally
+								{
+									// En caso de que surja algún problema controlamos la excepción
+									try {
+										fr.close();
+									} catch (IOException e) {
+										
+										e.printStackTrace();
+									}	
+								}
+							}
+
+							// PERSONALIZACIÓN DEL EDITOR DE TEXTO EN BASE A LAS SELECCIONES DE BLOOQUES
+							// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+							
+							// Definimos una serie de objetos Color, para tener a primera vista que colores
+							// vamos a usar con el editor
+							StyleRange Stylerng = null;
+							
+							// Color Blanco, para poner el texto seleccionado o el fondo en blanco
+							Color whiteFont = new Color(null, 255,255,255);
+							
+							// Color Negro, para restaurar el color original de la fuente cuando se deselecciona
+							Color blackFont = new Color(null, 0,0,0);			
+							
+							// Color Azul, para el fondo cuando se selecciona un bloque
+							Color blueBackground = new Color(null, 3,13,126);
+
+							// Obtenemos el document del TextViewer para personalizarlo
+							d = (Document) this.textViewer.getDocument();
+							
+							// Creamos un TextPresentation para personalizar el Document
+							TextPresentation tpp = new TextPresentation();
+
+							// Si ya se ha realizado alguna seleccion previa, eliminamos el formato que tuviera
+							if (this.lastBlock != null)
+							{
+								try
+								{
+									Stylerng = new StyleRange(d.getLineOffset(lastBlock.getStartLine()-1), lastBlock.getEndColumn(), blackFont, whiteFont, SWT.NORMAL);
+									tpp.replaceStyleRange(Stylerng);
+									this.textViewer.changeTextPresentation(tpp, false);
+								}
+								catch (Exception e)
+								{
+									
+								}
+
+							}
+								
+							// Estilizamos el Document, en base al Block que se ha seleccionado, y personalizamos texto
+							try
+							{
+								Stylerng = new StyleRange(d.getLineOffset(block.getStartLine()-1), block.getEndColumn(), whiteFont, blueBackground, SWT.BOLD);
+								tpp.replaceStyleRange(Stylerng);
+								this.textViewer.changeTextPresentation(tpp, false);
+							}
+							catch (Exception e)
+							{
+								
+							}
+
+							// Salvamos el ultimo bloque seleccionado.
+							this.lastBlock = block;
+						} // Fin del IF
+						
+						///////////////////////////////////////////////////////////////////////////
+						///////////////////////////////////////////////////////////////////////////
+						///////////////////////////////////////////////////////////////////////////
+						///////////////////////////////////////////////////////////////////////////
+						
 						statusLineManager.setMessage(getString("_UI_SingleObjectSelected", text));
+						
 						break;
 					}
 					default: {
@@ -1840,7 +2020,6 @@ public class ITraceEditorMulti
 	public void handleContentSourceSelection(ISelection selection) {
 		ArrayList<TraceLinkElement> traceElements = new ArrayList<TraceLinkElement>();
 		String id = null;
-		
 		if(currentViewerPane != null
 				&& getViewer().equals(sourceViewer)
 				&&!selection.isEmpty()
@@ -1943,6 +2122,15 @@ public class ITraceEditorMulti
 	public void handleContentiTraceSelection(ISelection selection) {
 		ArrayList<Object> sourceElements = new ArrayList<Object>();
 		ArrayList<Object> targetElements = new ArrayList<Object>();
+		////////////
+		/// ANGEL
+		///////////
+		/*if (((TreeSelection)selection).getFirstElement().toString() == "M2MLink?")
+		{
+			M2MLink m2m = (M2MLink) ((TreeSelection)selection).getFirstElement();
+			TargetElement Target = m2m.getTargetElements().get(0);
+
+		}*/
 
 		// Get source and target elements from traceability model
 		if (currentViewerPane != null
