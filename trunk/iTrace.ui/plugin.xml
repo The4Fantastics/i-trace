@@ -58,6 +58,13 @@
              name="Transformations to iTrace"
              public="true">
        </launchConfigurationType>
+       <launchConfigurationType
+             delegate="iTrace.ui.transformations.launchs.MXML2KDM.MXML2KDM_LaunchConfigurationDelegate"
+             id="iTrace.ui.transformations.MXML2KDM_LCT"
+             modes="run, debug"
+             name="Transformations to iTrace"
+             public="true">
+       </launchConfigurationType>
     </extension>
     <extension
           point="org.eclipse.debug.ui.launchConfigurationTypeImages">
@@ -66,6 +73,11 @@
              icon="icons/iTraceModel.png"
              id="iTrace.ui.transformations.MofScriptTrace_LCTI">
        </launchConfigurationTypeImage>
+       <launchConfigurationTypeImage
+             configTypeID="iTrace.ui.transformations.MXML2KDM_LCT"
+             icon="icons/iTraceModel.png"
+             id="iTrace.ui.transformations.MXML2KDM_LCTI">
+       </launchConfigurationTypeImage>
     </extension>
     <extension
           point="org.eclipse.debug.ui.launchConfigurationTabGroups">
@@ -73,6 +85,11 @@
              class="iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_LaunchConfigurationTabGroup"
              id="iTrace.ui.transformations.MofScriptTrace_LCTG"
              type="iTrace.ui.transformations.MofScriptTrace_LCT">
+       </launchConfigurationTabGroup>
+       <launchConfigurationTabGroup
+             class="iTrace.ui.transformations.launchs.MXML2KDM.MXML2KDM_LaunchConfigurationTabGroup"
+             id="iTrace.ui.transformations.MXML2KDM_LCTG"
+             type="iTrace.ui.transformations.MXML2KDM_LCT">
        </launchConfigurationTabGroup>
     </extension>
     <extension
@@ -109,6 +126,39 @@
                </with>
             </enablement>
          </contextualLaunch>
+       </shortcut>
+       <shortcut
+             class="iTrace.ui.transformations.launchs.MofScriptTrace.MXML2KDM_Shortcut"
+             icon="icons/ok.png"
+             id="iTrace.ui.transformations.launch.MXML2KDM_Shortcut"
+             label="MXML2KDM -&gt; iTrace"
+             modes="run, debug">
+          <configurationType
+                id="iTrace.ui.transformations.MofScriptTrace_LCT">
+          </configurationType>
+          <contextualLaunch>
+             <contextLabel
+                   label="MofScript Trace -&gt; iTrace"
+                   mode="run">
+             </contextLabel>
+             <enablement>
+                <with
+                      variable="selection">
+                   <count
+                         value="1">
+                   </count>
+                   <iterate>
+                      <instanceof
+                            value="org.eclipse.core.resources.IFile">
+                      </instanceof>
+                      <test
+                            property="org.eclipse.debug.ui.matchesPattern"
+                            value="*.traceabilitymodel">
+                      </test>
+                   </iterate>
+                </with>
+             </enablement>
+          </contextualLaunch>
        </shortcut>
     </extension>
 

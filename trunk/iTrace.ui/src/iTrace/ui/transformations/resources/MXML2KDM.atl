@@ -1,0 +1,607 @@
+module MXML2KDM2iTrace;
+create OUT : iTraceModel from IN : MXML2KDM, KDM : KDM_MODEL, MXML: MXML_MODEL;
+
+
+-- -------------------------------------------------------------------------------------
+uses parameters;
+-- -------------------------------------------------------------------------------------
+
+helper def : getParameter(name : String) : String =
+	XML!Element.allInstancesFrom('parameters')->select(e |
+		e.name = 'param'
+	)->select(e |
+		e.getAttrVal('name') = name
+	)->first().getAttrVal('value');
+
+
+helper def : get_ProjectName() : String = 'MXML2KDM2';
+
+helper def : get_Version() : String = '1.0';
+
+helper def : get_Comment() : String = 'MediniQVT - MXML2KDM Use Case';
+
+helper def : get_CreatedOn() : String = '23-08-2012';
+
+helper def : get_TechnicalBinding() : String = 'MediniQVT';
+
+helper def : get_Mode() : String = 'Automatic';
+
+helper def : get_Type() : String = 'Transformation';
+
+helper def : get_CreatedBy() : String = 'iTrace';
+
+helper def : get_Path_MXML() : String = '/MXML2KDM/procesos/procesos_g2/proceso_g2_n1/proceso_g2_n1_t100/Process 1.mxml';
+
+helper def : get_Path_KDM() : String = '/MXML2KDM/procesos/procesos_g2/proceso_g2_n1/proceso_g2_n1_t100/Process.kdm';
+
+helper def : get_Metamodel_MXML() : String = '/MXML2KDM/metamodels/MXML.ecore';
+
+helper def : get_Metamodel_KDM() : String = '/MXML2KDM/metamodels/KDM.ecore';
+
+
+-- -------------------------------------------------------------------------------------
+
+
+entrypoint rule CreateTraceModelRoot (){
+	to
+		root : iTraceModel!iTraceModel
+	do {
+		root.projectName <- thisModule.get_ProjectName();
+		root.version <- thisModule.get_Version();
+		thisModule.getTraceModelRoot <- root;
+		thisModule.createSourceModel();
+		thisModule.createTargetModel();
+		thisModule.createSpecificFeature();
+		thisModule.createFeature_G();
+		thisModule.createFeature_N();
+		thisModule.createFeature_T();
+		thisModule.createFeature_NumberNewElements();
+		thisModule.createFeature_NumberNewFeatures();
+		thisModule.createFeature_TimeStoringTraces();
+		thisModule.createFeature_TimeQVTTransformation();
+	}
+}
+
+helper def: getTraceModelRoot() : iTraceModel!iTraceModel = OclUndefined;
+
+helper def: getSourceModel() : iTraceModel!Model = OclUndefined;
+
+helper def: getTargetModel() : iTraceModel!Model = OclUndefined;
+
+helper def: getSpecificFeature() : iTraceModel!SpecificFeature = OclUndefined;
+
+rule createSourceModel(){
+  	to
+		sourceModel : iTraceModel!Model (
+  			aspect <- 'Behaviour',
+  			name <- 'MXML',
+			path <- thisModule.get_Path_MXML(),
+			abstractionLevel <- 'PDM',
+			metamodel <- thisModule.get_Metamodel_MXML(),
+			iTraceModel <- thisModule.getTraceModelRoot
+			
+		)
+     do {
+     	
+     	thisModule.getSourceModel <- sourceModel;
+     }
+  }
+
+	
+rule createTargetModel(){
+  	to
+		targetModel : iTraceModel!Model (
+  			aspect <- 'Behaviour',
+  			name <- 'KDM',
+			path <- thisModule.get_Path_KDM(),
+			abstractionLevel <- 'PDM',
+			metamodel <- thisModule.get_Metamodel_KDM(),
+			iTraceModel <- thisModule.getTraceModelRoot
+		)
+  		do {
+     		thisModule.getTargetModel <- targetModel;
+     }
+  }
+
+
+rule createSpecificFeature() {
+	to
+		 sf : iTraceModel!SpecificFeature (
+		 	  groupName <- 'Statistics',
+		 	  iTraceModel <- thisModule.getTraceModelRoot
+	)
+	do
+		{
+		 	thisModule.getSpecificFeature <- sf;
+		}
+	
+}
+
+
+rule createFeature_G (){
+	to
+		 f : iTraceModel!Feature (
+		 	 attribute <- 'g',
+		 	 value <- thisModule.get_Value_G(),
+			 specificFeature <- thisModule.getSpecificFeature
+		)
+}
+
+	
+rule createFeature_N (){
+	to
+		  f : iTraceModel!Feature (
+		 	  attribute <- 'n',
+		      value <- thisModule.get_Value_N(),
+			  specificFeature <- thisModule.getSpecificFeature
+		  )
+}
+
+rule createFeature_T (){
+	to
+		 f : iTraceModel!Feature (
+		 	  attribute <- 't',
+		 	  value <- thisModule.get_Value_T(),
+		      specificFeature <- thisModule.getSpecificFeature
+		  )
+}
+	
+rule createFeature_NumberNewElements (){
+	to
+		 f : iTraceModel!Feature (
+		 	 attribute <- 'numberNewElements',
+		 	 value <- thisModule.get_Value_NumberNewElements(),
+		 	 specificFeature <- thisModule.getSpecificFeature
+		  )
+}
+
+rule createFeature_NumberNewFeatures (){
+	to
+		 f : iTraceModel!Feature (
+		 	 attribute <- 'numberNewFeatures',
+		     value <- thisModule.get_Value_NumberNewFeatures(),
+		     specificFeature <- thisModule.getSpecificFeature
+		  )
+}
+
+rule createFeature_TimeStoringTraces (){
+	to
+		 f : iTraceModel!Feature (
+		 	 attribute <- 'timeStoringTraces',
+		     value <- thisModule.get_Value_TimeStoringTraces(),
+		 	 specificFeature <- thisModule.getSpecificFeature
+		  )
+}
+
+rule createFeature_TimeQVTTransformation (){
+	to
+		 f : iTraceModel!Feature (
+		 	 attribute <- 'timeQVTTransformation',
+		     value <- thisModule.get_Value_TimeQVTTransformation(),
+		     specificFeature <- thisModule.getSpecificFeature
+		  )
+}
+
+
+
+rule auditTrailEntry2CodeElement2TraceLink {
+ from
+  	source : MXML2KDM!auditTrailEntry2CodeElement
+ to
+ 	TraceLink : iTraceModel!M2MLink (
+ 		createdOn <- thisModule.get_CreatedOn(),
+		type <- thisModule.get_Type(),
+		fromFileName <- thisModule.get_fromFileName(),
+		comment <- ' xEventName: ' + source.xEventName +
+				   ' xModelName: ' + source.xModelName +
+				   ' xProcessName: ' + source.xProcessName,
+		createdBy <- thisModule.get_CreatedBy(),
+		mode <- thisModule.get_Mode(),
+		technicalBinding <- thisModule.get_TechnicalBinding(),
+		ruleName <- 'auditTrailEntry2CodeElement',
+		
+		iTraceModel <- thisModule.getTraceModelRoot
+		), 
+	
+ 	elementSource1 : iTraceModel!SourceElement (	
+		ref <- source.proInst.__xmiID__,
+		type <- source.proInst.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+	
+	elementSource2 : iTraceModel!SourceElement (	
+ 		ref <- source.pro.__xmiID__,
+		type <- source.pro.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+	
+	elementSource3 : iTraceModel!SourceElement (	
+ 		ref <- source.wlog.__xmiID__,
+		type <- source.wlog.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+	
+	elementSource4 : iTraceModel!SourceElement (	
+ 		ref <- source.ate.__xmiID__,
+		type <- source.ate.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementSource5 : iTraceModel!SourceElement (	
+ 		ref <- source.wme.__xmiID__,
+		type <- source.wme.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementTarget1 : iTraceModel!TargetElement (	
+ 		ref <- source.eventModel.__xmiID__,
+		type <- source.eventModel.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+	
+	elementTarget2 : iTraceModel!TargetElement (	
+		ref <- source.pakage.__xmiID__,
+		type <- source.pakage.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget3 : iTraceModel!TargetElement (	
+ 		ref <- source.codeElement.__xmiID__,
+		type <- source.codeElement.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget4 : iTraceModel!TargetElement (	
+ 		ref <- source.st.__xmiID__,
+		type <- source.st.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		)
+		
+}
+
+rule auditTrailEntry2Event2TraceLink {
+ from
+  	source : MXML2KDM!auditTrailEntry2Event
+ to
+ 	TraceLink : iTraceModel!M2MLink (
+ 		createdOn <- thisModule.get_CreatedOn(),
+		type <- thisModule.get_Type(),
+		fromFileName <- thisModule.get_fromFileName(),
+		comment <- ' xEventName: ' + source.xEventName +
+				   ' xEventType: ' + source.xEventType +
+				   ' xModelName: ' + source.xModelName +
+				   ' xOriginatorName: ' + source.xOriginatorName +
+				   ' xProcessInstanceName: ' + source.xProcessInstanceName +
+				   ' xProcessName: ' + source.xProcessName,
+		createdBy <- thisModule.get_CreatedBy(),
+		mode <- thisModule.get_Mode(),
+		technicalBinding <- thisModule.get_TechnicalBinding(),
+		ruleName <- 'auditTrailEntry2event',
+		
+		iTraceModel <- thisModule.getTraceModelRoot
+		), 
+	
+ 	elementSource1 : iTraceModel!SourceElement (	
+		ref <- source.ate.__xmiID__,
+		type <- source.ate.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+	
+	elementSource2 : iTraceModel!SourceElement (	
+ 		ref <- source.originator.__xmiID__,
+		type <- source.originator.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+	
+	elementSource3 : iTraceModel!SourceElement (	
+ 		ref <- source.p.__xmiID__,
+		type <- source.p.oclType().toString(),
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+	
+	elementSource4 : iTraceModel!SourceElement (	
+ 		ref <- source.pi.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+	
+	elementSource5 : iTraceModel!SourceElement (	
+ 		ref <- source.timestamp.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementSource6 : iTraceModel!SourceElement (	
+ 		ref <- source.type.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementSource7 : iTraceModel!SourceElement (	
+ 		ref <- source.wl.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementSource8 : iTraceModel!SourceElement (	
+ 		ref <- source.wme.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementTarget1 : iTraceModel!TargetElement (	
+ 		ref <- source.dt.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+	
+	elementTarget2 : iTraceModel!TargetElement (	
+		ref <- source.eRes.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget3 : iTraceModel!TargetElement (	
+ 		ref <- source.eRes2.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget4 : iTraceModel!TargetElement (	
+ 		ref <- source.event.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget5 : iTraceModel!TargetElement (	
+ 		ref <- source.eventModel.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+	
+	elementTarget6 : iTraceModel!TargetElement (	
+		ref <- source.nextEventRelation.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget7 : iTraceModel!TargetElement (	
+ 		ref <- source.originatorTag.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget8 : iTraceModel!TargetElement (	
+ 		ref <- source.ot.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget9 : iTraceModel!TargetElement (	
+ 		ref <- source.timestampTag.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		)
+}
+		
+rule eventLog2EventModel2TraceLink {
+ from
+  	source : MXML2KDM!eventLog2eventModel
+ to
+ 	TraceLink : iTraceModel!M2MLink (
+ 		createdOn <- thisModule.get_CreatedOn(),
+		type <- thisModule.get_Type(),
+		fromFileName <- thisModule.get_fromFileName(),
+		comment <- ' xModelName: ' + source.xModelName,
+		createdBy <- thisModule.get_CreatedBy(),
+		mode <- thisModule.get_Mode(),
+		technicalBinding <- thisModule.get_TechnicalBinding(),
+		ruleName <- 'eventLog2eventModel',
+		
+		iTraceModel <- thisModule.getTraceModelRoot
+		), 
+	
+ 	elementSource1 : iTraceModel!SourceElement (	
+		ref <- source.log.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementTarget1 : iTraceModel!TargetElement (	
+ 		ref <- source.eventModel.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+	
+	elementTarget2 : iTraceModel!TargetElement (	
+		ref <- source.runtimeModelExtension.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget3 : iTraceModel!TargetElement (	
+ 		ref <- source.stOriginator.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget4 : iTraceModel!TargetElement (	
+ 		ref <- source.stProcess.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget5 : iTraceModel!TargetElement (	
+ 		ref <- source.stProcessInstance.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+	
+	elementTarget6 : iTraceModel!TargetElement (	
+		ref <- source.stTimestamp.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget7 : iTraceModel!TargetElement (	
+ 		ref <- source.tagOriginator.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget8 : iTraceModel!TargetElement (	
+ 		ref <- source.tagProcess.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget9 : iTraceModel!TargetElement (	
+ 		ref <- source.tagProcessInstance.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+	
+	elementTarget10 : iTraceModel!TargetElement (	
+ 		ref <- source.tagTimestamp.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		)
+		
+}
+
+rule process2EventResource2TraceLink {
+ from
+  	source : MXML2KDM!process2eventResource
+ to
+ 	TraceLink : iTraceModel!M2MLink (
+ 		createdOn <- thisModule.get_CreatedOn(),
+		type <- thisModule.get_Type(),
+		fromFileName <- thisModule.get_fromFileName(),
+		comment <- ' xEventModelName: ' + source.xEventModelName + 
+				   ' xProcessName: ' + source.xProcessName,
+		createdBy <- thisModule.get_CreatedBy(),
+		mode <- thisModule.get_Mode(),
+		technicalBinding <- thisModule.get_TechnicalBinding(),
+		ruleName <- 'process2eventResource',
+		
+		iTraceModel <- thisModule.getTraceModelRoot
+		), 
+	
+ 	elementSource1 : iTraceModel!SourceElement (	
+		ref <- source.pro.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementSource2 : iTraceModel!SourceElement (	
+		ref <- source.wlog.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementTarget1 : iTraceModel!TargetElement (	
+ 		ref <- source.eRes.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+	
+	elementTarget2 : iTraceModel!TargetElement (	
+		ref <- source.eventModel.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget3 : iTraceModel!TargetElement (	
+ 		ref <- source.stProcess.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget4 : iTraceModel!TargetElement (	
+ 		ref <- source.tagProcess.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		)
+			
+}
+
+rule processInstances2EventResource2TraceLink {
+ from
+  	source : MXML2KDM!processInstance2eventResource
+ to
+ 	TraceLink : iTraceModel!M2MLink (
+ 		createdOn <- thisModule.get_CreatedOn(),
+		type <- thisModule.get_Type(),
+		fromFileName <- thisModule.get_fromFileName(),
+		comment <- ' xEventModelName: ' + source.xEventModelName + 
+				   ' xProcessInstanceName: ' + source.xProcessInstanceName + 
+				   ' xProcessName: ' + source.xProcessName,
+		createdBy <- thisModule.get_CreatedBy(),
+		mode <- thisModule.get_Mode(),
+		technicalBinding <- thisModule.get_TechnicalBinding(),
+		ruleName <- 'processIntances2eventResource',
+		
+		iTraceModel <- thisModule.getTraceModelRoot
+		), 
+	
+ 	elementSource1 : iTraceModel!SourceElement (	
+		ref <- source.pro.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementSource2 : iTraceModel!SourceElement (	
+		ref <- source.proInst.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementSource3 : iTraceModel!SourceElement (	
+		ref <- source.wlog.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getSourceModel
+		),
+		
+	elementTarget1 : iTraceModel!TargetElement (	
+ 		ref <- source.eRes.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+	
+	elementTarget2 : iTraceModel!TargetElement (	
+		ref <- source.eRes2.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget3 : iTraceModel!TargetElement (	
+ 		ref <- source.eventModel.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget4 : iTraceModel!TargetElement (	
+ 		ref <- source.st.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		),
+		
+	elementTarget5 : iTraceModel!TargetElement (	
+ 		ref <- source.tagProcessInstance.__xmiID__,
+		traceLink <- TraceLink,
+		model <- thisModule.getTargetModel
+		)
+			
+}
