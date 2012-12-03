@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<iTrace:iTraceModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iTrace="org.eclipse.kybele.iTrace" version="1.0" projectName="Families2Persons">
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="29-11-2012" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Male">
+    <sourceElements ref="//@containing.0/@father" model="//@artefacts.0" type="FamiliesModel!Member"/>
+    <targetElements ref="/0" model="//@artefacts.1" type="PersonsModel!Male"/>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="29-11-2012" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Male">
+    <sourceElements ref="//@containing.0/@sons.0" model="//@artefacts.0" type="FamiliesModel!Member"/>
+    <targetElements ref="/1" model="//@artefacts.1" type="PersonsModel!Male"/>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="29-11-2012" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Male">
+    <sourceElements ref="//@containing.1/@father" model="//@artefacts.0" type="FamiliesModel!Member"/>
+    <targetElements ref="/2" model="//@artefacts.1" type="PersonsModel!Male"/>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="29-11-2012" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Male">
+    <sourceElements ref="//@containing.1/@sons.0" model="//@artefacts.0" type="FamiliesModel!Member"/>
+    <targetElements ref="/3" model="//@artefacts.1" type="PersonsModel!Male"/>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="29-11-2012" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Female">
+    <sourceElements ref="//@containing.0/@mother" model="//@artefacts.0" type="FamiliesModel!Member"/>
+    <targetElements ref="/4" model="//@artefacts.1" type="PersonsModel!Female"/>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="29-11-2012" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Female">
+    <sourceElements ref="//@containing.0/@daughters.0" model="//@artefacts.0" type="FamiliesModel!Member"/>
+    <targetElements ref="/5" model="//@artefacts.1" type="PersonsModel!Female"/>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="29-11-2012" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Female">
+    <sourceElements ref="//@containing.0/@daughters.1" model="//@artefacts.0" type="FamiliesModel!Member"/>
+    <targetElements ref="/6" model="//@artefacts.1" type="PersonsModel!Female"/>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="29-11-2012" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Female">
+    <sourceElements ref="//@containing.1/@mother" model="//@artefacts.0" type="FamiliesModel!Member"/>
+    <targetElements ref="/7" model="//@artefacts.1" type="PersonsModel!Female"/>
+  </traceLinks>
+  <artefacts xsi:type="iTrace:Model" name="Families" path="/Families2Persons/Models/Families.families" elements="//@traceLinks.0/@sourceElements.0 //@traceLinks.1/@sourceElements.0 //@traceLinks.2/@sourceElements.0 //@traceLinks.3/@sourceElements.0 //@traceLinks.4/@sourceElements.0 //@traceLinks.5/@sourceElements.0 //@traceLinks.6/@sourceElements.0 //@traceLinks.7/@sourceElements.0" metamodel="/Families2Persons/Metamodels/Families.ecore"/>
+  <artefacts xsi:type="iTrace:Model" name="Persons" path="/Families2Persons/Models/Persons.persons" elements="//@traceLinks.0/@targetElements.0 //@traceLinks.1/@targetElements.0 //@traceLinks.2/@targetElements.0 //@traceLinks.3/@targetElements.0 //@traceLinks.4/@targetElements.0 //@traceLinks.5/@targetElements.0 //@traceLinks.6/@targetElements.0 //@traceLinks.7/@targetElements.0" metamodel="/Families2Persons/Metamodels/Persons.ecore"/>
+  <artefacts xsi:type="iTrace:Model" name=""/>
+</iTrace:iTraceModel>
