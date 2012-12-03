@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <wizard
+            id="iTrace.presentation.ITraceModelWizardID"
+            name="%_UI_ITraceModelWizard_label"
+            class="iTrace.presentation.ITraceModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ITraceModelFile.gif">
+         <description>%_UI_ITraceModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            class="iTrace.presentation.ITraceEditor"
+            contributorClass="iTrace.presentation.ITraceActionBarContributor"
+            default="false"
+            extensions="itrace"
+            icon="icons/full/obj16/_ITraceModelFile.gif"
+            id="iTrace.presentation.ITraceEditorID"
+            name="%_UI_ITraceEditorEMF_label">
+      </editor>
+      <editor
+            class="iTrace.presentation.ITraceEditorMulti"
+            contributorClass="iTrace.presentation.ITraceActionBarContributor"
+            default="true"
+            extensions="itrace"
+            icon="icons/full/obj16/ITraceModelFile4.gif"
+            id="iTrace.presentation.ITraceEditorMultiID"
+            name="%_UI_ITraceEditor_label">
+      </editor>
+   </extension>
+
+</plugin>
