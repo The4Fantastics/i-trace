@@ -135,3 +135,42 @@ CREATE OR REPLACE VIEW BLOCK_STATS AS
   select rute, sum(step) steps, block_stats.lines, block_stats.characters, block_stats.per_lines, block_stats.per_chars from tracemap, block_stats
     where tracemap.id_element=block_stats.id
     group by rute, block_stats.lines, block_stats.characters, block_stats.per_lines, block_stats.per_chars);
+    
+create or replace view Mapping_Rules_Source 
+(MR_projectName, MR_ruleName, MR_artefact_Source, MR_objecttype_Source, MR_relationtype_Source, MR_total_Source) AS (
+select projectname, ruleName, name, my_split(objecttype,'!',2), relationtype, count(*) as total 
+ from iTraceModel i, tracelinkelement tle, tracelink tl, artefact a
+ where i.itracemodel=tl.itracemodel and tle.tracelink=tl.tracelink and
+       a.artefact=tle.artefact and relationtype='Source'
+ group by projectname, ruleName, name, objecttype, relationtype)
+ ;
+ 
+ create or replace view Mapping_Rules_Target
+(MR_projectName, MR_ruleName, MR_artefact_Target, MR_objecttype_Target, MR_relationtype_Target, MR_total_Target) AS (
+select projectname, ruleName, name, my_split(objecttype,'!',2), relationtype, count(*) as total 
+ from iTraceModel i, tracelinkelement tle, tracelink tl, artefact a
+ where i.itracemodel=tl.itracemodel and tle.tracelink=tl.tracelink and
+       a.artefact=tle.artefact and relationtype='Target'
+ group by projectname, ruleName, name, objecttype, relationtype)
+ ;
+ 
+ 
+ create or replace function my_split(input_list varchar2,delimiter varchar2, ret_this_one number)
+return varchar2
+is
+	v_list varchar2(32767) := delimiter || input_list;
+	start_position number;
+	end_position number;
+begin
+	start_position := instr(v_list, delimiter, 1, ret_this_one);
+	if start_position > 0 then
+		end_position := instr( v_list, delimiter, 1, ret_this_one + 1);
+		if end_position = 0 then
+			end_position := length(v_list) + 1; 
+		end if;
+		return(substr(v_list, start_position + 1, end_position - start_position - 1));
+	else
+		return NULL;
+	end if;
+end my_split;
+/
