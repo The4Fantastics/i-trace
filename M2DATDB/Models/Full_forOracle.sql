@@ -1359,3 +1359,8 @@ INSERT INTO Block (uuid_block, block, blockNumber, startLine, endLine, startColu
 INSERT INTO Block (uuid_block, block, blockNumber, startLine, endLine, startColumn, endColumn, artefact, traceLink, id) VALUES ('_MwOUyC_yEeKyrPr3zb67hw','/M2DATDB/Models/ORDBD4ORA2CODE.iTrace#//@traceLinks.178/@targetBlocks.0','179','230','230','24','43','/M2DATDB/Models/ORDBD4ORA2CODE.iTrace#//@artefacts.1','/M2DATDB/Models/ORDBD4ORA2CODE.iTrace#//@traceLinks.178','omdb.sql_MwOUyC_yEeKyrPr3zb67hw');
 INSERT INTO Block (uuid_block, block, blockNumber, startLine, endLine, startColumn, endColumn, artefact, traceLink, id) VALUES ('_MwOUyS_yEeKyrPr3zb67hw','/M2DATDB/Models/ORDBD4ORA2CODE.iTrace#//@traceLinks.179/@targetBlocks.0','180','232','232','24','41','/M2DATDB/Models/ORDBD4ORA2CODE.iTrace#//@artefacts.1','/M2DATDB/Models/ORDBD4ORA2CODE.iTrace#//@traceLinks.179','omdb.sql_MwOUyS_yEeKyrPr3zb67hw');
 INSERT INTO Artefact (uuid_Artefact, artefact, aspect, name, abstractionLevel, metamodel, path, artefactType, iTraceModel) VALUES ('_MwLRhy_yEeKyrPr3zb67hw','/M2DATDB/Models/ORDBD4ORA2CODE.iTrace#//@artefacts.1','Content','omdb.sql','CODE','null','D:/Workspaces/Case Studies/M2DATDB/Code/','Code','/M2DATDB/Models/ORDBD4ORA2CODE.iTrace#/');
+
+exec PK_TRACEMAP.GENERATE;
+commit;
+
+select * from tracemap;
