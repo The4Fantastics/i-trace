@@ -89,7 +89,7 @@ public class iTraceAdder {
 		
 		//Comportamiento
 		mTime = true;
-		printStat = true;
+		printStat = false;
 		time = new MeasureTime("iTrace Adder");
 	}
 	
