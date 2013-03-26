@@ -89,7 +89,7 @@ public class iTraceAdder {
 		
 		//Comportamiento
 		mTime = true;
-		printStat = false;
+		printStat = true;
 		time = new MeasureTime("iTrace Adder");
 	}
 	
@@ -234,6 +234,8 @@ public class iTraceAdder {
 		int i=0;
 		boolean doClausule = false;
 		int countKey = 0;
+		
+		
 
 // (0) Antes de la ejecución de la primera regla
 		
@@ -309,7 +311,7 @@ public class iTraceAdder {
 		
 		String [] palabras = sentencia.split(" ");
 		boolean firstKey=true;
-		boolean doKey=false;
+		//boolean doKey=false;
 		
 		for(i = 0;i<palabras.length;i++){
 			if (palabras[i].equals("rule")){
@@ -320,7 +322,6 @@ public class iTraceAdder {
 		}
 		
 		//Buscamos from, to, do
-		
 		try {
 			do {
 				
@@ -333,34 +334,44 @@ public class iTraceAdder {
 							!(palabras[i].equals("{}") || palabras[i].startsWith("{}") || palabras[i].endsWith("{}"))){
 						countKey--;
 					} else if (palabras[i].equals("{") || palabras[i].startsWith("{") || palabras[i].endsWith("{") &&
-							!(palabras[i].equals("{}") || palabras[i].startsWith("{}") || palabras[i].endsWith("{}"))){
+							!(palabras[i].equals("{}") || palabras[i].startsWith("{}") || palabras[i].endsWith("{}") || 
+									palabras[i].equals("do{"))){
 						countKey++;
 						firstKey=false;
-					} else if ((palabras[i].equals("do"))){
+					
+					// Si tiene sección DO
+					} else if ((palabras[i].equals("do") || palabras[i].equals("do{"))){
 						doClausule = true;
-						break;
+												
+						String lineDO[] = null;
+						lineDO = sentencia.split("do");
+						//Añado las palabras antes del DO al código
+						if (lineDO[0]!=null){
+							codigo.add(Tools.DeleteKeys(lineDO[0]));
+						}
+						if (lineDO[1]!=null){
+							sentencia=lineDO[1];
+							doSection.add(lineDO[1]);
+						}	
+																	
+						break;					
 					}
 		
 				}
 				
-				codigo.add(sentencia);
+				if (!doClausule) {
+					codigo.add(sentencia);
+				}
 				
 			} while ((sentencia = bf.readLine())!=null && (countKey!=0 || firstKey) && !doClausule);
 			
-			
-			// Analizamos la ultima sentencia por si contiene llave de apertura DO
-			if (codigo.get(codigo.size()-1).contains("{")) {
-				countKey=1;
-				firstKey=false;
-				doKey=true;
-			}else{
-				countKey=0;
-				firstKey=true;
-				doKey=false;
-			}
-			
+						
 			// Procesa la clausula DO
 			if (doClausule){
+						
+				sentencia = doSection.get(doSection.size()-1);
+				doSection.remove(doSection.size()-1);
+				
 				do {
 					
 					palabras=sentencia.split(" ");
@@ -375,11 +386,15 @@ public class iTraceAdder {
 								!(palabras[i].equals("{}") || palabras[i].startsWith("{}") || palabras[i].endsWith("{}"))){
 							countKey++;
 							firstKey=false;
+						} else if ( palabras[i].equals("{}") || palabras[i].startsWith("{}") || palabras[i].endsWith("{}") ||
+								    palabras[i].contains("{") && palabras[i].contains("}") ){
+							countKey=0;
 						}
 					}
 					
-					doSection.add(sentencia);
+					doSection.add(Tools.DeleteKeys(sentencia));
 					
+										
 				} while ((sentencia = bf.readLine())!=null && (countKey!=0 || firstKey));
 			}
 			
@@ -402,8 +417,19 @@ public class iTraceAdder {
 // Generación de la salida
 		
 
-// (2) Copia en fichero todo igual hasta la última línea que contiene DO
-		codigo.remove(codigo.size()-1);
+// (2) Copia en fichero todo igual hasta la última línea que contiene DO o la llave de cierre
+				
+		//Eliminamos la llave de cierre de la regla
+		if (!doClausule){
+			for (i=codigo.size()-1; i>0; i--){
+				if (codigo.get(i).contains("}")){
+					codigo.set(i, Tools.DeleteKeys(codigo.get(i)));
+					break;
+				}
+			}
+		}
+		
+		// Copia del códio
 		copyCode(codigo);
 		
 // (3) Creamos un TraceLink
@@ -437,18 +463,11 @@ public class iTraceAdder {
 // (6) Crear sección DO
 		
 		targetFile.println("");
-		if (doKey || !doClausule){
-			targetFile.println("do {");
-		}else{
-			targetFile.println("do");
-		}
-				
-		if (doClausule){
-			// Copia en fichero todo igual hasta el cierre de DO. Eliminamos el cierre }
-			doSection.remove(doSection.size()-1);
-		}
+		targetFile.println("do {");
 		
-		copyCode(doSection);
+		if (doClausule){
+			copyCode(doSection);
+		}
 		
 		for (Iterator <TraceLinkElementData> iterator = traceLinkElements.iterator(); iterator.hasNext();){
 			createDO(iterator.next());

@@ -225,5 +225,33 @@ public class Tools {
 			return false;
 		}
 		
+		public static String DeleteKeys(String s_cadena)
+		{
+		  String nueva_cadena = "";
+		  Character caracter = null;
+		  boolean valido = true;
+		  String s_caracteres="}{";
+		 
+		  /* Va recorriendo la cadena s_cadena y copia a la cadena que va a regresar,
+		     sólo los caracteres que no estén en la cadena s_caracteres */
+		  for (int i=0; i<s_cadena.length(); i++)
+		      {
+		       valido = true;
+		       for (int j=0; j<s_caracteres.length(); j++)
+		           {
+		            caracter = s_caracteres.charAt(j);
+		 
+		            if (s_cadena.charAt(i) == caracter)
+		               {
+		                valido = false;
+		                break;
+		               }
+		           }
+		       if (valido)
+		           nueva_cadena += s_cadena.charAt(i);
+		      }
+		 
+		  return nueva_cadena;
+		}
 
 }

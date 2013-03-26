@@ -7,6 +7,7 @@ public class Constants {
 	public enum Database_Types{MySQL,Oracle};
 	public static String database_Type = Database_Types.Oracle.toString();
 	
+	
 	//
 	
 	public static String iTrace_Prompt = "iTrace:>";

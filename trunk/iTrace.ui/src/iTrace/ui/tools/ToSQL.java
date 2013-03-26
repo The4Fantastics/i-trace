@@ -35,6 +35,14 @@ import iTrace.ui.Constants;
 
 public class ToSQL {
 	
+	
+	private static int count_itm;
+	private static int count_fea;
+	private static int count_tli;
+	private static int count_art;
+	private static int count_tle;
+	private static int count_blo;
+	
 	private static FileWriter fw = null;
 	private static BufferedWriter bw = null;
 	private static PrintWriter script = null;
@@ -51,6 +59,17 @@ public class ToSQL {
 	
 	
 	private static void init (){
+		
+		// Reset counters
+		
+		count_itm = 1;
+		count_fea = 0;
+		count_tli = 0;
+		count_art = 0;
+		count_tle = 0;
+		count_blo = 0;
+		
+		//
 	
 		str_DMLInsert_iTraceModel = "INSERT INTO iTraceModel (uuid_iTraceModel, iTraceModel, projectName, version) VALUES (";
 		
@@ -84,7 +103,18 @@ public class ToSQL {
 		script = new PrintWriter(bw);
 		script.println("-- iTrace SQL Script Generation --" );
 		script.println("-- Model Name: "+ modelName);
-		script.println();
+		script.println();	
+	}
+	
+	private static void printStats(){
+		
+		System.out.println(" ---------- MODEL NAME ------------ : " + modelName.split("/")[modelName.split("/").length-1]);
+		System.out.println(" -> iTraceModel processed ..........: " + count_itm);
+		System.out.println(" -> Artefacts processed ............: " + count_art);
+		System.out.println(" -> Features processed .............: " + count_fea);
+		System.out.println(" -> TraceLinks processed ...........: " + count_tli);
+		System.out.println(" -> TraceLinkElements processed ....: " + count_tle);
+		System.out.println(" -> Block Code processed ...........: " + count_blo);
 	}
 	
 	
@@ -116,7 +146,10 @@ public class ToSQL {
 	
 	
 	private static void close() throws IOException{
+		script.println("commit;");
 		script.close();
+		
+		printStats();
 	}
 
 	
@@ -174,7 +207,9 @@ public class ToSQL {
 		// DML para las Features
 		// ------------------------------------------------------------------------------
 						if ( itm.getSpecificFeatures() != null){
-							System.out.println(" -> Features Procesados: " + itm.getSpecificFeatures().getFeatures().size()  );
+							
+							//System.out.println(" -> Features processed: " + itm.getSpecificFeatures().getFeatures().size()  );
+							count_fea = count_fea + itm.getSpecificFeatures().getFeatures().size();
 						
 							for (Iterator <Feature> iterator = itm.getSpecificFeatures().getFeatures().iterator(); iterator.hasNext();) {
 								Feature f = iterator.next();
@@ -199,7 +234,10 @@ public class ToSQL {
 		
 // DML para los TraceLinks
 // ------------------------------------------------------------------------------
-		System.out.println(" -> TraceLinks Procesados: " + itm.getTraceLinks().size()  );
+		//System.out.println(" -> TraceLinks processed: " + itm.getTraceLinks().size()  );
+
+		count_tli = count_tli + + itm.getTraceLinks().size();
+						
 	 	for (Iterator <TraceLink> iterator = itm.getTraceLinks().iterator(); iterator.hasNext();) {
 	 		TraceLink tl = iterator.next();
 			
@@ -238,7 +276,10 @@ public class ToSQL {
 // ------------------------------------------------------------------------------
 			
 	// Obtenemos los Artefactos
-	 	System.out.println(" -> Artefacts Procesados: " + itm.getArtefacts().size()  );
+	 	// System.out.println(" -> Artefacts processed: " + itm.getArtefacts().size()  );
+	 	
+	 	count_art = count_art + + itm.getArtefacts().size();
+	 	
 		for (Iterator <Artefact> iter_Art = itm.getArtefacts().iterator(); iter_Art.hasNext();) {
 			
 			Artefact art = iter_Art.next();
@@ -269,7 +310,10 @@ public class ToSQL {
 // ------------------------------------------------------------------------------
 		
 // Extraccion de los TLE desde Model
-				System.out.println(" -> TraceLinkElements Procesados: " + mod.getElements().size()  );
+				// System.out.println(" -> TraceLinkElements processed: " + mod.getElements().size()  );
+				
+				count_tle = count_tle + + mod.getElements().size();
+				
 				for (Iterator <TraceLinkElement> iter_tle = mod.getElements().iterator(); iter_tle.hasNext();) {
 			 		TraceLinkElement tle = iter_tle.next();
 					// DML para TraceLinkElement desde Model
@@ -310,7 +354,11 @@ public class ToSQL {
 // ------------------------------------------------------------------------------
 						
 				// Extraccion de los Blocks desde Code
-				System.out.println(" -> Blocks Code Procesados: " +  code.getBlocks().size()  );
+				
+				//System.out.println(" -> Blocks Code processed: " +  code.getBlocks().size()  );
+				
+				count_blo = count_blo + +  code.getBlocks().size();
+				
 				for (Iterator <Block> iter_block = code.getBlocks().iterator(); iter_block.hasNext();) {
 					Block block = iter_block.next();
 					
