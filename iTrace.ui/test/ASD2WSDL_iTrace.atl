@@ -1,6 +1,6 @@
 -- @nsURI iTrace=http://www.kybele.es/iTrace
--- @path  ASD=
--- @path  WSDL=
+-- @path  ASD=D:/Workspaces/Base/iTrace.ui/test/ASD2WSDL.atl
+-- @path  WSDL=D:/Workspaces/Base/iTrace.ui/test/ASD2WSDL.atl
 
 module ASD2WSDL_iTrace;
 create OUT : WSDL, TRACE : iTrace from  IN : ASD;
@@ -44,11 +44,11 @@ helper def: getTraceModelRoot : iTrace!iTraceModel = OclUndefined;
 rule createModel_ASD(){
 to
 	ASD : iTrace!Model (
-		aspect <- 'null',
-		name <- '',
-		path <- '',
-		abstractionLevel <- 'null',
-		metamodel <- '',
+		aspect <- 'Unspecified',
+		name <- 'asf',
+		path <- 'D:/Workspaces/Base/iTrace.ui/test/Families2Persons.atl',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'D:/Workspaces/Base/iTrace.ui/test/ASD2WSDL.atl',
 		iTraceModel <- thisModule.getTraceModelRoot
 	)
 do {
@@ -69,11 +69,11 @@ helper def: getModel_ASD : iTrace!Model = OclUndefined;
 rule createModel_WSDL(){
 to
 	WSDL : iTrace!Model (
-		aspect <- 'null',
-		name <- '',
-		path <- '',
-		abstractionLevel <- 'null',
-		metamodel <- '',
+		aspect <- 'Unspecified',
+		name <- 'adfsf',
+		path <- 'D:/Workspaces/Base/iTrace.ui/test/ASD2WSDL_iTrace.atl',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'D:/Workspaces/Base/iTrace.ui/test/ASD2WSDL.atl',
 		iTraceModel <- thisModule.getTraceModelRoot
 	)
 do {
@@ -120,7 +120,7 @@ rule ServiceDescription2Definitions {
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'ServiceDescription2Definitions',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -187,7 +187,7 @@ rule Operation2PortTypeOperation {
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'Operation2PortTypeOperation',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -237,7 +237,7 @@ rule Message2Mesage{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'Message2Mesage{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -283,7 +283,7 @@ rule InfoTypeImported2ElementImported{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'InfoTypeImported2ElementImported{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -336,7 +336,7 @@ rule InfoType2ComplexType{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'InfoType2ComplexType{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -407,7 +407,7 @@ rule InfoType2SimpleType{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'InfoType2SimpleType{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -501,7 +501,7 @@ rule InfoType2Element{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'InfoType2Element{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -545,7 +545,7 @@ lazy rule InfoType2Part{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'InfoType2Part{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -588,7 +588,7 @@ lazy rule Message2PortTypeInput{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'Message2PortTypeInput{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -631,7 +631,7 @@ lazy rule Message2PortTypeOutput{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'Message2PortTypeOutput{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -674,7 +674,7 @@ lazy rule Message2PortTypeFault{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'Message2PortTypeFault{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -717,7 +717,7 @@ lazy rule InfoType2MinInclusive{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'InfoType2MinInclusive{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
@@ -760,7 +760,7 @@ lazy rule InfoType2MaxInclusive{
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'InfoType2MaxInclusive{',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '09-11-2012',
+			createdOn <- '21-3-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
