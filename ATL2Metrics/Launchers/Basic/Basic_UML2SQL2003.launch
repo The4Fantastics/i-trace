@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.m2m.atl.adt.launching.atlTransformation">
+<stringAttribute key="ATL File Name" value="/ATL2Metrics/Transformations/UML2SQL2003/UML2SQL2003.atl"/>
+<stringAttribute key="ATL VM" value="EMF-specific VM"/>
+<booleanAttribute key="IS_REFINING" value="false"/>
+<mapAttribute key="Input">
+<mapEntry key="ANNOTATIONS" value="AMW"/>
+<mapEntry key="IN" value="UML"/>
+</mapAttribute>
+<mapAttribute key="Libs">
+<mapEntry key="UML" value="/ATL2Metrics/Transformations/UML2SQL2003/UML/UML.asm"/>
+<mapEntry key="UML2SQL2003_AMW" value="/ATL2Metrics/Transformations/UML2SQL2003/AMW/UML2SQL2003_AMW.asm"/>
+<mapEntry key="UML2SQL2003_AMW_constants" value="/ATL2Metrics/Transformations/UML2SQL2003/AMW/UML2SQL2003_AMW_constants.asm"/>
+<mapEntry key="UML2SQL2003_AMW_private" value="/ATL2Metrics/Transformations/UML2SQL2003/AMW/UML2SQL2003_AMW_private.asm"/>
+<mapEntry key="UML2SQL2003_constants" value="/ATL2Metrics/Transformations/UML2SQL2003/UML2SQL2003_constants.asm"/>
+<mapEntry key="UML2SQL2003_helpers" value="/ATL2Metrics/Transformations/UML2SQL2003/UML2SQL2003_helpers.asm"/>
+<mapEntry key="UML_constants" value="/ATL2Metrics/Transformations/UML2SQL2003/UML/UML_constants.asm"/>
+<mapEntry key="UML_private" value="/ATL2Metrics/Transformations/UML2SQL2003/UML/UML_private.asm"/>
+</mapAttribute>
+<mapAttribute key="Model Handler">
+<mapEntry key="AMW" value="EMF"/>
+<mapEntry key="SQL2003" value="EMF"/>
+<mapEntry key="UML" value="EMF"/>
+</mapAttribute>
+<mapAttribute key="ModelType">
+<mapEntry key="AMW" value="METAMODELINPUT"/>
+<mapEntry key="ANNOTATIONS" value="MODELINPUT"/>
+<mapEntry key="IN" value="MODELINPUT"/>
+<mapEntry key="OUT" value="MODELOUTPUT"/>
+<mapEntry key="SQL2003" value="METAMODELOUTPUT"/>
+<mapEntry key="UML" value="METAMODELINPUT"/>
+</mapAttribute>
+<mapAttribute key="Options">
+<mapEntry key="OPTION_CLEAR" value="true"/>
+<mapEntry key="OPTION_CONTENT_TYPE" value="false"/>
+<mapEntry key="OPTION_DERIVED" value="false"/>
+<mapEntry key="allowInterModelReferences" value="false"/>
+<mapEntry key="printExecutionTime" value="true"/>
+<mapEntry key="step" value="false"/>
+<mapEntry key="supportUML2Stereotypes" value="false"/>
+</mapAttribute>
+<listAttribute key="OrderedInput">
+<listEntry value="ANNOTATIONS"/>
+<listEntry value="IN"/>
+</listAttribute>
+<listAttribute key="OrderedOutput">
+<listEntry value="OUT"/>
+</listAttribute>
+<mapAttribute key="Output">
+<mapEntry key="OUT" value="SQL2003"/>
+</mapAttribute>
+<mapAttribute key="Path">
+<mapEntry key="AMW" value="/ATL2Metrics/Metamodels/ORAnnotationMeta.ecore"/>
+<mapEntry key="ANNOTATIONS" value="/ATL2Metrics/Models/omdb.amw"/>
+<mapEntry key="IN" value="/ATL2Metrics/Models/omdb.uml"/>
+<mapEntry key="OUT" value="/ATL2Metrics/Models/omdb_generated.sql2003"/>
+<mapEntry key="SQL2003" value="/ATL2Metrics/Metamodels/SQL2003.ecore"/>
+<mapEntry key="UML" value="/ATL2Metrics/Metamodels/UML.ecore"/>
+</mapAttribute>
+<listAttribute key="Superimpose"/>
+</launchConfiguration>

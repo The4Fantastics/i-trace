@@ -1,0 +1,410 @@
+library ASDHelpersv1;
+
+-- HELPER:	getMessagePattern
+-- Returns	String that gives value to the messagePattern attribute.
+-- IN:		WSDL!Operation
+-- OUT:		String
+
+helper def: getMessagePattern(op: WSDL!PortTypeOperation) : String =
+	if op.input.oclIsUndefined()=false and op.output.oclIsUndefined() and op.fault= Sequence{} then
+		#oneway
+	else
+		if op.output.oclIsUndefined()=false and op.input.oclIsUndefined() and op.fault= Sequence{} then
+			#notification
+		else
+			if op.output.oclIsUndefined()=false and op.input.oclIsUndefined()=false and
+			op.eContents()->first().oclType()= WSDL!PortTypeOutput then
+				#solicitresponse
+			else
+				if op.output.oclIsUndefined()=false and op.input.oclIsUndefined()=false and
+				op.eContents()->first().oclType()= WSDL!PortTypeInput then
+					#requestresponse
+				else
+					OclUndefined
+				endif
+			endif
+		endif
+	endif;
+
+-- HELPER:	getChildrenType
+-- Returns	The subtypes of a complex type passed as parameter.
+-- IN:		WSDL!ComplexType
+-- OUT:		Sequence(WSDL!Element)
+helper def: getChildrenType(i:WSDL!ComplexType) : Sequence(WSDL!Element) =
+	if i.toString() <> 'OrderedSet{}'  and i.toString() <> 'OclUndefined' then
+		if i.all <> OclUndefined then
+			thisModule.getChildrenAll(i.all)
+		else
+			if i.choice <> OclUndefined then
+				thisModule.getChildrenChoice(Sequence{i.choice}->flatten())
+			else
+				if i.sequenceDef <> OclUndefined then
+					thisModule.getChildrenSequence(Sequence{i.sequenceDef}->flatten())
+				else
+					if i.group <> OclUndefined then
+						thisModule.getChildrenGroup(Sequence{i.group}->flatten())
+					else
+						OclUndefined
+					endif
+				endif
+			endif
+		endif
+	else
+		OclUndefined
+	endif;
+
+-- HELPER:	getChildrenAll
+-- Returns	Sequence WSDL Element that are children of WSDL All passed as parameter.
+-- IN:		WSDL!All
+-- OUT:		Sequence(WSDL!Element)
+helper def: getChildrenAll(i:WSDL!All) : Sequence(WSDL!Element) =
+	i.element;
+
+-- HELPER:	getChildrenChoice
+-- Returns	Sequence WSDL Element that are children of WSDL Choice passed as parameter.
+-- IN:		WSDL!Choice
+-- OUT:		Sequence(WSDL!Element)
+helper def: getChildrenChoice(i:Sequence(WSDL!Choice)) : Sequence(WSDL!Element) =
+	i->collect(e|e.element)->flatten()->union(
+		if i->collect(e|e.sequenceDef)->flatten() <> Sequence{} then
+			thisModule.getChildrenSequence(i->collect(e|e.sequenceDef)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten()->union(
+		if i->collect(e|e.choice)->flatten() <> Sequence{} then
+			thisModule.getChildrenChoice(i->collect(e|e.choice)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten()->union(
+		if i->collect(e|e.group)->flatten() <> Sequence{} then
+			thisModule.getChildrenGroup(i->collect(e|e.group)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten();
+
+-- HELPER:	getChildrenSequence
+-- Returns	Sequence WSDL Element that are children of WSDL Sequence passed as parameter.
+-- IN:		WSDL!Sequence
+-- OUT:		Sequence(WSDL!Element)
+helper def: getChildrenSequence(i:Sequence(WSDL!SequenceType)) : Sequence(WSDL!Element) =
+	i->collect(e|e.element)->flatten()->union(
+		if i->collect(e|e.sequenceDef)->flatten() <> Sequence{} then
+			thisModule.getChildrenSequence(i->collect(e|e.sequenceDef)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten()->union(
+		if i->collect(e|e.choice)->flatten() <> Sequence{} then
+			thisModule.getChildrenChoice(i->collect(e|e.choice)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten()->union(
+		if i->collect(e|e.group)->flatten() <> Sequence{} then
+			thisModule.getChildrenGroup(i->collect(e|e.group)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten();
+
+-- HELPER:	getChildrenGroup
+-- Returns	Sequence WSDL Element that are children of WSDL Group passed as parameter.
+-- IN:		WSDL!Group
+-- OUT:		Sequence(WSDL!Element)
+helper def: getChildrenGroup(i:Sequence(WSDL!Group)) : Sequence(WSDL!Element) =
+	i->collect(e|e.element)->flatten()->union(
+		if i->collect(e|e.sequenceDef)->flatten() <> Sequence{} then
+			thisModule.getChildrenSequence(i->collect(e|e.sequenceDef)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten()->union(
+		if i->collect(e|e.choice)->flatten() <> Sequence{} then
+			thisModule.getChildrenChoice(i->collect(e|e.choice)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten()->union(
+		if i->collect(e|e.group)->flatten() <> Sequence{} then
+			thisModule.getChildrenGroup(i->collect(e|e.group)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten()->union(
+		if i->collect(e|e.group)->flatten() <> Sequence{} then
+			thisModule.getChildrenAll(i->collect(e|e.all)->flatten())
+		else
+			Sequence{}
+		endif
+	)->flatten();
+
+
+-- HELPER:	getValueType
+-- Returns	String that gives value to the valueType attribute.
+-- IN:		WSDL!Element
+-- OUT:		String
+helper def: getValueType(i: WSDL!Element) :String=
+	if i.primitiveType <> OclUndefined then 
+		thisModule.getType(i.primitiveType)
+	else 
+		if i.type <> OclUndefined then
+			if i.type.oclIsTypeOf(WSDL!SimpleType) then	
+				thisModule.getType(thisModule.getPrimitiveTypeOfSimpleType(i.type))
+			else 
+				OclUndefined
+			endif
+		else
+			if i.simpleType=OclUndefined then 
+				OclUndefined
+			else
+				thisModule.getType(thisModule.getPrimitiveTypeOfSimpleType(i.simpleType))
+			endif 
+		endif
+	endif;
+
+
+-- HELPER:	getType
+-- Returns	String that indicate the type of an element
+-- IN:		String
+-- OUT:		String
+helper def: getType(type:String) : String =
+	if not type.oclIsUndefined() then
+		if type.endsWith('string') or type.endsWith('normalizedString')or type.endsWith('token')
+			or type.endsWith('language') or type.endsWith('Name') or type.endsWith('NMTOKEN')
+			or type.endsWith('NCName') or type.endsWith('NMTOKENS') or type.endsWith('ID')
+			or type.endsWith('IDREF')or type.endsWith('IDREFS')or type.endsWith('ENTITY')
+			or type.endsWith('ENTITIES') then
+				#string
+		else
+			if type.endsWith('float') then
+				#float
+			else
+				if type.endsWith('double') then
+					#double
+				else
+					if type.endsWith('int') or type.endsWith('decimal') or type.endsWith('integer') 
+						or type.endsWith('long') or type.endsWith('short') or type.endsWith('byte')
+						or type.endsWith('negativeInteger')or type.endsWith('positiveInteger') 
+						or type.endsWith('unsignedLong') or type.endsWith('unsignedInt')
+						or type.endsWith('unsignedShort') or type.endsWith('unsignedByte')
+						or type.endsWith('nonNegativeInteger')or type.endsWith('nonPositiveInteger') or 
+						type.endsWith('base64Binary') or type.endsWith('hexBinary') or type.endsWith('boolean') 
+						 or type.endsWith('anyURI') or type.endsWith('QName') or type.endsWith('NOTATION') then
+							#int
+					else
+						if type.endsWith('date') or type.endsWith('gYearMonth') or type.endsWith('gYear')
+							or type.endsWith('gMonth') or type.endsWith('gDay') or type.endsWith('gMonthDay') 
+							or type.endsWith('duration') or type.endsWith('dateTime') or type.endsWith('time')then
+								#date
+						else
+							OclUndefined
+						endif
+					endif
+				endif
+			endif
+		endif
+	else
+		OclUndefined
+	endif;
+
+
+-- HELPER:	getValueRange
+-- Returns	String that gives value to the valueRange attribute.
+-- IN:		WSDL!Element
+-- OUT:		String
+helper def: getValueRange(i: WSDL!Element) :String=
+	if i.type<>OclUndefined then
+		if i.type.oclIsTypeOf(WSDL!SimpleType) then 
+			thisModule.getRange(thisModule.getMaxOccursOfSimpleType(i.type),
+			thisModule.getMinOccursOfSimpleType(i.type))
+		else
+			OclUndefined
+		endif
+	else
+		if i.simpleType <> OclUndefined then
+			thisModule.getRange(thisModule.getMaxOccursOfSimpleType(i.simpleType),
+			thisModule.getMinOccursOfSimpleType(i.simpleType))
+		else
+			thisModule.getRange(i.maxOccurs,i.minOccurs.toString())
+		endif
+	 endif;
+
+
+-- HELPER:	getMinOccursOfSimpleType
+-- Returns	String that gives value to the minOccurs attribute of SimpleType.
+-- IN:		WSDL!SimpleType
+-- OUT:		String
+helper def: getMinOccursOfSimpleType(i: WSDL!SimpleType) : String =
+	if i.restriction<>OclUndefined then
+		if i.restriction.minInclusive <> OclUndefined then
+			i.restriction.minInclusive.value
+		else
+			if i.restriction.minExclusive <> OclUndefined then
+				(i.restriction.minExclusive.value.toInteger()+1).toString()
+			else
+				if i.restriction.base<>OclUndefined and 
+				i.restriction.base.oclIsTypeOf(WSDL!SimpleType) then
+					thisModule.getMinOccursOfSimpleType(i.restriction.base)
+				else
+					if i.restriction.simpleType<>OclUndefined then
+						thisModule.getMinOccursOfSimpleType(i.restriction.simpleType)
+					else
+						OclUndefined
+					endif
+				endif
+			endif
+		endif
+	else 
+		OclUndefined
+	endif;
+
+
+-- HELPER:	getMaxOccursOfSimpleType
+-- Returns	String that gives value to the maxOccurs attribute of SimpleType.
+-- IN:		WSDL!SimpleType
+-- OUT:		String
+helper def: getMaxOccursOfSimpleType(i: WSDL!SimpleType) : String =
+	if i.restriction<>OclUndefined then
+		if i.restriction.maxInclusive <> OclUndefined then
+			i.restriction.maxInclusive.value
+		else
+			if i.restriction.maxExclusive <> OclUndefined then
+				(i.restriction.maxExclusive.value.toInteger()-1).toString()
+			else
+				if i.restriction.base<>OclUndefined and 
+				i.restriction.base.oclIsTypeOf(WSDL!SimpleType) then
+					thisModule.getMaxOccursOfSimpleType(i.restriction.base)
+				else
+					if i.restriction.simpleType<>OclUndefined then
+						thisModule.geMaxOccursOfSimpleType(i.restriction.simpleType)
+					else
+						OclUndefined
+					endif
+				endif
+			endif
+		endif
+	else 
+		OclUndefined
+	endif;
+
+
+-- HELPER:	getRange
+-- Returns	String that indicates a range of values from a min value and a max value that are 
+--			passed as parameter.
+-- IN:		WSDL!Element
+-- OUT:		String
+helper def: getRange(max:String, min: String) : String =
+	if min= OclUndefined or min= 'OclUndefined' then
+		if max=OclUndefined then
+			''
+		else
+			'?-'+max
+		endif
+	else
+		if max= OclUndefined then
+			min+'-?'
+		else
+			min+'-'+max
+		endif
+	endif;
+
+
+-- HELPER:	getPrimitiveTypeOfSimpleType
+-- Returns	String that represents the primitive type of SimpleType.
+-- IN:		WSDL!SimpleType
+-- OUT:		String
+helper def: getPrimitiveTypeOfSimpleType(i: WSDL!SimpleType) : String =
+	if i.restriction<>OclUndefined then
+		if i.restriction.base <> OclUndefined then
+			if i.restriction.base.oclIsTypeOf(WSDL!SimpleType) then
+				thisModule.getPrimitiveTypeOfSimpleType(i.restriction.base)
+			else
+				OclUndefined 
+			endif
+		else
+			if i.restriction.simpleType <> OclUndefined then
+				thisModule.getPrimitiveTypeOfSimpleType(i.restriction.simpleType)
+			else
+				if i.restriction.primitiveType<>OclUndefined then
+					i.restriction.primitiveType
+				else
+					OclUndefined
+				endif
+			endif
+		endif
+	else 
+		OclUndefined
+	endif;
+
+
+-- HELPER:	getRefComplexTypeOfSimpleType
+-- Returns	ComplexType reference of SimpleType.
+-- IN:		WSDL!SimpleType
+-- OUT:		WSDL!ComplexType
+helper def: getRefComplexTypeOfSimpleType(i: WSDL!SimpleType) : WSDL!ComplexType =
+	if i.restriction<>OclUndefined then
+		if i.restriction.base <> OclUndefined then
+			if i.restriction.base.oclIsTypeOf(WSDL!SimpleType) then
+				thisModule.getRefComplexTypeOfSimpleType(i.restriction.base)
+			else
+				i.restriction.base
+			endif
+		else
+			if i.restriction.simpleType <> OclUndefined then
+				thisModule.getRefComplexTypeOfSimpleType(i.restriction.simpleType)
+			else
+				OclUndefined
+			endif
+		endif
+	else 
+		OclUndefined
+	endif;
+
+
+-- HELPER:	getInfoType
+-- Returns	a InfoType of ASD Message.
+-- IN:		Sequence(WSDL!Part)
+-- OUT:		Sequence(WSDL!Element)
+helper def: getInfoType(i:Sequence(WSDL!Part)):Sequence(WSDL!Element)=
+	let parts:Sequence(WSDL!Part)=i in 
+	parts-> iterate(p;y:Sequence(WSDL!Element)=Sequence{}|
+			y->union(Sequence{thisModule.getElementPart(p)}));	
+
+
+-- HELPER:	getElementPart
+-- Returns	a Element of WSDL Part.
+-- IN:		WSDL!Part
+-- OUT:		WSDL!Element
+helper def: getElementPart(p:WSDL!Part):WSDL!Element=
+	if p.element = OclUndefined then
+		if p.type =OclUndefined then
+			if p.elementImported<> OclUndefined then
+				if p.elementImported.name<>'#none' then
+					p.elementImported
+				else
+					OclUndefined
+				endif
+			else
+				OclUndefined
+			endif
+		else
+			if p.type.oclIsTypeOf(WSDL!SimpleType) then
+				if thisModule.getRefComplexTypeOfSimpleType(p.type) <> OclUndefined then
+					thisModule.getRefComplexTypeOfSimpleType(p.type)
+				else
+					p.type
+				endif
+			else
+				p.type
+			endif
+		endif
+	else
+		if p.element<> OclUndefined then
+			p.element
+		else
+			OclUndefined
+		endif
+	endif;
