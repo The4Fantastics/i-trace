@@ -1,0 +1,348 @@
+-- @atlcompiler atl2006
+-- @nsURI 		UML=http://www.eclipse.org/uml2/2.1.0/UML
+
+--BEGIN DOC
+--#About
+-- @name 		UML_private
+-- @version		1.0
+-- @domains		database, dsl, sql2003, uml, mda, transformation,
+--				metamodel, model
+-- @authors		Alejandro Galindo (Universidad Rey Juan Carlos)
+-- @date       	24-03-2009
+-- @description	Esta librería ATL contiene los helpers privados utilizados
+--				en las transformaciones realizadas desde un modelo conforme al
+--				metamodelo UML.
+--END DOC
+
+library UML_private;
+
+-------------------------------------------------------------------------------
+-- IMPORTS         ------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+uses UML_constants;
+
+
+-------------------------------------------------------------------------------
+-- HELPERS         ------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada es de tipo carácter.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!DataType def : isCharDT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_CHAR());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada es de tipo String.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!DataType def : isStringDT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_STRING());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada es de tipo Integer.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!DataType def : isIntegerDT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_INTEGER());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada es de tipo Date.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!DataType def : isDateDT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_DATE());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada es de tipo Boolean.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!DataType def : isBooleanDT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_BOOLEAN());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada es de tipo Real.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!DataType def : isRealDT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_REAL());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada es de tipo XML.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!DataType def : isXMLDT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_XML());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada es de tipo Image.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!DataType def : isImageDT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_IMAGE());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve una cadena con los nombres de las clases de entrada
+--'classes' separados por el string de entrada 'separator'.
+--
+--@CONTEXT UML!Classifier
+--@INPUT Sequence(UML!Classifier)
+--@INPUT String
+--@RETURN String
+--END DOC
+helper context UML!Classifier def : getClassifiersName(
+		classes : Sequence(UML!Classifier), separator : String) : String =
+
+	classes->iterate(c; names : String = '' |
+			if (c = classes.last()) then 
+				names + c.name
+			else		
+			  	names + c.name + separator 
+			endif
+	);
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper trata de, dado el extremo de una asociación binaria,
+--recuperar el extremo opuesto.
+--
+--self.refImmediateComposite() devuelve un objeto de tipo 'Association'
+--En el  metamodelo de UML, este tipo de objetos tienen
+--una propiedad multivaluada 'memberEnd'.
+--Al ser una asociación binaria recupera el otro objeto 'property'
+--que hay en la colección 'memberEnd'.
+--Estos dos objetos 'property' representan los dos extremos de la asociación.
+--Si la asociacion es navegable el extremo sin flecha esta como 'memberEnd' y
+--el otro como propiedad de la clase a la que apunta. Por eso, hay que descubir
+--si la propiedad es de clase o de asociacion propiamente dicha.
+-- 
+--@CONTEXT UML!Property
+--@RETURN UML!Property
+--END DOC
+helper context UML!Property def : getOppositeAssociation() : UML!Property =
+	if (self.refImmediateComposite().oclIsTypeOf(UML!Association)) then
+		self.refImmediateComposite().memberEnd->asSequence()->
+			select (prop | prop <> self)->first()
+	else
+		if (self.refImmediateComposite().oclIsTypeOf(UML!Class)) then
+			self.association.ownedEnd->first()
+		else			
+			OclUndefined
+		endif
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve la primera relación de generalización asociada 
+--al elemento de entrada. Si no tiene jerarquía devuelve 'OclUndefined'.
+--La jerarquía es vista desde la clase hija.
+--
+--@CONTEXT UML!Classifier
+--@RETURN UML!Classifier
+--END DOC
+helper context UML!Classifier def : getFirstGeneralization() : UML!Classifier = 
+	self.generalization->first();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve la primera relación de especialización asociada 
+--al elemento de entrada. La jerarquía es vista desde la clase padre.
+--
+--La información de especialización está asociada a las clases hijas.
+--Con leerla de alguna de ellas es suficiente.
+--
+--@CONTEXT UML!Classifier
+--@RETURN UML!GeneralizationSet
+--@LIBRARIES UML_constants
+--#PRECONDITION
+--La clase de entrada tiene información de especialización (un GeneralizationSet)
+--y por tanto, tiene clases hijas.
+--END DOC
+helper context UML!Classifier def : getFirstSpecializationInfo() :
+		UML!GeneralizationSet = 
+	
+	thisModule.GENERALIZATIONS()->
+		select(gen | gen.general = self)->first().generalizationSet->first();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve la primera clase padre de la clase de entrada.
+--
+--@CONTEXT UML!Classifier
+--@RETURN UML!Classifier
+--#PRECONDITION
+--La clase de entrada tiene al menos un elemento padre (una generalización)
+--END DOC
+helper context UML!Classifier def : getFirstSuperClassifier() : UML!Classifier = 
+	self.getFirstGeneralization().general;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la clase de entrada tiene al menos una clase padre.
+--
+--@CONTEXT UML!Classifier
+--@RETURN Boolean
+--END DOC
+helper context UML!Classifier def : hasSuperClassifier() : Boolean = 
+	not (self.getFirstGeneralization()->oclIsUndefined());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con las subclases de la clase de entrada.
+--
+--@CONTEXT UML!Classifier
+--@RETURN Set(UML!Classifier)
+--@LIBRARIES UML_constants
+--#PRECONDITION
+--El elemento de entrada tiene al menos un elemento hijo
+--END DOC
+helper context UML!Classifier def : getSubClassifiers() : Set(UML!Classifier) = 
+	thisModule.CLASSES()->select(c | c.hasSuperClassifier())->
+		select(sub | sub.getFirstSuperClassifier() = self)->asSet();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con las clases del 
+--elemento de entrada que se encuentran por encima de éste en la jerarquía.
+--Si no tiene ancestros devuelve un conjunto vacío.
+--
+--@CONTEXT UML!Classifier
+--@RETURN Sequence(UML!Classifier)
+--END DOC
+helper context UML!Classifier def: getAncestors() : Sequence(UML!Classifier) =
+	let parents : Sequence(UML!Classifier) = Sequence{}
+	in
+		if self.hasSuperClassifier() then			
+			if self.getFirstSuperClassifier().hasSuperClassifier() then
+				parents.append(self.getFirstSuperClassifier()).union(
+					self.getFirstSuperClassifier().getAncestors())
+			else
+				parents.append(self.getFirstSuperClassifier())
+			endif
+		else
+			OclUndefined
+		endif;		
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con las clases de la 
+--clase de entrada que son clases hoja en la jerarquía
+--(no tienen subclases).
+--
+--@CONTEXT UML!Classifier
+--@RETURN Set(UML!Classifier)
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!Classifier def : getLeafSubClassifiers() : Set(UML!Classifier) =			
+	thisModule.CLASSES()->select(c | c.hasSuperClassifier())->
+		select(sub |
+			(sub.getFirstSuperClassifier() = self) and 
+			(not sub.hasSubClassifiers())
+		)->asSet();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la clase de entrada tiene clases hija.
+--
+--@CONTEXT UML!Classifier
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!Classifier def : hasSubClassifiers() : Boolean = 
+	thisModule.GENERALIZATIONS()->exists(gen | gen.general = self);
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la generalización de entrada es total o completa.
+--
+--@CONTEXT UML!GeneralizationSet
+--@RETURN Boolean
+--END DOC
+helper context UML!GeneralizationSet def : isCovering() : Boolean = 
+	self.isCovering;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la generalización de entrada es parcial o incompleta.
+--
+--@CONTEXT UML!GeneralizationSet
+--@RETURN Boolean
+--END DOC
+helper context UML!GeneralizationSet def : isPartial() : Boolean = 
+	not self.isCovering;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la generalización de entrada es disjunta o exclusiva.
+--
+--@CONTEXT UML!GeneralizationSet
+--@RETURN Boolean
+--END DOC
+helper context UML!GeneralizationSet def : isDisjoint() : Boolean = 
+	self.isDisjoint;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la generalización de entrada es solapada.
+--
+--@CONTEXT UML!GeneralizationSet
+--@RETURN Boolean
+--END DOC
+helper context UML!GeneralizationSet def : isOverlapping() : Boolean = 
+	not self.isDisjoint;

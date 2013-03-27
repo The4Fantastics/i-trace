@@ -1,0 +1,46 @@
+module Families2Persons;
+create OUT : PersonsModel from IN : FamiliesModel;
+
+helper context FamiliesModel!Member def: isFemale() : Boolean =
+	if not self.familyMother.oclIsUndefined() then
+		true
+	else
+		if not self.familyDaughter.oclIsUndefined() then
+			true
+		else
+			false
+		endif
+	endif;
+
+helper context FamiliesModel!Member def: familyName : String =
+	if not self.familyFather.oclIsUndefined () then
+		self.familyFather.lastName
+	else
+		if not self.familyMother.oclIsUndefined() then
+			self.familyMother.lastName
+		else
+			if not self.familySon.oclIsUndefined() then
+				self.familySon.lastName
+			else
+				self.familyDaughter.lastName
+			endif
+		endif
+	endif;
+
+rule Member2Male {
+	from
+		source : FamiliesModel!Member (not source.isFemale())
+	to
+		target : PersonsModel!Male (
+			fullName <- source.firstName + ' ' + source.familyName
+		)
+}
+
+rule Member2Female {
+	from
+		source : FamiliesModel!Member (source.isFemale())
+	to
+		target : PersonsModel!Female (
+			fullName <- source.firstName + ' ' + source.familyName
+		)
+}
