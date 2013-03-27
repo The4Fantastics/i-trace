@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 
-public class iTraceAdder {
+public class iTraceAdder_vFunciona_v27032012 {
 
 	// Readers and Writers for Files 
 	private FileReader fr = null;
@@ -93,7 +93,7 @@ public class iTraceAdder {
 		time = new MeasureTime("iTrace Adder");
 	}
 	
-	public iTraceAdder(String sourceFileName) throws IOException {
+	public iTraceAdder_vFunciona_v27032012(String sourceFileName) throws IOException {
 	
 		this.sourceFileName = sourceFileName;
 		
