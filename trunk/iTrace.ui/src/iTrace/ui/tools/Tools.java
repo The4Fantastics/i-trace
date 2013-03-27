@@ -74,11 +74,14 @@ public class Tools {
 		
 		public static void printArrayList(ArrayList<String> list, String name){
 		
+			int pos = 0;
+			
 			System.out.println("--- Inicio lista " + name + "----");
 			System.out.println();
 			
 			for (Iterator <String> iterator = list.iterator(); iterator.hasNext();) {
-				System.out.println(iterator.next());
+				System.out.println(pos + ": " + iterator.next());
+				pos++;
 			}
 			
 			System.out.println("--- Fin lista " + name + "----");
@@ -224,6 +227,64 @@ public class Tools {
 			}
 			return false;
 		}
+		
+		
+		public static void DeleteLastKey(ArrayList<String> lista){
+			
+			//printArrayList(lista, "Lo que entra");
+			
+			int pos = lista.size()-1;
+						
+			while (pos>=0){
+	
+				if (InverseSearch(lista.get(pos),"}")!=-1){
+					lista.set(pos, lista.get(pos).substring(0,InverseSearch(lista.get(pos),"}")));
+					break;
+				}
+				pos--;
+			}
+			//printArrayList(lista, "Lo que sale");
+			
+		}
+		
+		public static int BalanceKeys(String cadena){
+		
+			int i =0;
+			int balance=0;
+			
+			for (i=0;i<cadena.length();i++){
+				if (cadena.charAt(i)=='{'){
+					balance++;
+				}else if (cadena.charAt(i)=='}') {
+					balance--;
+				}
+			}
+			
+			return balance;
+		}
+		
+		private static int InverseSearch(String cadena, String car)
+		{
+		
+		int pos= 0;
+		boolean existe=false;
+		
+		
+		
+			for (pos=cadena.length()-1; pos>=0;pos--){
+				if (cadena.charAt(pos) == car.charAt(0) ){
+					existe=true;
+					break;
+				}
+			}
+			
+			if (existe){		
+				return pos;
+			}else{
+				return -1;
+			}
+		}
+		
 		
 		public static String DeleteKeys(String s_cadena)
 		{
