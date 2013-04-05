@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<iTrace:iTraceModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iTrace="org.eclipse.kybele.iTrace" version="1.0" projectName="UML2XMLW">
+  <artefacts xsi:type="iTrace:Model" name="u" path="D:/Thesis/Eclipse/Juno/u" metamodel="D:/Thesis/Eclipse/Juno/u"/>
+  <artefacts xsi:type="iTrace:Model" name="a" path="D:/Thesis/Eclipse/Juno/a" metamodel="D:/Thesis/Eclipse/Juno/a"/>
+  <artefacts xsi:type="iTrace:Model" name="s" path="D:/Thesis/Eclipse/Juno/s" metamodel="D:/Thesis/Eclipse/Juno/s"/>
+</iTrace:iTraceModel>

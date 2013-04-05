@@ -19,11 +19,11 @@
 <mapEntry key="OUT" value="MODELOUTPUT"/>
 </mapAttribute>
 <mapAttribute key="Options">
-<mapEntry key="OPTION_CLEAR" value="false"/>
+<mapEntry key="OPTION_CLEAR" value="true"/>
 <mapEntry key="OPTION_CONTENT_TYPE" value="false"/>
 <mapEntry key="OPTION_DERIVED" value="true"/>
 <mapEntry key="allowInterModelReferences" value="false"/>
-<mapEntry key="printExecutionTime" value="false"/>
+<mapEntry key="printExecutionTime" value="true"/>
 <mapEntry key="step" value="false"/>
 <mapEntry key="supportUML2Stereotypes" value="false"/>
 </mapAttribute>
@@ -38,9 +38,9 @@
 </mapAttribute>
 <mapAttribute key="Path">
 <mapEntry key="ATL" value="/ATL2Metrics/Metamodels/ATL.ecore"/>
-<mapEntry key="IN" value="/ATL2Metrics/Trans/WSDL2ASD/WSDL2ASD.ecore"/>
+<mapEntry key="IN" value="/ATL2Metrics/Transformations/WSDL2ASD/WSDL2ASD.ecore"/>
 <mapEntry key="Metrics" value="/ATL2Metrics/Metamodels/Metrics.ecore"/>
-<mapEntry key="OUT" value="/ATL2Metrics/Trans/WSDL2ASD/WSDL2ASD.metrics"/>
+<mapEntry key="OUT" value="/ATL2Metrics/Transformations/WSDL2ASD/WSDL2ASD.metrics"/>
 </mapAttribute>
 <listAttribute key="Superimpose"/>
 </launchConfiguration>

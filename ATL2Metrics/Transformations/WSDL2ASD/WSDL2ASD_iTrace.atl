@@ -1,0 +1,588 @@
+-- @nsURI iTrace=http://www.kybele.es/iTrace
+-- @path  WSDL=D:/Thesis/Eclipse/Juno/w
+-- @path  ASD=D:/Thesis/Eclipse/Juno/a
+
+module WSDL2ASD_iTrace;
+create OUT : ASD, TRACE : iTrace from  IN : WSDL;
+
+--_________________________Begin ATL Libraries _________________________
+
+uses ASDHelpersv1;
+
+--_________________________End ATL Libraries _________________________
+
+
+
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+--	Incio:	iTrace: creación de la Raiz y Modelos con helper auxiliares
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+
+entrypoint rule CreateTraceModelRoot (){
+to
+	root : iTrace!iTraceModel
+do {
+	root.projectName <- 'WSDL2ASD';
+	root.version <- '1.0';
+
+--_________________________Asignación del root _________________________
+
+	thisModule.getTraceModelRoot <- root;
+
+--_________________________Llamada a los constructores de los modelos _________________________
+
+	thisModule.createModel_WSDL();
+	thisModule.createModel_ASD();
+	}
+}
+
+helper def: getTraceModelRoot : iTrace!iTraceModel = OclUndefined;
+
+
+--_________________________iTrace, begin creation rule for model WSDL _________________________
+
+
+rule createModel_WSDL(){
+to
+	WSDL : iTrace!Model (
+		aspect <- 'Unspecified',
+		name <- 'w',
+		path <- 'D:/Thesis/Eclipse/Juno/w',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'D:/Thesis/Eclipse/Juno/w',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_WSDL  <- WSDL;
+	}
+}
+
+
+helper def: getModel_WSDL : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model WSDL _________________________
+
+
+--_________________________iTrace, begin creation rule for model ASD _________________________
+
+
+rule createModel_ASD(){
+to
+	ASD : iTrace!Model (
+		aspect <- 'Unspecified',
+		name <- 'a',
+		path <- 'D:/Thesis/Eclipse/Juno/a',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'D:/Thesis/Eclipse/Juno/a',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_ASD  <- ASD;
+	}
+}
+
+
+helper def: getModel_ASD : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model ASD _________________________
+
+rule Definitions2ServiceDescription {
+	from
+		i : WSDL!Definitions
+	to
+		o : ASD!ServiceDescription (  
+			name <- i.name,
+			operations <- if i.portType <> OclUndefined then 
+						  i.portType->collect(e| e.operation) else OclUndefined
+						  endif,
+			infotypes <- if i.types <> OclUndefined then
+							if i.types.schema<> OclUndefined then
+								i.types.schema->collect(e|e.element)
+							else
+								OclUndefined
+							endif
+						else
+							OclUndefined
+						endif
+		)	
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Definitions2ServiceDescription',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD
+		)
+
+do {
+		elementSource_i.refSetValue('object', i);
+		elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+-- Rule 'PortTypeOperation2Operation'
+-- Create ASD Operation from WSDL PortType Operation
+rule PortTypeOperation2Operation {
+	from
+		i : WSDL!PortTypeOperation
+	to
+		o : ASD!Operation (  
+				name <- i.name,
+				messagePattern <- thisModule.getMessagePattern(i),
+				contents <- Sequence{i.input,i.output,i.fault}
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'PortTypeOperation2Operation',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD
+		)
+
+do {
+		elementSource_i.refSetValue('object', i);
+		elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+-- Rule 'PortTypeInput2Message'
+-- Create ASD Message from WSDL PortType Input 
+rule PortTypeInput2Message{
+	from
+		i : WSDL!PortTypeInput
+	to
+		o : ASD!Message(  
+			name <- if i.message<>OclUndefined then i.message.name else OclUndefined
+					endif,
+			role <- #input,
+			subset <- #req,
+			infoType <- if i.message<>OclUndefined then
+							if i.message.part <> OclUndefined then 
+								thisModule.getInfoType(i.message.part)
+							else
+								OclUndefined
+							endif	
+						else
+							OclUndefined
+						endif	
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'PortTypeInput2Message{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD
+		)
+
+do {
+		elementSource_i.refSetValue('object', i);
+		elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+-- Rule 'PortTypeOutput2Message'
+-- Create ASD Message from WSDL PortType Output
+rule PortTypeOutput2Message{
+	from
+		i : WSDL!PortTypeOutput
+	to
+		o : ASD!Message(  
+			name <- if i.message<>OclUndefined then i.message.name else OclUndefined
+					endif,
+			role <- #output,
+			subset <- #pro,
+			infoType <- if i.message<>OclUndefined then
+							if i.message.part <> OclUndefined then 
+								thisModule.getInfoType(i.message.part)
+							else
+								OclUndefined
+							endif	
+						else
+							OclUndefined
+						endif				
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'PortTypeOutput2Message{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD
+		)
+
+do {
+		elementSource_i.refSetValue('object', i);
+		elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+-- Rule 'PortTypeFault2Message'
+-- Create ASD Message from WSDL PortType Fault that are children of WSDL PortType
+rule PortTypeFault2Message{
+	from
+		i : WSDL!PortTypeFault
+	to
+		o : ASD!Message(  
+			name <- if i.message<>OclUndefined then i.message.name else OclUndefined
+					endif,
+			role <- #fault,
+			subset <- #pro,
+			infoType <- if i.message<>OclUndefined then
+							if i.message.part <> OclUndefined then 
+								thisModule.getInfoType(i.message.part)
+							else
+								OclUndefined
+							endif	
+						else
+							OclUndefined
+						endif	 
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'PortTypeFault2Message{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD
+		)
+
+do {
+		elementSource_i.refSetValue('object', i);
+		elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+-- Rule 'ElementImported2InfoTypeImported'
+-- Create ASD InfoTypeImported from WSDL ElementImported
+rule ElementImported2InfoTypeImported{
+	from
+		i : WSDL!ElementImported(
+			i.oclType()= WSDL!ElementImported and i.name<>'#none'
+		)
+	to
+		o : ASD!InfoTypeImported(  
+			name <- i.name,
+			url <- i.url,
+			valueType <- thisModule.getType(i.name),
+			service <- WSDL!Definitions.allInstances().first(),
+			subset <- if o.message <> Sequence {} then o.message->collect(e|e.subset)->first() else #unset endif
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ElementImported2InfoTypeImported{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD
+		)
+
+do {
+		elementSource_i.refSetValue('object', i);
+		elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+-- Rule 'ComplexType2InfoType'
+-- Create ASD InfoType from WSDL ComplexType that are children of WSDL Schema
+rule ComplexType2InfoType{
+	from
+		i : WSDL!ComplexType(
+			i.refImmediateComposite().oclType()= WSDL!Schema
+		)
+	to
+		o : ASD!InfoType(  
+			name <- i.name,
+			infoType <- thisModule.getChildrenType(i),
+			service <- WSDL!Definitions.allInstances().first(),
+			subset <- if o.message <> Sequence{} then o.message->collect(e|e.subset)->first() else #unset endif
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ComplexType2InfoType{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD
+		)
+
+do {
+		elementSource_i.refSetValue('object', i);
+		elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+-- Rule 'Element2InfoType'
+-- Create ASD InfoType from WSDL Element 
+rule Element2InfoType{
+	from
+		i : WSDL!Element(
+			i.oclType()= WSDL!Element 
+		)
+	to
+		o : ASD!InfoType(  
+			name <- i.name,
+			valueType <- thisModule.getValueType(i),
+			valueRange <- thisModule.getValueRange(i),
+			infoType <- if thisModule.getChildrenType(i.complexType)=OclUndefined then Sequence{} else thisModule.getChildrenType(i.complexType) endif,
+			ref <- if i.ref <> OclUndefined then 
+						i.ref 
+				   else 
+				   		if i.type.oclIsTypeOf(WSDL!ComplexType) then
+							i.type
+						else
+							if i.type.oclIsTypeOf(WSDL!SimpleType) then
+								thisModule.getRefComplexTypeOfSimpleType(i.type)
+							else
+								OclUndefined
+							endif
+						endif
+				   endif,
+			subset <- if o.message <> Sequence{} then o.message->collect(e|e.subset)->first() else #unset endif
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Element2InfoType{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD
+		)
+
+do {
+		elementSource_i.refSetValue('object', i);
+		elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+-- Rule 'SimpleType2InfoType'
+-- Create ASD InfoType from SimpleType that the base is a primitive type.
+rule SimpleType2InfoType{
+	from
+		i : WSDL!SimpleType(
+			thisModule.getPrimitiveTypeOfSimpleType(i) <> OclUndefined
+		)
+	to
+		o : ASD!InfoType(  
+			name <- i.name,
+			valueType <- thisModule.getType(thisModule.getPrimitiveTypeOfSimpleType(i)),
+			valueRange <- thisModule.getRange(thisModule.getMaxOccursOfSimpleType(i),
+			thisModule.getMinOccursOfSimpleType(i)),
+			service <- WSDL!Definitions.allInstances().first(),
+			subset <- if o.message <> Sequence{} then o.message->collect(e|e.subset)->first() else #unset endif
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'SimpleType2InfoType{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_i : iTrace!SourceElement (
+			type <- i.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_WSDL
+		),
+		elementTarget_o : iTrace!TargetElement (
+			type <- o.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ASD
+		)
+
+do {
+		elementSource_i.refSetValue('object', i);
+		elementTarget_o.refSetValue('object', o);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
