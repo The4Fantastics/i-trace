@@ -1,0 +1,195 @@
+-- @nsURI iTrace=http://www.kybele.es/iTrace
+-- @path  FamiliesModel=D:/Thesis/Eclipse/Juno/f
+-- @path  PersonsModel=D:/Thesis/Eclipse/Juno/p
+
+module Families2Persons_iTrace;
+create OUT : PersonsModel, TRACE : iTrace from  IN : FamiliesModel;
+
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+--	Incio:	iTrace: creación de la Raiz y Modelos con helper auxiliares
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+
+entrypoint rule CreateTraceModelRoot (){
+to
+	root : iTrace!iTraceModel
+do {
+	root.projectName <- 'Families2Persons';
+	root.version <- '1.0';
+
+--_________________________Asignación del root _________________________
+
+	thisModule.getTraceModelRoot <- root;
+
+--_________________________Llamada a los constructores de los modelos _________________________
+
+	thisModule.createModel_FamiliesModel();
+	thisModule.createModel_PersonsModel();
+	}
+}
+
+helper def: getTraceModelRoot : iTrace!iTraceModel = OclUndefined;
+
+
+--_________________________iTrace, begin creation rule for model FamiliesModel _________________________
+
+
+rule createModel_FamiliesModel(){
+to
+	FamiliesModel : iTrace!Model (
+		aspect <- 'Unspecified',
+		name <- 'Families',
+		path <- 'D:/Thesis/Eclipse/Juno/f',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'D:/Thesis/Eclipse/Juno/f',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_FamiliesModel  <- FamiliesModel;
+	}
+}
+
+
+helper def: getModel_FamiliesModel : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model FamiliesModel _________________________
+
+
+--_________________________iTrace, begin creation rule for model PersonsModel _________________________
+
+
+rule createModel_PersonsModel(){
+to
+	PersonsModel : iTrace!Model (
+		aspect <- 'Unspecified',
+		name <- 'persons',
+		path <- 'D:/Thesis/Eclipse/Juno/p',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'D:/Thesis/Eclipse/Juno/p',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_PersonsModel  <- PersonsModel;
+	}
+}
+
+
+helper def: getModel_PersonsModel : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model PersonsModel _________________________
+
+helper context FamiliesModel!Member def: isFemale() : Boolean =
+	if not self.familyMother.oclIsUndefined() then
+		true
+	else
+		if not self.familyDaughter.oclIsUndefined() then
+			true
+		else
+			false
+		endif
+	endif;
+
+helper context FamiliesModel!Member def: familyName : String =
+	if not self.familyFather.oclIsUndefined () then
+		self.familyFather.lastName
+	else
+		if not self.familyMother.oclIsUndefined() then
+			self.familyMother.lastName
+		else
+			if not self.familySon.oclIsUndefined() then
+				self.familySon.lastName
+			else
+				self.familyDaughter.lastName
+			endif
+		endif
+	endif;
+
+rule Member2Male {
+	from
+		source : FamiliesModel!Member (not source.isFemale())
+	to
+		target : PersonsModel!Male (
+			fullName <- source.firstName + ' ' + source.familyName
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Member2Male',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_source : iTrace!SourceElement (
+			type <- source.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_FamiliesModel
+		),
+		elementTarget_target : iTrace!TargetElement (
+			type <- target.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_PersonsModel
+		)
+
+do {
+		elementSource_source.refSetValue('object', source);
+		elementTarget_target.refSetValue('object', target);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+rule Member2Female {
+	from
+		source : FamiliesModel!Member (source.isFemale())
+	to
+		target : PersonsModel!Female (
+			fullName <- source.firstName + ' ' + source.familyName
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Member2Female',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_source : iTrace!SourceElement (
+			type <- source.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_FamiliesModel
+		),
+		elementTarget_target : iTrace!TargetElement (
+			type <- target.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_PersonsModel
+		)
+
+do {
+		elementSource_source.refSetValue('object', source);
+		elementTarget_target.refSetValue('object', target);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+

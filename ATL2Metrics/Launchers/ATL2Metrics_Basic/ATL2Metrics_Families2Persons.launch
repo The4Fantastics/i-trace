@@ -38,9 +38,10 @@
 </mapAttribute>
 <mapAttribute key="Path">
 <mapEntry key="ATL" value="/ATL2Metrics/Metamodels/ATL.ecore"/>
-<mapEntry key="IN" value="/ATL2Metrics/Trans/Families2Persons/Families2Persons.ecore"/>
+<mapEntry key="IN" value="/ATL2Metrics/Transformations/Families2Persons/Families2Persons.ecore"/>
 <mapEntry key="Metrics" value="/ATL2Metrics/Metamodels/Metrics.ecore"/>
-<mapEntry key="OUT" value="/ATL2Metrics/Trans/Families2Persons/Families2Persons.metrics"/>
+<mapEntry key="OUT" value="/ATL2Metrics/Transformations/Families2Persons/Families2Persons.metrics"/>
 </mapAttribute>
 <listAttribute key="Superimpose"/>
+<stringAttribute key="bad_container_name" value="\ATL2Metrics\Launchers\ATL2Metrics"/>
 </launchConfiguration>

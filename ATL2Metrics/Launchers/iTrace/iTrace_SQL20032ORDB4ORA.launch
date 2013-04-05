@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.m2m.atl.adt.launching.atlTransformation">
-<stringAttribute key="ATL File Name" value="/M2DATDB/Transformations/M2M/SQL20032ORDB4ORA/SQL20032ORDB4ORA_iTrace.atl"/>
+<stringAttribute key="ATL File Name" value="/ATL2Metrics/Transformations/SQL20032ORDB4ORA/SQL20032ORDB4ORA_iTrace.atl"/>
 <stringAttribute key="ATL VM" value="EMF-specific VM"/>
 <stringAttribute key="ATL_COMPILER" value="atl2006"/>
 <booleanAttribute key="IS_REFINING" value="false"/>
@@ -42,11 +42,11 @@
 <mapEntry key="TRACE" value="iTrace"/>
 </mapAttribute>
 <mapAttribute key="Path">
-<mapEntry key="IN" value="/M2DATDB/Models/omdb.sql2003"/>
-<mapEntry key="ORDB4ORA" value="/M2DATDB/Metamodels/ORDB4ORA.ecore"/>
-<mapEntry key="OUT" value="/M2DATDB/Models/omdb.ordb4ora"/>
-<mapEntry key="SQL2003" value="/M2DATDB/Metamodels/SQL2003.ecore"/>
-<mapEntry key="TRACE" value="/M2DATDB/Models/SQL20032ORDB4ORA.iTrace"/>
+<mapEntry key="IN" value="/ATL2Metrics/Models/omdb.sql2003"/>
+<mapEntry key="ORDB4ORA" value="/ATL2Metrics/Metamodels/ORDB4ORA.ecore"/>
+<mapEntry key="OUT" value="/ATL2Metrics/Models/omdb_generated.ordb4ora"/>
+<mapEntry key="SQL2003" value="/ATL2Metrics/Metamodels/SQL2003.ecore"/>
+<mapEntry key="TRACE" value="/ATL2Metrics/Models/SQL20032ORDB4ORA.iTrace"/>
 <mapEntry key="iTrace" value="uri:http://www.kybele.es/iTrace"/>
 </mapAttribute>
 <listAttribute key="Superimpose"/>

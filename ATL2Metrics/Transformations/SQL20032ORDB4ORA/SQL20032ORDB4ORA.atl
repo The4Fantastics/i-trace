@@ -1004,8 +1004,7 @@ rule Parameter2Parameter2{
 		)
 }
 
-rule Trigger2Trigger
-{
+rule Trigger2Trigger {
 	from
 		tIN: SQL2003!Trigger
 	to
@@ -1019,8 +1018,7 @@ rule Trigger2Trigger
 		)
 }
 
-rule Procedure2Procedure
-{
+rule Procedure2Procedure {
 	from
 		pIN: SQL2003!Procedure
 	to
@@ -1033,8 +1031,7 @@ rule Procedure2Procedure
 		)
 }
 
-rule Function2Function
-{
+rule Function2Function {
 	from
 		pIN: SQL2003!Function
 	to
@@ -1197,8 +1194,7 @@ rule BaseTable2Table {
 }
 
 
-lazy abstract  rule Feature2Feature
-{
+lazy abstract  rule Feature2Feature {
 	from
 		fIN:SQL2003!Feature
 	to fOUT:ORDB4ORA!Feature
@@ -1213,8 +1209,7 @@ lazy abstract  rule Feature2Feature
 
 
 
- lazy rule StringFeature2CharacterFeature extends Feature2Feature
-{
+ lazy rule StringFeature2CharacterFeature extends Feature2Feature {
 	from
 		fIN:SQL2003!StringFeature(fIN.oclIsTypeOf(SQL2003!StringFeature))
 	to fOUT:ORDB4ORA!CharacterFeature
@@ -1223,8 +1218,7 @@ lazy abstract  rule Feature2Feature
 
 --La regla transforma una característica de SQL2003 a ORDB4ORA
 
-lazy rule NumericFeature2NumberFeature extends Feature2Feature 
-{
+lazy rule NumericFeature2NumberFeature extends Feature2Feature {
 	from
 		fIN:SQL2003!NumericFeature(fIN.oclIsTypeOf(SQL2003!NumericFeature))
 	to fOUT:ORDB4ORA!NumberFeature
@@ -1233,8 +1227,7 @@ lazy rule NumericFeature2NumberFeature extends Feature2Feature
 
 --La regla transforma una característica de SQL2003 a ORDB4ORA
 
-lazy rule DatetimeFeature2DatetimerFeature extends Feature2Feature
-{
+lazy rule DatetimeFeature2DatetimerFeature extends Feature2Feature {
 	from
 		fIN:SQL2003!DatetimeFeature(fIN.oclIsTypeOf(SQL2003!DatetimeFeature))
 	to fOUT:ORDB4ORA!DatetimeFeature
@@ -1243,8 +1236,7 @@ lazy rule DatetimeFeature2DatetimerFeature extends Feature2Feature
 
 --La regla transforma una característica de SQL2003 a ORDB4ORA
 
-lazy rule IntervalFeature2IntervalFeature extends Feature2Feature
-{
+lazy rule IntervalFeature2IntervalFeature extends Feature2Feature {
 	from
 		fIN:SQL2003!IntervalFeature(fIN.oclIsTypeOf(SQL2003!IntervalFeature))
 	to fOUT:ORDB4ORA!IntervalFeature

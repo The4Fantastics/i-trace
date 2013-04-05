@@ -38,9 +38,9 @@
 </mapAttribute>
 <mapAttribute key="Path">
 <mapEntry key="ATL" value="/ATL2Metrics/Metamodels/ATL.ecore"/>
-<mapEntry key="IN" value="/ATL2Metrics/Trans/SQL20032ORDB4ORA/SQL20032ORDB4ORA_iTrace.ecore"/>
+<mapEntry key="IN" value="/ATL2Metrics/Transformations/SQL20032ORDB4ORA/SQL20032ORDB4ORA_iTrace.ecore"/>
 <mapEntry key="Metrics" value="/ATL2Metrics/Metamodels/Metrics.ecore"/>
-<mapEntry key="OUT" value="/ATL2Metrics/Trans/SQL20032ORDB4ORA/SQL20032ORDB4ORA_iTrace.metrics"/>
+<mapEntry key="OUT" value="/ATL2Metrics/Transformations/SQL20032ORDB4ORA/SQL20032ORDB4ORA_iTrace.metrics"/>
 </mapAttribute>
 <listAttribute key="Superimpose"/>
 </launchConfiguration>
