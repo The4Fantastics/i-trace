@@ -685,6 +685,7 @@ rule NumericType2Decimal {
 			model <- thisModule.schema
 			)
 }
+
 rule NumericType2Small {
 	from
 		n : SQL2003!NumericType(n.descriptor = #SMALLINT)
@@ -694,6 +695,7 @@ rule NumericType2Small {
 			model <- thisModule.schema
 			)
 }
+
 rule NumericType2Integer {
 	from
 		n : SQL2003!NumericType(n.descriptor = #INTEGER)
@@ -713,6 +715,7 @@ rule NumericType2Float {
 			model <- thisModule.schema
 			)
 }
+
 rule NumericType2Real {
 	from
 		n : SQL2003!NumericType(n.descriptor = #REAL)

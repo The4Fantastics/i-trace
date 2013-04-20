@@ -1356,6 +1356,51 @@ do {
 -- ____________________ End Added by iTrace  _________________________
 
 
+rule NumericType2Small {
+	from
+		n : SQL2003!NumericType(n.descriptor = #SMALLINT)
+	to
+		out : ORDB4ORA!ANSINumberType (
+			Descriptor <-#SMALLINT,
+			model <- thisModule.schema
+			)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'NumericType2Small',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_n : iTrace!SourceElement (
+			type <- n.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ORDB4ORA
+		)
+
+do {
+		elementSource_n.refSetValue('object', n);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
 rule NumericType2Integer {
 	from
 		n : SQL2003!NumericType(n.descriptor = #INTEGER)
@@ -1416,6 +1461,51 @@ rule NumericType2Float {
 		,
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'NumericType2Float',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_n : iTrace!SourceElement (
+			type <- n.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_SQL2003
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_ORDB4ORA
+		)
+
+do {
+		elementSource_n.refSetValue('object', n);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+rule NumericType2Real {
+	from
+		n : SQL2003!NumericType(n.descriptor = #REAL)
+	to
+		out : ORDB4ORA!ANSINumberType (
+			Descriptor <-#REAL,
+			model <- thisModule.schema
+			)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'NumericType2Real',
 			comment <- 'Automatic generation by iTrace', 
 			createdOn <- '05-4-2013',
 			mode <- 'Automatic',
