@@ -243,6 +243,7 @@ rule Class2ElementGlobalChoice{
 			eleccion <- Seq),
 		Seq: schemaXML!Choice ()
 }
+
 rule Class2ElementGlobalAll{
 	from
 		c : UML!Class ((c.mapTo() = 'All')and  c.GetGeneralization().oclIsUndefined())  
@@ -381,6 +382,7 @@ rule Property2ElementLocal{
 						endif
 			)
  }
+ 
 rule Composite2ElementLocalSeq{
 	from
 		Ass: UML!Association (Ass.isAssoComposite() and not Ass.isAssoAgregation() and Ass.AssMapTo() = 'Sequences')

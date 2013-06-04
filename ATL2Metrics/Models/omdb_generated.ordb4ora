@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ORDB4ORA="http:///ORDB4ORA.ecore">
+  <ORDB4ORA:DatetimeType/>
+  <ORDB4ORA:ANSINumberType/>
+  <ORDB4ORA:ANSICharacterType/>
+  <ORDB4ORA:ANSICharacterType Descriptor="CHARACTERVARYING"/>
+  <ORDB4ORA:BuiltInCharacterType/>
+  <ORDB4ORA:DatetimeType Descriptor="TIMESTAMPWITHTIMEZONE"/>
+  <ORDB4ORA:DatetimeType Descriptor="TIMESTAMP"/>
+  <ORDB4ORA:XMLType/>
+  <ORDB4ORA:LOBType/>
+  <ORDB4ORA:LOBType/>
+  <ORDB4ORA:LOBType/>
+  <ORDB4ORA:LOBType Descriptor="CLOB"/>
+  <ORDB4ORA:ANSINumberType Descriptor="DECIMAL"/>
+  <ORDB4ORA:ANSINumberType Descriptor="SMALLINT"/>
+  <ORDB4ORA:ANSINumberType Descriptor="INTEGER"/>
+  <ORDB4ORA:ANSINumberType Descriptor="FLOAT"/>
+  <ORDB4ORA:ANSINumberType Descriptor="REAL"/>
+  <ORDB4ORA:ANSINumberType Descriptor="DOUBLEPRECISION"/>
+  <ORDB4ORA:DatetimeType Descriptor="INTERVALDAYTOSECOND"/>
+  <ORDB4ORA:AnyType Descriptor="SYSANYTYPE"/>
   <ORDB4ORA:BuiltInCharacterType Descriptor="VARCHAR2"/>
   <ORDB4ORA:BuiltInCharacterType Descriptor="NCHAR"/>
   <ORDB4ORA:BuiltInCharacterType Descriptor="NVARCHAR2"/>

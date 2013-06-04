@@ -1,130 +1,290 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <iTrace:iTraceModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iTrace="org.eclipse.kybele.iTrace" version="1.0" projectName="SQL20032ORDB4ORA">
-  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateTypes(){">
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInCharacterType">
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="DatetimeType2Date">
+    <sourceElements model="//@artefacts.0" type="SQL2003!DatetimeType">
+      <object href="omdb.sql2003#/30"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!DatetimeType">
       <object href="omdb_generated.ordb4ora#/0"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInCharacterType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="NumericType2Numeric">
+    <sourceElements model="//@artefacts.0" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/5"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
       <object href="omdb_generated.ordb4ora#/1"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInCharacterType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="CharacterStringType2Varchar">
+    <sourceElements model="//@artefacts.0" type="SQL2003!CharacterStringType">
+      <object href="omdb.sql2003#/29"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
       <object href="omdb_generated.ordb4ora#/2"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInNumberType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="CharacterStringType2Charvarying">
+    <sourceElements model="//@artefacts.0" type="SQL2003!CharacterStringType">
+      <object href="omdb.sql2003#/28"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
       <object href="omdb_generated.ordb4ora#/3"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInNumberType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="BooleanType2Boolean">
+    <sourceElements model="//@artefacts.0" type="SQL2003!BooleanType">
+      <object href="omdb.sql2003#/27"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInCharacterType">
       <object href="omdb_generated.ordb4ora#/4"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInNumberType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="DatetimeType2TimestampWTZ{">
+    <sourceElements model="//@artefacts.0" type="SQL2003!DatetimeType">
+      <object href="omdb.sql2003#/3"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!DatetimeType">
       <object href="omdb_generated.ordb4ora#/5"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!LongAndRawType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="DatetimeType2TimestampWOTZ">
+    <sourceElements model="//@artefacts.0" type="SQL2003!DatetimeType">
+      <object href="omdb.sql2003#/2"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!DatetimeType">
       <object href="omdb_generated.ordb4ora#/6"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!LongAndRawType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="XMLType2XMLType">
+    <sourceElements model="//@artefacts.0" type="SQL2003!XMLType">
+      <object href="omdb.sql2003#/26"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!XMLType">
       <object href="omdb_generated.ordb4ora#/7"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!LongAndRawType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="BinaryStringType2LOB">
+    <sourceElements model="//@artefacts.0" type="SQL2003!BinaryStringType">
+      <object href="omdb.sql2003#/24"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!LOBType">
       <object href="omdb_generated.ordb4ora#/8"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!DatetimeType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="BinaryStringType2LOB">
+    <sourceElements model="//@artefacts.0" type="SQL2003!BinaryStringType">
+      <object href="omdb.sql2003#/25"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!LOBType">
       <object href="omdb_generated.ordb4ora#/9"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ROWIDType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="BinaryStringType2LOB">
+    <sourceElements model="//@artefacts.0" type="SQL2003!BinaryStringType">
+      <object href="omdb.sql2003#/33"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!LOBType">
       <object href="omdb_generated.ordb4ora#/10"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ROWIDType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="CharacterStringType2CLOB">
+    <sourceElements model="//@artefacts.0" type="SQL2003!CharacterStringType">
+      <object href="omdb.sql2003#/4"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!LOBType">
       <object href="omdb_generated.ordb4ora#/11"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="NumericType2Decimal">
+    <sourceElements model="//@artefacts.0" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/6"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
       <object href="omdb_generated.ordb4ora#/12"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="NumericType2Small">
+    <sourceElements model="//@artefacts.0" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/7"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
       <object href="omdb_generated.ordb4ora#/13"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="NumericType2Integer">
+    <sourceElements model="//@artefacts.0" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/31"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
       <object href="omdb_generated.ordb4ora#/14"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="NumericType2Float">
+    <sourceElements model="//@artefacts.0" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/9"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
       <object href="omdb_generated.ordb4ora#/15"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="NumericType2Real">
+    <sourceElements model="//@artefacts.0" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/32"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
       <object href="omdb_generated.ordb4ora#/16"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="NumericType2Double">
+    <sourceElements model="//@artefacts.0" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/10"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
       <object href="omdb_generated.ordb4ora#/17"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="IntervalDay2Interval">
+    <sourceElements model="//@artefacts.0" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/14"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!DatetimeType">
       <object href="omdb_generated.ordb4ora#/18"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="IntervalYear2AnyType">
+    <sourceElements model="//@artefacts.0" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/18"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!AnyType">
       <object href="omdb_generated.ordb4ora#/19"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateTypes(){">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInCharacterType">
       <object href="omdb_generated.ordb4ora#/20"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!AnyType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInCharacterType">
       <object href="omdb_generated.ordb4ora#/21"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!AnyType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInCharacterType">
       <object href="omdb_generated.ordb4ora#/22"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInNumberType">
       <object href="omdb_generated.ordb4ora#/23"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInNumberType">
       <object href="omdb_generated.ordb4ora#/24"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!BuiltInNumberType">
       <object href="omdb_generated.ordb4ora#/25"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!LongAndRawType">
       <object href="omdb_generated.ordb4ora#/26"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!LongAndRawType">
       <object href="omdb_generated.ordb4ora#/27"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!LongAndRawType">
       <object href="omdb_generated.ordb4ora#/28"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!DatetimeType">
       <object href="omdb_generated.ordb4ora#/29"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ROWIDType">
       <object href="omdb_generated.ordb4ora#/30"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ROWIDType">
       <object href="omdb_generated.ordb4ora#/31"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
       <object href="omdb_generated.ordb4ora#/32"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
       <object href="omdb_generated.ordb4ora#/33"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
       <object href="omdb_generated.ordb4ora#/34"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!XMLType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
       <object href="omdb_generated.ordb4ora#/35"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!SpacialType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
       <object href="omdb_generated.ordb4ora#/36"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!SpacialType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
       <object href="omdb_generated.ordb4ora#/37"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!SpacialType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSICharacterType">
       <object href="omdb_generated.ordb4ora#/38"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!LOBType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
       <object href="omdb_generated.ordb4ora#/39"/>
     </targetElements>
-    <targetElements model="//@artefacts.1" type="ORDB4ORA!LOBType">
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!ANSINumberType">
       <object href="omdb_generated.ordb4ora#/40"/>
     </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!AnyType">
+      <object href="omdb_generated.ordb4ora#/41"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!AnyType">
+      <object href="omdb_generated.ordb4ora#/42"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/43"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/44"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/45"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/46"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/47"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/48"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/49"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/50"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/51"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/52"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/53"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!MediaType">
+      <object href="omdb_generated.ordb4ora#/54"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!XMLType">
+      <object href="omdb_generated.ordb4ora#/55"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!SpacialType">
+      <object href="omdb_generated.ordb4ora#/56"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!SpacialType">
+      <object href="omdb_generated.ordb4ora#/57"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!SpacialType">
+      <object href="omdb_generated.ordb4ora#/58"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!LOBType">
+      <object href="omdb_generated.ordb4ora#/59"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="ORDB4ORA!LOBType">
+      <object href="omdb_generated.ordb4ora#/60"/>
+    </targetElements>
   </traceLinks>
-  <artefacts xsi:type="iTrace:Model" name="s" path="D:/Thesis/Eclipse/Juno/s" metamodel="D:/Thesis/Eclipse/Juno/s"/>
-  <artefacts xsi:type="iTrace:Model" name="o" path="D:/Thesis/Eclipse/Juno/o" elements="//@traceLinks.0/@targetElements.0 //@traceLinks.0/@targetElements.1 //@traceLinks.0/@targetElements.2 //@traceLinks.0/@targetElements.3 //@traceLinks.0/@targetElements.4 //@traceLinks.0/@targetElements.5 //@traceLinks.0/@targetElements.6 //@traceLinks.0/@targetElements.7 //@traceLinks.0/@targetElements.8 //@traceLinks.0/@targetElements.9 //@traceLinks.0/@targetElements.10 //@traceLinks.0/@targetElements.11 //@traceLinks.0/@targetElements.12 //@traceLinks.0/@targetElements.13 //@traceLinks.0/@targetElements.14 //@traceLinks.0/@targetElements.15 //@traceLinks.0/@targetElements.16 //@traceLinks.0/@targetElements.17 //@traceLinks.0/@targetElements.18 //@traceLinks.0/@targetElements.19 //@traceLinks.0/@targetElements.20 //@traceLinks.0/@targetElements.21 //@traceLinks.0/@targetElements.22 //@traceLinks.0/@targetElements.23 //@traceLinks.0/@targetElements.24 //@traceLinks.0/@targetElements.25 //@traceLinks.0/@targetElements.26 //@traceLinks.0/@targetElements.27 //@traceLinks.0/@targetElements.28 //@traceLinks.0/@targetElements.29 //@traceLinks.0/@targetElements.30 //@traceLinks.0/@targetElements.31 //@traceLinks.0/@targetElements.32 //@traceLinks.0/@targetElements.33 //@traceLinks.0/@targetElements.34 //@traceLinks.0/@targetElements.35 //@traceLinks.0/@targetElements.36 //@traceLinks.0/@targetElements.37 //@traceLinks.0/@targetElements.38 //@traceLinks.0/@targetElements.39 //@traceLinks.0/@targetElements.40" metamodel="D:/Thesis/Eclipse/Juno/o"/>
+  <artefacts xsi:type="iTrace:Model" name="s" path="D:/Thesis/Eclipse/Juno/s" elements="//@traceLinks.0/@sourceElements.0 //@traceLinks.1/@sourceElements.0 //@traceLinks.2/@sourceElements.0 //@traceLinks.3/@sourceElements.0 //@traceLinks.4/@sourceElements.0 //@traceLinks.5/@sourceElements.0 //@traceLinks.6/@sourceElements.0 //@traceLinks.7/@sourceElements.0 //@traceLinks.8/@sourceElements.0 //@traceLinks.9/@sourceElements.0 //@traceLinks.10/@sourceElements.0 //@traceLinks.11/@sourceElements.0 //@traceLinks.12/@sourceElements.0 //@traceLinks.13/@sourceElements.0 //@traceLinks.14/@sourceElements.0 //@traceLinks.15/@sourceElements.0 //@traceLinks.16/@sourceElements.0 //@traceLinks.17/@sourceElements.0 //@traceLinks.18/@sourceElements.0 //@traceLinks.19/@sourceElements.0" metamodel="D:/Thesis/Eclipse/Juno/s"/>
+  <artefacts xsi:type="iTrace:Model" name="o" path="D:/Thesis/Eclipse/Juno/o" elements="//@traceLinks.0/@targetElements.0 //@traceLinks.1/@targetElements.0 //@traceLinks.2/@targetElements.0 //@traceLinks.3/@targetElements.0 //@traceLinks.4/@targetElements.0 //@traceLinks.5/@targetElements.0 //@traceLinks.6/@targetElements.0 //@traceLinks.7/@targetElements.0 //@traceLinks.8/@targetElements.0 //@traceLinks.9/@targetElements.0 //@traceLinks.10/@targetElements.0 //@traceLinks.11/@targetElements.0 //@traceLinks.12/@targetElements.0 //@traceLinks.13/@targetElements.0 //@traceLinks.14/@targetElements.0 //@traceLinks.15/@targetElements.0 //@traceLinks.16/@targetElements.0 //@traceLinks.17/@targetElements.0 //@traceLinks.18/@targetElements.0 //@traceLinks.19/@targetElements.0 //@traceLinks.20/@targetElements.0 //@traceLinks.20/@targetElements.1 //@traceLinks.20/@targetElements.2 //@traceLinks.20/@targetElements.3 //@traceLinks.20/@targetElements.4 //@traceLinks.20/@targetElements.5 //@traceLinks.20/@targetElements.6 //@traceLinks.20/@targetElements.7 //@traceLinks.20/@targetElements.8 //@traceLinks.20/@targetElements.9 //@traceLinks.20/@targetElements.10 //@traceLinks.20/@targetElements.11 //@traceLinks.20/@targetElements.12 //@traceLinks.20/@targetElements.13 //@traceLinks.20/@targetElements.14 //@traceLinks.20/@targetElements.15 //@traceLinks.20/@targetElements.16 //@traceLinks.20/@targetElements.17 //@traceLinks.20/@targetElements.18 //@traceLinks.20/@targetElements.19 //@traceLinks.20/@targetElements.20 //@traceLinks.20/@targetElements.21 //@traceLinks.20/@targetElements.22 //@traceLinks.20/@targetElements.23 //@traceLinks.20/@targetElements.24 //@traceLinks.20/@targetElements.25 //@traceLinks.20/@targetElements.26 //@traceLinks.20/@targetElements.27 //@traceLinks.20/@targetElements.28 //@traceLinks.20/@targetElements.29 //@traceLinks.20/@targetElements.30 //@traceLinks.20/@targetElements.31 //@traceLinks.20/@targetElements.32 //@traceLinks.20/@targetElements.33 //@traceLinks.20/@targetElements.34 //@traceLinks.20/@targetElements.35 //@traceLinks.20/@targetElements.36 //@traceLinks.20/@targetElements.37 //@traceLinks.20/@targetElements.38 //@traceLinks.20/@targetElements.39 //@traceLinks.20/@targetElements.40" metamodel="D:/Thesis/Eclipse/Juno/o"/>
 </iTrace:iTraceModel>

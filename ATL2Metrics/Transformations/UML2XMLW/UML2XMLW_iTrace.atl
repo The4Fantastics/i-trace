@@ -563,6 +563,76 @@ do {
 -- ____________________ End Added by iTrace  _________________________
 
 
+rule Class2ElementGlobalAll{
+	from
+		c : UML!Class ((c.mapTo() = 'All')and  c.GetGeneralization().oclIsUndefined())  
+	to
+		xml : schemaXML!ElementGlobal 
+			(	id <- c.name,	
+				name <- c.name + '<<ElementGlobal>>',
+				Owner <- thisModule.package,
+				eleccion <- cmpTyp),
+		cmpTyp : schemaXML!ComplexTypeLocal 
+			(   id <- c.name + '_Type', 
+				eleccion <- Other),
+		Other: schemaXML!Other(
+			eleccion <- Seq),
+		Seq: schemaXML!All()
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Class2ElementGlobalAll{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_xml : iTrace!TargetElement (
+			type <- xml.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_schemaXML
+		),
+		elementTarget_cmpTyp : iTrace!TargetElement (
+			type <- cmpTyp.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_schemaXML
+		),
+		elementTarget_Other : iTrace!TargetElement (
+			type <- Other.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_schemaXML
+		),
+		elementTarget_Seq : iTrace!TargetElement (
+			type <- Seq.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_schemaXML
+		)
+
+do {
+		elementSource_c.refSetValue('object', c);
+		elementTarget_xml.refSetValue('object', xml);
+		elementTarget_cmpTyp.refSetValue('object', cmpTyp);
+		elementTarget_Other.refSetValue('object', Other);
+		elementTarget_Seq.refSetValue('object', Seq);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
 rule Property2ElementLocal{
 	--de las clases
 	from
@@ -860,8 +930,95 @@ do {
 -- ____________________ End Added by iTrace  _________________________
 
 
+rule Composite2ElementLocalSeq{
+	from
+		Ass: UML!Association (Ass.isAssoComposite() and not Ass.isAssoAgregation() and Ass.AssMapTo() = 'Sequences')
+	to
+		Elem: schemaXML!ElementLocal(
+			name <- Ass.name.debug('composite') + '<_is_composed_of>',
+			owner <- thisModule.resolveTemp (Ass.getPropertyAssoNoMulti().type, 'Seq'),
 			--ref <- Ass.getPropertyAssoLast().name.debug('segundo')
+			eleccion <- cmpTyp
+			),
+			cmpTyp : schemaXML!ComplexTypeLocal 
+			(	--id <- c.Name,	 
+				eleccion <- Other		
+				),
+		Other: schemaXML!Other(
+			eleccion <- Seq
+			),
+			
+		Seq: schemaXML!Sequences
+			(--id <- c.name,
 			--element <- Ass ---> append(thisModule.Association2Element)
+
+			),
+		Elemt: schemaXML!ElementLocal(
+			name <- Ass.getPropertyAssoLast().name,
+			owner<- Seq,
+			ref <- Ass.getPropertyAssoLast().name
+			)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Composite2ElementLocalSeq{',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_Ass : iTrace!SourceElement (
+			type <- Ass.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_UML
+		),
+		elementTarget_Elem : iTrace!TargetElement (
+			type <- Elem.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_schemaXML
+		),
+		elementTarget_cmpTyp : iTrace!TargetElement (
+			type <- cmpTyp.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_schemaXML
+		),
+		elementTarget_Other : iTrace!TargetElement (
+			type <- Other.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_schemaXML
+		),
+		elementTarget_Seq : iTrace!TargetElement (
+			type <- Seq.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_schemaXML
+		),
+		elementTarget_Elemt : iTrace!TargetElement (
+			type <- Elemt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_schemaXML
+		)
+
+do {
+		elementSource_Ass.refSetValue('object', Ass);
+		elementTarget_Elem.refSetValue('object', Elem);
+		elementTarget_cmpTyp.refSetValue('object', cmpTyp);
+		elementTarget_Other.refSetValue('object', Other);
+		elementTarget_Seq.refSetValue('object', Seq);
+		elementTarget_Elemt.refSetValue('object', Elemt);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
 rule Composite2ElementLocalAll{
 	from
 		Ass: UML!Association (Ass.isAssoComposite() and not Ass.isAssoAgregation() and Ass.AssMapTo() = 'All')
