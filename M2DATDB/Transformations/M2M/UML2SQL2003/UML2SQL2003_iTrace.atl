@@ -2943,20 +2943,15 @@ rule MemberEnd2NotNullOnTT {
 			table <- thisModule.resolveTemp(c, 'tt'),
 			columns <- prop
 		)
-
 -- ____________________ Begin Added by iTrace  _________________________
-
-		,
-		TraceLink : iTrace!M2MLink (
+	   ,TraceLink : iTrace!M2MLink (
 			ruleName <- 'MemberEnd2NotNullOnTT',
 			comment <- 'Automatic generation by iTrace', 
-			createdOn <- '21-11-2012',
+			createdOn <- '15-02-2013',
 			mode <- 'Automatic',
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
 			type <- 'Transformation',
-			fromFileName <- '',
-
 			iTraceModel <- thisModule.getTraceModelRoot
 		),
 		elementSource_prop : iTrace!SourceElement (
@@ -2974,14 +2969,12 @@ rule MemberEnd2NotNullOnTT {
 			traceLink <- TraceLink,
 			model <- thisModule.getModel_SQL2003
 		)
-
 do {
 		prop.name.debug('rule MemberEnd2NotNullOnTT ');	
 		elementSource_prop.refSetValue('object', prop);
 		elementSource_c.refSetValue('object', c);
 		elementTarget_notNull.refSetValue('object', notNull);
-	}
-}
+	} }
 
 -- ____________________ End Added by iTrace  _________________________
 
@@ -3160,9 +3153,7 @@ rule MemberEnd2NotNullOnMergingTT {
 			table <- thisModule.resolveTemp(c, 'tt_merge'),
 			columns <- prop
 		)
-
 -- ____________________ Begin Added by iTrace  _________________________
-
 		,
 		TraceLink : iTrace!M2MLink (
 			ruleName <- 'MemberEnd2NotNullOnMergingTT',
@@ -3172,8 +3163,6 @@ rule MemberEnd2NotNullOnMergingTT {
 			technicalBinding <- 'ATL',
 			createdBy <- 'iTrace Tool',
 			type <- 'Transformation',
-			fromFileName <- '',
-
 			iTraceModel <- thisModule.getTraceModelRoot
 		),
 		elementSource_prop : iTrace!SourceElement (
@@ -3191,7 +3180,6 @@ rule MemberEnd2NotNullOnMergingTT {
 			traceLink <- TraceLink,
 			model <- thisModule.getModel_SQL2003
 		)
-
 do {
 		prop.name.debug('rule MemberEnd2NotNullOnMergingTT ');	
 		elementSource_prop.refSetValue('object', prop);
@@ -3199,7 +3187,6 @@ do {
 		elementTarget_notNull.refSetValue('object', notNull);
 	}
 }
-
 -- ____________________ End Added by iTrace  _________________________
 
 
