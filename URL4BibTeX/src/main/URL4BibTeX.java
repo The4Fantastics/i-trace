@@ -115,7 +115,7 @@ public class URL4BibTeX extends javax.swing.JFrame {
         );
         getContentPane().setLayout(layout);
         
-        this.setTitle(Messages.getString(Messages.getString("URL4BibTeX.Constants.appName")) + Messages.getString("URL4BibTeX.Constants.appVer"));   //$NON-NLS-1$
+        this.setTitle(Messages.getString("URL4BibTeX.Constants.appName") + " " + Messages.getString("URL4BibTeX.Constants.appVer"));   //$NON-NLS-1$
 
         pack();
     }
