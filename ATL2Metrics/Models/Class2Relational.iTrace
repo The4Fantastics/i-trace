@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<iTrace:iTraceModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iTrace="org.eclipse.kybele.iTrace" version="1.0" projectName="Class2Relational">
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Class2Table">
+    <sourceElements model="//@artefacts.0" type="Class!Class">
+      <object href="model.class#/0"/>
+    </sourceElements>
+    <sourceElements model="//@artefacts.1" type="Relational!Column">
+      <object href="model_generated.relational#/0/@col.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="Relational!Table">
+      <object href="model_generated.relational#/0"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Class2Table">
+    <sourceElements model="//@artefacts.0" type="Class!Class">
+      <object href="model.class#/1"/>
+    </sourceElements>
+    <sourceElements model="//@artefacts.1" type="Relational!Column">
+      <object href="model_generated.relational#/1/@col.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="Relational!Table">
+      <object href="model_generated.relational#/1"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="DataType2Type">
+    <sourceElements model="//@artefacts.0" type="Class!DataType">
+      <object href="model.class#/2"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="Relational!Type">
+      <object href="model_generated.relational#/2"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="DataType2Type">
+    <sourceElements model="//@artefacts.0" type="Class!DataType">
+      <object href="model.class#/3"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="Relational!Type">
+      <object href="model_generated.relational#/3"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="DataTypeAttribute2Column">
+    <sourceElements model="//@artefacts.0" type="Class!Attribute">
+      <object href="model.class#/0/@attr.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="Relational!Column">
+      <object href="model_generated.relational#/0/@col.1"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="DataTypeAttribute2Column">
+    <sourceElements model="//@artefacts.0" type="Class!Attribute">
+      <object href="model.class#/1/@attr.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="Relational!Column">
+      <object href="model_generated.relational#/1/@col.1"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="MultiValuedDataTypeAttribute2Column">
+    <sourceElements model="//@artefacts.0" type="Class!Attribute">
+      <object href="model.class#/1/@attr.2"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="Relational!Table">
+      <object href="model_generated.relational#/4"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="Relational!Column">
+      <object href="model_generated.relational#/4/@col.0"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="Relational!Column">
+      <object href="model_generated.relational#/4/@col.1"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="ClassAttribute2Column">
+    <sourceElements model="//@artefacts.0" type="Class!Attribute">
+      <object href="model.class#/1/@attr.1"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="Relational!Column">
+      <object href="model_generated.relational#/1/@col.2"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="MultiValuedClassAttribute2Column">
+    <sourceElements model="//@artefacts.0" type="Class!Attribute">
+      <object href="model.class#/0/@attr.1"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="Relational!Table">
+      <object href="model_generated.relational#/5"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="Relational!Column">
+      <object href="model_generated.relational#/5/@col.0"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="Relational!Column">
+      <object href="model_generated.relational#/5/@col.1"/>
+    </targetElements>
+  </traceLinks>
+  <artefacts xsi:type="iTrace:Model" name="Class" path="D:/Thesis/Eclipse/Juno/c" elements="//@traceLinks.0/@sourceElements.0 //@traceLinks.1/@sourceElements.0 //@traceLinks.2/@sourceElements.0 //@traceLinks.3/@sourceElements.0 //@traceLinks.4/@sourceElements.0 //@traceLinks.5/@sourceElements.0 //@traceLinks.6/@sourceElements.0 //@traceLinks.7/@sourceElements.0 //@traceLinks.8/@sourceElements.0" metamodel="D:/Thesis/Eclipse/Juno/c"/>
+  <artefacts xsi:type="iTrace:Model" name="Relational" path="D:/Thesis/Eclipse/Juno/r" elements="//@traceLinks.0/@targetElements.0 //@traceLinks.0/@sourceElements.1 //@traceLinks.1/@targetElements.0 //@traceLinks.1/@sourceElements.1 //@traceLinks.2/@targetElements.0 //@traceLinks.3/@targetElements.0 //@traceLinks.4/@targetElements.0 //@traceLinks.5/@targetElements.0 //@traceLinks.6/@targetElements.0 //@traceLinks.6/@targetElements.1 //@traceLinks.6/@targetElements.2 //@traceLinks.7/@targetElements.0 //@traceLinks.8/@targetElements.0 //@traceLinks.8/@targetElements.1 //@traceLinks.8/@targetElements.2" metamodel="D:/Thesis/Eclipse/Juno/r"/>
+</iTrace:iTraceModel>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<iTrace:iTraceModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iTrace="org.eclipse.kybele.iTrace" version="1.0" projectName="UML2SQL2003">
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateTypes(){">
+    <targetElements model="//@artefacts.2" type="SQL2003!DatetimeType">
+      <object href="omdb.sql2003#/0"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!DatetimeType">
+      <object href="omdb.sql2003#/1"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!DatetimeType">
+      <object href="omdb.sql2003#/2"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!DatetimeType">
+      <object href="omdb.sql2003#/3"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!CharacterStringType">
+      <object href="omdb.sql2003#/4"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/5"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/6"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/7"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/8"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/9"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/10"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/11"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/12"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/13"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/14"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/15"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/16"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/17"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/18"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/19"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/20"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/21"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/22"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!IntervalType">
+      <object href="omdb.sql2003#/23"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!BinaryStringType">
+      <object href="omdb.sql2003#/24"/>
+    </targetElements>
+    <targetElements model="//@artefacts.2" type="SQL2003!BinaryStringType">
+      <object href="omdb.sql2003#/25"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateEmptyXMLType">
+    <sourceElements model="//@artefacts.0" type="OclAny"/>
+    <targetElements model="//@artefacts.2" type="SQL2003!XMLType">
+      <object href="omdb.sql2003#/26"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateEmptyBooleanType">
+    <sourceElements model="//@artefacts.0" type="OclAny"/>
+    <targetElements model="//@artefacts.2" type="SQL2003!BooleanType">
+      <object href="omdb.sql2003#/27"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateEmptyCharacterVaryingType">
+    <sourceElements model="//@artefacts.0" type="OclAny"/>
+    <targetElements model="//@artefacts.2" type="SQL2003!CharacterStringType">
+      <object href="omdb.sql2003#/28"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateEmptyCharacterType">
+    <sourceElements model="//@artefacts.0" type="OclAny"/>
+    <targetElements model="//@artefacts.2" type="SQL2003!CharacterStringType">
+      <object href="omdb.sql2003#/29"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateEmptyDateType">
+    <sourceElements model="//@artefacts.0" type="OclAny"/>
+    <targetElements model="//@artefacts.2" type="SQL2003!DatetimeType">
+      <object href="omdb.sql2003#/30"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateEmptyIntegerType">
+    <sourceElements model="//@artefacts.0" type="OclAny"/>
+    <targetElements model="//@artefacts.2" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/31"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateEmptyRealType">
+    <sourceElements model="//@artefacts.0" type="OclAny"/>
+    <targetElements model="//@artefacts.2" type="SQL2003!NumericType">
+      <object href="omdb.sql2003#/32"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="generateEmptyBinaryStringType">
+    <sourceElements model="//@artefacts.0" type="OclAny"/>
+    <targetElements model="//@artefacts.2" type="SQL2003!BinaryStringType">
+      <object href="omdb.sql2003#/33"/>
+    </targetElements>
+  </traceLinks>
+  <artefacts xsi:type="iTrace:Model" name="u" path="D:/Thesis/Eclipse/Juno/u" elements="//@traceLinks.1/@sourceElements.0 //@traceLinks.2/@sourceElements.0 //@traceLinks.3/@sourceElements.0 //@traceLinks.4/@sourceElements.0 //@traceLinks.5/@sourceElements.0 //@traceLinks.6/@sourceElements.0 //@traceLinks.7/@sourceElements.0 //@traceLinks.8/@sourceElements.0" metamodel="D:/Thesis/Eclipse/Juno/u"/>
+  <artefacts xsi:type="iTrace:Model" name="a" path="D:/Thesis/Eclipse/Juno/a" metamodel="D:/Thesis/Eclipse/Juno/a"/>
+  <artefacts xsi:type="iTrace:Model" name="s" path="D:/Thesis/Eclipse/Juno/s" elements="//@traceLinks.0/@targetElements.0 //@traceLinks.0/@targetElements.1 //@traceLinks.0/@targetElements.2 //@traceLinks.0/@targetElements.3 //@traceLinks.0/@targetElements.4 //@traceLinks.0/@targetElements.5 //@traceLinks.0/@targetElements.6 //@traceLinks.0/@targetElements.7 //@traceLinks.0/@targetElements.8 //@traceLinks.0/@targetElements.9 //@traceLinks.0/@targetElements.10 //@traceLinks.0/@targetElements.11 //@traceLinks.0/@targetElements.12 //@traceLinks.0/@targetElements.13 //@traceLinks.0/@targetElements.14 //@traceLinks.0/@targetElements.15 //@traceLinks.0/@targetElements.16 //@traceLinks.0/@targetElements.17 //@traceLinks.0/@targetElements.18 //@traceLinks.0/@targetElements.19 //@traceLinks.0/@targetElements.20 //@traceLinks.0/@targetElements.21 //@traceLinks.0/@targetElements.22 //@traceLinks.0/@targetElements.23 //@traceLinks.0/@targetElements.24 //@traceLinks.0/@targetElements.25 //@traceLinks.1/@targetElements.0 //@traceLinks.2/@targetElements.0 //@traceLinks.3/@targetElements.0 //@traceLinks.4/@targetElements.0 //@traceLinks.5/@targetElements.0 //@traceLinks.6/@targetElements.0 //@traceLinks.7/@targetElements.0 //@traceLinks.8/@targetElements.0" metamodel="D:/Thesis/Eclipse/Juno/s"/>
+</iTrace:iTraceModel>

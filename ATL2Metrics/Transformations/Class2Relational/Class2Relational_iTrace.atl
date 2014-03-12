@@ -1,0 +1,416 @@
+-- @nsURI iTrace=http://www.kybele.es/iTrace
+-- @path  Class=D:/Thesis/Eclipse/Juno/c
+-- @path  Relational=D:/Thesis/Eclipse/Juno/r
+
+module Class2Relational_iTrace;
+create OUT : Relational, TRACE : iTrace from  IN : Class;
+
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+--	Incio:	iTrace: creación de la Raiz y Modelos con helper auxiliares
+-- ¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬¬
+
+entrypoint rule CreateTraceModelRoot (){
+to
+	root : iTrace!iTraceModel
+do {
+	root.projectName <- 'Class2Relational';
+	root.version <- '1.0';
+
+--_________________________Asignación del root _________________________
+
+	thisModule.getTraceModelRoot <- root;
+
+--_________________________Llamada a los constructores de los modelos _________________________
+
+	thisModule.createModel_Class();
+	thisModule.createModel_Relational();
+	}
+}
+
+helper def: getTraceModelRoot : iTrace!iTraceModel = OclUndefined;
+
+
+--_________________________iTrace, begin creation rule for model Class _________________________
+
+
+rule createModel_Class(){
+to
+	Class : iTrace!Model (
+		aspect <- 'Unspecified',
+		name <- 'Class',
+		path <- 'D:/Thesis/Eclipse/Juno/c',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'D:/Thesis/Eclipse/Juno/c',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_Class  <- Class;
+	}
+}
+
+
+helper def: getModel_Class : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model Class _________________________
+
+
+--_________________________iTrace, begin creation rule for model Relational _________________________
+
+
+rule createModel_Relational(){
+to
+	Relational : iTrace!Model (
+		aspect <- 'Unspecified',
+		name <- 'Relational',
+		path <- 'D:/Thesis/Eclipse/Juno/r',
+		abstractionLevel <- 'UNSPECIFIED',
+		metamodel <- 'D:/Thesis/Eclipse/Juno/r',
+		iTraceModel <- thisModule.getTraceModelRoot
+	)
+do {
+
+	thisModule.getModel_Relational  <- Relational;
+	}
+}
+
+
+helper def: getModel_Relational : iTrace!Model = OclUndefined;
+
+--_________________________iTrace, end creation rule for model Relational _________________________
+
+helper def: objectIdType : Relational!Type =
+	Class!DataType.allInstances()->select(e | e.name = 'Integer')->first();
+
+rule Class2Table {
+	from
+		c : Class!Class
+	to
+		out : Relational!Table (
+			name <- c.name,
+			-- Columns are generated from Attributes in another rule not explicitly called here !
+			col <- Sequence {key}->union(c.attr->select(e | not e.multiValued)),
+			key <- Set {key}
+		),
+		key : Relational!Column (
+			name <- 'objectId',
+			type <- thisModule.objectIdType
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'Class2Table',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_c : iTrace!SourceElement (
+			type <- c.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Class
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		),
+		elementSource_key : iTrace!SourceElement (
+			type <- key.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		)
+
+do {
+		elementSource_c.refSetValue('object', c);
+		elementTarget_out.refSetValue('object', out);
+		elementSource_key.refSetValue('object', key);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+rule DataType2Type {
+	from
+		dt : Class!DataType
+	to
+		out : Relational!Type (
+			name <- dt.name
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'DataType2Type',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_dt : iTrace!SourceElement (
+			type <- dt.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Class
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		)
+
+do {
+		elementSource_dt.refSetValue('object', dt);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+rule DataTypeAttribute2Column {
+	from
+		a : Class!Attribute (
+			a.type.oclIsKindOf(Class!DataType) and not a.multiValued
+		)
+	to
+		out : Relational!Column (
+			name <- a.name,
+			type <- a.type
+-- explicit use of implicit tracking links (first expected syntax, then present actual syntax)
+--			owner <- [Class2Type.key]a.owner
+--			owner <- thisModule.resolveTemp(a.owner, 'key')
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'DataTypeAttribute2Column',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_a : iTrace!SourceElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Class
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		)
+
+do {
+		elementSource_a.refSetValue('object', a);
+		elementTarget_out.refSetValue('object', out);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+rule MultiValuedDataTypeAttribute2Column {
+	from
+		a : Class!Attribute (
+			a.type.oclIsKindOf(Class!DataType) and a.multiValued
+		)
+	to
+		out : Relational!Table (
+			name <- a.owner.name + '_' + a.name,
+			col <- Sequence {id, value}
+		),
+		id : Relational!Column (
+			name <- a.owner.name.toLower() + 'Id',
+			type <- thisModule.objectIdType
+		),
+		value : Relational!Column (
+			name <- a.name,
+			type <- a.type
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MultiValuedDataTypeAttribute2Column',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_a : iTrace!SourceElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Class
+		),
+		elementTarget_out : iTrace!TargetElement (
+			type <- out.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		),
+		elementTarget_id : iTrace!TargetElement (
+			type <- id.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		),
+		elementTarget_value : iTrace!TargetElement (
+			type <- value.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		)
+
+do {
+		elementSource_a.refSetValue('object', a);
+		elementTarget_out.refSetValue('object', out);
+		elementTarget_id.refSetValue('object', id);
+		elementTarget_value.refSetValue('object', value);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+rule ClassAttribute2Column {
+	from
+		a : Class!Attribute (
+			a.type.oclIsKindOf(Class!Class) and not a.multiValued
+		)
+	to
+		foreignKey : Relational!Column (
+			name <- a.name + 'Id',
+			type <- thisModule.objectIdType
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'ClassAttribute2Column',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_a : iTrace!SourceElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Class
+		),
+		elementTarget_foreignKey : iTrace!TargetElement (
+			type <- foreignKey.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		)
+
+do {
+		elementSource_a.refSetValue('object', a);
+		elementTarget_foreignKey.refSetValue('object', foreignKey);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
+rule MultiValuedClassAttribute2Column {
+	from
+		a : Class!Attribute (
+			a.type.oclIsKindOf(Class!Class) and a.multiValued
+		)
+	to
+		t : Relational!Table (
+			name <- a.owner.name + '_' + a.name,
+			col <- Sequence {id, foreignKey}
+		),
+		id : Relational!Column (
+			name <- a.owner.name.toLower() + 'Id',
+			type <- thisModule.objectIdType
+		),
+		foreignKey : Relational!Column (
+			name <- a.name + 'Id',
+			type <- thisModule.objectIdType
+		)
+
+
+-- ____________________ Begin Added by iTrace  _________________________
+
+		,
+		TraceLink : iTrace!M2MLink (
+			ruleName <- 'MultiValuedClassAttribute2Column',
+			comment <- 'Automatic generation by iTrace', 
+			createdOn <- '05-4-2013',
+			mode <- 'Automatic',
+			technicalBinding <- 'ATL',
+			createdBy <- 'iTrace Tool',
+			type <- 'Transformation',
+			fromFileName <- '',
+
+			iTraceModel <- thisModule.getTraceModelRoot
+		),
+		elementSource_a : iTrace!SourceElement (
+			type <- a.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Class
+		),
+		elementTarget_t : iTrace!TargetElement (
+			type <- t.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		),
+		elementTarget_id : iTrace!TargetElement (
+			type <- id.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		),
+		elementTarget_foreignKey : iTrace!TargetElement (
+			type <- foreignKey.oclType().toString(),
+			traceLink <- TraceLink,
+			model <- thisModule.getModel_Relational
+		)
+
+do {
+		elementSource_a.refSetValue('object', a);
+		elementTarget_t.refSetValue('object', t);
+		elementTarget_id.refSetValue('object', id);
+		elementTarget_foreignKey.refSetValue('object', foreignKey);
+	}
+}
+
+-- ____________________ End Added by iTrace  _________________________
+
+
