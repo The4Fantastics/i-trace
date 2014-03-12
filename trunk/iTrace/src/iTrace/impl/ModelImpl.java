@@ -72,10 +72,10 @@ public class ModelImpl extends ArtefactImpl implements Model {
 
 	/**
 	 * <!-- begin-user-doc -->
-	 *  -> Devuelve Source si todos los elementos del modelo son SourceElement
-		-> Devuelve Target si todos los elementos del modelo son TargetElement
-		-> Devuelve BOTH si el modelo tiene elementos tanto Source como Target
-		-> En caso contrario devuelve NONE.
+	 *  -> Return SOURCE if all elements of the model are SourceElement type
+		-> Return TARGET if all elements of the model are TargetElement type
+		-> Return BOTH if exists elements of the model which type is SourceElement or TargetElse
+		-> Return NONE in other case
 	 * <!-- end-user-doc -->
 	 * @NOT generated
 	 */
