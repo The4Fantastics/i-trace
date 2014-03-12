@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.m2m.atl.adt.launching.atlTransformation">
+<stringAttribute key="ATL File Name" value="/MediniQVT/Transformations/MXML2KDM2iTrace.atl"/>
+<stringAttribute key="ATL VM" value="EMF-specific VM"/>
+<stringAttribute key="ATL_COMPILER" value="atl2006"/>
+<booleanAttribute key="IS_REFINING" value="false"/>
+<mapAttribute key="Input">
+<mapEntry key="IN" value="MXML2KDM"/>
+<mapEntry key="KDM" value="KDM_MODEL"/>
+<mapEntry key="MXML" value="MXML_MODEL"/>
+</mapAttribute>
+<mapAttribute key="Libs">
+<mapEntry key="parameters" value="/MediniQVT/Models/procesos_g4/proceso_g4_n3/proceso_g4_n3_t100/parameters.asm"/>
+</mapAttribute>
+<mapAttribute key="Model Handler">
+<mapEntry key="KDM_MODEL" value="EMF"/>
+<mapEntry key="MXML2KDM" value="EMF"/>
+<mapEntry key="MXML_MODEL" value="EMF"/>
+<mapEntry key="iTraceModel" value="EMF"/>
+</mapAttribute>
+<mapAttribute key="ModelType">
+<mapEntry key="IN" value="MODELINPUT"/>
+<mapEntry key="KDM" value="MODELINPUT"/>
+<mapEntry key="KDM_MODEL" value="METAMODELINPUT"/>
+<mapEntry key="MXML" value="MODELINPUT"/>
+<mapEntry key="MXML2KDM" value="METAMODELINPUT"/>
+<mapEntry key="MXML_MODEL" value="METAMODELINPUT"/>
+<mapEntry key="OUT" value="MODELOUTPUT"/>
+<mapEntry key="iTraceModel" value="METAMODELOUTPUT"/>
+</mapAttribute>
+<mapAttribute key="Options">
+<mapEntry key="OPTION_CLEAR" value="true"/>
+<mapEntry key="OPTION_CONTENT_TYPE" value="false"/>
+<mapEntry key="OPTION_DERIVED" value="true"/>
+<mapEntry key="allowInterModelReferences" value="true"/>
+<mapEntry key="printExecutionTime" value="true"/>
+<mapEntry key="step" value="false"/>
+<mapEntry key="supportUML2Stereotypes" value="false"/>
+</mapAttribute>
+<listAttribute key="OrderedInput">
+<listEntry value="KDM"/>
+<listEntry value="MXML"/>
+<listEntry value="IN"/>
+</listAttribute>
+<listAttribute key="OrderedOutput">
+<listEntry value="OUT"/>
+</listAttribute>
+<mapAttribute key="Output">
+<mapEntry key="OUT" value="iTraceModel"/>
+</mapAttribute>
+<mapAttribute key="Path">
+<mapEntry key="IN" value="/MediniQVT/Models/procesos_g4/proceso_g4_n3/proceso_g4_n3_t100/trace.MXML2KDM"/>
+<mapEntry key="KDM" value="/MediniQVT/Models/procesos_g4/proceso_g4_n3/proceso_g4_n3_t100/Process.kdm"/>
+<mapEntry key="KDM_MODEL" value="/MediniQVT/Metamodels/KDM.ecore"/>
+<mapEntry key="MXML" value="/MediniQVT/Models/procesos_g4/proceso_g4_n3/proceso_g4_n3_t100/Process 1.mxml"/>
+<mapEntry key="MXML2KDM" value="/MediniQVT/Metamodels/MXML2KDM.ecore"/>
+<mapEntry key="MXML_MODEL" value="/MediniQVT/Metamodels/MXML.ecore"/>
+<mapEntry key="OUT" value="/MediniQVT/Models/procesos_g4/proceso_g4_n3/proceso_g4_n3_t100/proceso_g4_n3_t100.iTrace"/>
+<mapEntry key="iTraceModel" value="uri:http://www.kybele.es/iTrace"/>
+</mapAttribute>
+<listAttribute key="Superimpose"/>
+</launchConfiguration>
