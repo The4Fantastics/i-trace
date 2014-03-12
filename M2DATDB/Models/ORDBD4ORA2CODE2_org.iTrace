@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<iTrace:iTraceModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iTrace="org.eclipse.kybele.iTrace" version="1.0" projectName="ORDB4ORA2CODE">
+  <traceLinks xsi:type="iTrace:M2TLink" createdOn="11-10-2012" fromFileName="file:/D:/Workspaces/Case%20Studies/M2DATDB/Models/ORDBD4ORA2CODE.traceabilitymodel" comment="iTrace for M2T Transformation with MofScript" createdBy="iTrace" mode="Automatic" technicalBinding="MofScript" ruleName="generateAttribute">
+    <sourceElements ref="//@datatype.19/@attribute.0" model="//@artefacts.0" type="MofTrace!ModelElementRef"/>
+    <targetBlocks blockNumber="1" startLine="6" endLine="6" startColumn="3" endColumn="10" code="//@artefacts.1"/>
+  </traceLinks>
+  <artefacts xsi:type="iTrace:Model" aspect="Content" name="ORDB4ORA" abstractionLevel="PSM" path="/M2DATDB/Models/omdb.ordb4ora" elements="//@traceLinks.0/@sourceElements.0" metamodel="/M2DATDB/Metamodels/ORDB4ORA.ecore"/>
+  <artefacts xsi:type="iTrace:Code" aspect="Content" name="omdb.sql" abstractionLevel="CODE" path="D:\Workspaces\Case Studies\M2DATDB\Code\" blocks="//@traceLinks.0/@targetBlocks.0"/>
+</iTrace:iTraceModel>
