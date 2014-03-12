@@ -1,0 +1,1426 @@
+-- @atlcompiler atl2006
+-- @nsURI 		UML=http://www.eclipse.org/uml2/2.1.0/UML
+
+--BEGIN DOC
+--#About
+-- @name 		UML
+-- @version		1.0
+-- @domains		database, dsl, sql2003, uml, mda, transformation,
+--				metamodel, model
+-- @authors		Alejandro Galindo (Universidad Rey Juan Carlos)
+-- @date       	26-01-2009
+-- @description	Esta librería ATL da soporte a transformaciones realizadas
+--				desde un modelo conforme al metamodelo UML.
+--END DOC
+
+library UML;
+
+-------------------------------------------------------------------------------
+-- IMPORTS         ------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+uses UML_constants;
+uses UML_private;
+
+-------------------------------------------------------------------------------
+-- HELPERS         ------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo primitivo de entrada es de tipo carácter.
+--
+--@CONTEXT UML!PrimitiveType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!PrimitiveType def : isCharPT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_CHAR());
+
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo primitivo de entrada es de tipo String.
+--
+--@CONTEXT UML!PrimitiveType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!PrimitiveType def : isStringPT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_STRING());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo primitivo de entrada es de tipo Integer.
+--
+--@CONTEXT UML!PrimitiveType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!PrimitiveType def : isIntegerPT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_INTEGER());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo primitivo de entrada es de tipo Date.
+--
+--@CONTEXT UML!PrimitiveType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!PrimitiveType def : isDatePT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_DATE());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo primitivo de entrada es de tipo Boolean.
+--
+--@CONTEXT UML!PrimitiveType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!PrimitiveType def : isBooleanPT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_BOOLEAN());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo primitivo de entrada es de tipo Real.
+--
+--@CONTEXT UML!PrimitiveType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!PrimitiveType def : isRealPT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_REAL());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo primitivo de entrada es de tipo XML.
+--
+--@CONTEXT UML!PrimitiveType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!PrimitiveType def : isXMLPT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_XML());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo primitivo de entrada es de tipo Image.
+--
+--@CONTEXT UML!PrimitiveType
+--@RETURN Boolean
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!PrimitiveType def : isImagePT() : Boolean =
+	(self.name.toLower() = thisModule.TYPE_IMAGE());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada es un tipo primitivo.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!DataType def : isPrimitiveDataType() : Boolean =
+	self.isStringDT() or self.isIntegerDT() or self.isDateDT() or
+	self.isBooleanDT() or self.isRealDT() or self.isXMLDT() or
+	self.isImageDT() or self.isCharDT();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve el primer supertipo del tipo de dato de entrada.
+--
+--@CONTEXT UML!DataType
+--@RETURN UML!DataType
+--@LIBRARIES UML_private
+--#PRECONDITION
+--El tipo de dato de entrada tiene supertipo.
+--END DOC
+helper context UML!DataType def : getFirstSuperDataType() : UML!DataType =
+	self.getFirstSuperClassifier();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el tipo de dato de entrada tiene algún supertipo.
+--
+--@CONTEXT UML!DataType
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!DataType def : hasSuperDataType() : Boolean = 
+    self.hasSuperClassifier();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve la primera superclase de la clase de entrada.
+--
+--@CONTEXT UML!Class
+--@RETURN UML!Class
+--@LIBRARIES UML_private
+--#PRECONDITION
+--La clase de entrada tiene superclase.
+--END DOC
+helper context UML!Class def : getFirstSuperClass() : UML!Class = 
+	self.getFirstSuperClassifier();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la clase de entrada tiene superclase.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Class def : hasSuperClass() : Boolean = 
+    self.hasSuperClassifier();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la clase de entrada tiene subclases.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Class def : hasSubClasses() : Boolean = 
+    self.hasSubClassifiers();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la clase de entrada tiene una única subclase.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Class def : hasOneSubClass() : Boolean = 
+    if (self.hasSubClassifiers()) then
+		self.getSubClassifiers()->size() = 1
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve las subclases de la clase de entrada.
+--
+--@CONTEXT UML!Class
+--@LIBRARIES UML_private
+--#PRECONDITION
+--La clase de entrada tiene subclases.
+--END DOC
+helper context UML!Class def : getSubClasses() : Set(UML!Class) = 
+    self.getSubClassifiers();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve todas las subclases descendientes de una clase: 
+--hijas, nietas...
+--
+--@CONTEXT UML!Class
+--@RETURN Set(UML!Class)
+--@LIBRARIES UML_private
+--#PRECONDITION
+--La clase de entrada tiene al menos una subclase.
+--END DOC
+helper context UML!Class def : getAllSubClasses() : Set(UML!Class) =
+	self.getSubClassifiers()->iterate(
+			c; subclasses : Set(UML!Class) = self.getSubClassifiers().asSet() |
+				subclasses->union(c.getAllSubClasses())
+	);
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve una cadena con los nombres de las subclases de la clase
+--de entrada separados por 'separator'.
+--
+--@CONTEXT UML!Class
+--@INPUT String
+--@RETURN String
+--#PRECONDITION
+--La clase de entrada tiene al menos una subclase.
+--END DOC
+helper context UML!Class def : getSubClassesName(separator : String) : String =
+	let children : Sequence(UML!Classifier) = self.getSubClassifiers()->asSequence()
+	in
+		children->iterate(aux; name : String = ''|
+			if (aux = children.last()) then 
+				name + aux.name 
+			else		
+		  		name + aux.name + separator 
+			endif
+		);
+	
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve las subclases hoja (sin subclases) de una clase de entrada.
+--
+--@CONTEXT UML!Class
+--@RETURN Set(UML!Class)
+--@LIBRARIES UML_private
+--#PRECONDITION La clase de entrada tiene al menos una subclase
+--END DOC
+helper context UML!Class def : getLeafSubClasses() : Set(UML!Class) = 
+	self.getLeafSubClassifiers();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve una cadena con los nombres de todas las subclases
+--(hijas, nietas...) de la clase de entrada separados por guiones bajos.
+--
+--@CONTEXT UML!Class
+--@INPUT String
+--@RETURN String
+--@LIBRARIES UML_private
+--#PRECONDITION La clase de entrada tiene al menos una subclase
+--END DOC
+helper context UML!Class def : getAllSubClassesName(separator : String) : String =
+	self.getClassifiersName(self.getAllSubClasses().asSequence(), separator);
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con los atributos de las subclases
+--de la clase de entrada.
+--
+--@CONTEXT UML!Class
+--@RETURN Set(UML!Property)
+--@LIBRARIES UML_private
+--#PRECONDITION La clase de entrada tiene al menos una subclase.
+--END DOC
+helper context UML!Class def : getSubClassesProperties() : Set(UML!Property) =
+	self.getSubClassifiers()->collect(c | c.ownedAttribute)->flatten()->asSet();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con los atributos de todas las subclases
+--(hijas, nietas...) de la clase de entrada.
+--
+--@CONTEXT UML!Class
+--@RETURN Set(UML!Property)
+--@LIBRARIES UML_private
+--#PRECONDITION La clase de entrada tiene al menos una subclase.
+--END DOC
+helper context UML!Class def : getAllSubClassesProperties() : Set(UML!Property)=
+	self.getAllSubClasses()->collect(c | c.ownedAttribute)->flatten()->asSet();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con las operaciones de las subclases
+--de la clase de entrada.
+--
+--@CONTEXT UML!Class
+--@RETURN Set(UML!Operation)
+--@LIBRARIES UML_private
+--#PRECONDITION La clase de entrada tiene al menos una subclase.
+--END DOC
+helper context UML!Class def : getSubClassesOperations() : Set(UML!Operation) =
+	self.getSubClassifiers()->collect(c | c.ownedOperation)->flatten()->asSet();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+-- Este helper devuelve un conjunto con las operaciones de las subclases hoja
+-- (sin subclases) de la clase de entrada.
+--
+--@CONTEXT UML!Class
+--@RETURN Set(UML!Operation)
+--@LIBRARIES UML_private
+--#PRECONDITION La clase de entrada tiene al menos una subclase.
+--END DOC
+helper context UML!Class def : getLeafSubClassesOperations() : Set(UML!Operation) =
+	self.getLeafSubClassifiers()->collect(c | c.ownedOperation)->flatten()->asSet();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con las operaciones de todas las subclases
+--(hijas, nietas...) de la clase de entrada.
+--
+--@CONTEXT UML!Class
+--@RETURN Set(UML!Operation)
+--@LIBRARIES UML_private
+--#PRECONDITION La clase de entrada tiene al menos una subclase.
+--END DOC
+helper context UML!Class def : getAllSubClassesOperations() : Set(UML!Operation) =
+	self.getAllSubClasses()->collect(c | c.ownedOperation)->flatten()->asSet();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve el tipo de retorno de la operación de entrada.
+--
+--@CONTEXT UML!Operation
+--@RETURN UML!Type
+--END DOC
+helper context UML!Operation def : getOperationReturnType() : UML!Type =
+	let return_param : UML!Parameter = 
+		self.ownedParameter->select(param | param.direction = #return)->first()
+	in
+		if (return_param.oclIsUndefined()) then
+			OclUndefined
+		else
+			return_param.type
+		endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper comprueba que la cardinalidad máxima del atributo de entrada 
+--implique multivalores (que sea distinta de 1):
+--     - o bien es mayor que 1 (cardinalidad N)
+--	   - o bien es -1 (cardinalidad *)
+--
+--Si no se especifica cardinalidad, por defecto es 1.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : hasMultiMaxCardinality() : Boolean =
+	if (self.upperValue.oclIsUndefined()) then
+		false
+	else
+		self.upperValue.value <> 1
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper comprueba que la cardinalidad máxima del atributo de entrada 
+--implique una colección de valores de tamaño fijo.
+--Si no se especifica cardinalidad, por defecto es 1.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : hasFixedSizeMultiMaxCardinality() : Boolean =
+	if (self.upperValue.oclIsUndefined()) then
+		false
+	else
+		self.upperValue.value > 1
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper comprueba que la cardinalidad máxima del atributo de entrada 
+--implique una colección de valores de tamaño variable.
+--Si no se especifica cardinalidad, por defecto es 1.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : hasVarSizeMultiMaxCardinality() : Boolean =
+	if (self.upperValue.oclIsUndefined()) then
+		false
+	else
+		self.upperValue.value = (0-1)
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve la propiedad cuyo tipo es el supertipo 
+--del tipo de dato de los elementos de un atributo
+--de una clase de UML que es un extremo de una asociación.
+--
+--La propiedad devuelta pertenece a una asociación y su tipo es una clase
+--ya que es un extremo de la asociación a la cual pertenece la propiedad
+--de entrada.
+--
+--@CONTEXT UML!Property
+--@RETURN UML!Property
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Property def : getPropertyWithAssocElemsSuperType() :
+		UML!Property =
+
+	--Ver si hay alguna propiedad cuyo tipo sea supertipo del de entrada
+	if (self.type.oclIsTypeOf(UML!Class)) then
+		let superClass : UML!Class = self.type.getFirstSuperClass()
+		in
+			if ((
+					self.isAssociationSideWithCardinalMaxMulti() or
+					self.isAssociationSideWithCardinalMaxN()
+				) and
+					(not superClass.oclIsUndefined())
+			   ) then
+			
+				let col : Sequence(UML!Property) =
+					thisModule.PROPERTIES()->asSequence()->
+						select(elem | elem <> self and
+							(
+								elem.isAssociationSideWithCardinalMaxMulti() or
+								elem.isAssociationSideWithCardinalMaxN()
+							)
+						)->select(elemMulti | (elemMulti.type = superClass))
+				in
+					if (col.size() > 0) then
+						col->first()
+					else
+						OclUndefined
+					endif
+			else
+				OclUndefined
+			endif
+	else
+		OclUndefined
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si una propiedad está relacionada con una
+--asociación de agregación (es uno de sus extremos).
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isAggregation() : Boolean =
+	if (
+		self.refImmediateComposite().oclIsTypeOf(UML!Association) or
+		self.isAssociationNavigable()
+	) then
+		self.aggregation = #shared
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si una propiedad está relacionada con una
+--asociación de composición (es uno de sus extremos).
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isComposition() : Boolean =
+	if (
+		self.refImmediateComposite().oclIsTypeOf(UML!Association) or
+		self.isAssociationNavigable()
+	) then
+		self.aggregation = #composite
+	else
+		false
+	endif;
+	
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si una propiedad está relacionada con una
+--asociación simple (es uno de sus extremos).
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def: isAssociationSimple() : Boolean =
+	if (self.refImmediateComposite().oclIsTypeOf(UML!Association)) then
+		if (self.refImmediateComposite().ownedEnd->size()=2) then
+			(self.aggregation = #none) and
+			(self.getOppositeAssociation().aggregation = #none)
+		else
+			false
+		endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si una propiedad está relacionada con una
+--asociación simple navegable (es el extremo de la flecha).
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Property def: isAssociationNavigable() : Boolean =
+	if (self.refImmediateComposite().oclIsTypeOf(UML!Class)) then
+		if (self.type.oclIsTypeOf(UML!Class)) then
+			if (self.association.oclIsUndefined()) then
+				false
+			else
+				self.association.ownedEnd->size() = 1
+			endif
+		else
+			false
+		endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el extremo de una asociación
+--de entrada es multivaluado con cardinalidad maxima limitida.
+--Si no se especifica cardinalidad, por defecto es 1
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isAssociationSideWithCardinalMaxMulti() : 
+		Boolean =
+
+	if (
+		(self.refImmediateComposite().oclIsTypeOf(UML!Association)) and
+		(not self.upperValue.oclIsUndefined())
+	) then
+		(self.upperValue.value > 1)
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el extremo de una asociación
+--de entrada es multivaluado con cardinalidad maxima no limitada.
+--Si no se especifica cardinalidad, por defecto es 1
+--	
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isAssociationSideWithCardinalMaxN() : Boolean =
+	if (
+		(self.refImmediateComposite().oclIsTypeOf(UML!Association)) and
+		(not self.upperValue.oclIsUndefined())
+	) then
+		(self.upperValue.value = (0-1))
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el extremo de una asociación no navegable
+--de entrada tiene cardinalidad minima igual a cero.
+--	
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isAssociationLowerEqualZero() : Boolean =
+	if (
+		self.isAggregation() or
+		self.isComposition() or
+		self.isAssociationSimple() or
+		self.isAssociationNavigable()
+	) then
+		self.isCardinalZeroOne() or
+		self.isCardinalZeroMulti() or
+		self.isCardinalZeroN()
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el extremo de una asociación no navegable
+--de entrada tiene cardinalidad minima mayor que cero.
+--	
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isAssociationLowerMoreThanZero() : Boolean =
+	if (
+		self.isAggregation() or
+		self.isComposition() or
+		self.isAssociationSimple() or
+		self.isAssociationNavigable()
+	) then
+		self.isCardinalOneOne() or
+		self.isCardinalOneMulti() or
+		self.isCardinalOneN() or
+		self.isCardinalMultiN()
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad de entrada tiene cardinalidad 0..1.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isCardinalZeroOne() : Boolean =
+	
+	-- Si no se especifica cardinalidad, por defecto es 1
+	if (self.upperValue.oclIsUndefined())then
+	
+		-- Cardinalidad maxima 1, comprueba cardinalidad minima
+		if (self.lowerValue.oclIsUndefined()) then
+			-- Cardinalidad minima 1
+			false
+		else
+			self.lowerValue.value = 0
+		endif
+	else
+		if (self.upperValue.value = 1) then
+			if (self.lowerValue.oclIsUndefined()) then
+				-- Cardinalidad minima 1
+				false
+			else
+				self.lowerValue.value = 0
+			endif
+		else
+			false
+		endif
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad de entrada tiene cardinalidad 0..N,
+--donde N es un número mayor que 1.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isCardinalZeroMulti() : Boolean =
+	
+	-- Si no se especifica cardinalidad, por defecto es 1
+	if (self.upperValue.oclIsUndefined()) then
+		-- Cardinalidad maxima 1
+		false
+	else
+		if (self.upperValue.value > 1) then
+			if (self.lowerValue.oclIsUndefined()) then
+				-- Cardinalidad minima 1
+				false
+			else
+				self.lowerValue.value = 0
+			endif
+		else
+			false
+		endif
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad de entrada tiene cardinalidad 0..*.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isCardinalZeroN() : Boolean =
+	
+	-- Si no se especifica cardinalidad, por defecto es 1
+	if (self.upperValue.oclIsUndefined()) then
+		-- Cardinalidad maxima 1
+		false
+	else
+		if (self.upperValue.value = (0-1)) then
+			if (self.lowerValue.oclIsUndefined()) then
+				-- Cardinalidad minima 1
+				false
+			else
+				self.lowerValue.value = 0
+			endif
+		else
+			false
+		endif
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad de entrada tiene cardinalidad 1..1.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isCardinalOneOne() : Boolean =
+	
+	-- Si no se especifica cardinalidad, por defecto es 1
+	if (self.upperValue.oclIsUndefined()) then
+	
+		-- Cardinalidad maxima 1, comprueba cardinalidad minima
+		if (self.lowerValue.oclIsUndefined()) then
+			-- Cardinalidad minima 1
+			true
+		else
+			self.lowerValue.value = 1
+		endif
+	else
+		if (self.upperValue.value = 1) then
+			if (self.lowerValue.oclIsUndefined()) then
+				-- Cardinalidad minima 1
+				true
+			else
+				self.lowerValue.value = 1
+			endif
+		else
+			false
+		endif
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad de entrada tiene cardinalidad 1..N,
+--donde N es un número mayor que 1.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isCardinalOneMulti() : Boolean =
+	
+	-- Si no se especifica cardinalidad, por defecto es 1
+	if (self.upperValue.oclIsUndefined()) then
+		-- Cardinalidad maxima 1
+		false
+	else
+		if (self.upperValue.value > 1) then
+			if (self.lowerValue.oclIsUndefined()) then
+				-- Cardinalidad minima 1
+				true
+			else
+				self.lowerValue.value = 1
+			endif
+		else
+			false
+		endif
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad de entrada tiene cardinalidad 1..*.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isCardinalOneN() : Boolean =
+	
+	-- Si no se especifica cardinalidad, por defecto es 1
+	if (self.upperValue.oclIsUndefined()) then
+		-- Cardinalidad maxima 1
+		false
+	else
+		if (self.upperValue.value = (0-1)) then
+			if (self.lowerValue.oclIsUndefined()) then
+				-- Cardinalidad minima 1
+				true
+			else
+				self.lowerValue.value = 1
+			endif
+		else
+			false
+		endif
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad de entrada tiene cardinalidad N..*.
+--donde N es un número mayor que 1.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isCardinalMultiN() : Boolean =
+	
+	-- Si no se especifica cardinalidad, por defecto es 1
+	if (self.upperValue.oclIsUndefined()) then
+		-- Cardinalidad maxima 1
+		false
+	else
+		if (self.upperValue.value = (0-1)) then
+			if (self.lowerValue.oclIsUndefined()) then
+				-- Cardinalidad minima 1
+				false
+			else
+				self.lowerValue.value > 1
+			endif
+		else
+			false
+		endif
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la especialización de la clase de entrada es total.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Class def : isCoveringHierarchy() : Boolean =
+	if (self.hasSpecializationInfo()) then
+		self.getFirstSpecializationInfo().isCovering()
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la especialización de la clase de entrada es parcial.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Class def : isPartialHierarchy() : Boolean =
+	if (self.hasSpecializationInfo()) then
+		self.getFirstSpecializationInfo().isPartial()			
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la especialización de la clase de entrada es total.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Class def : isTotalHierarchy() : Boolean =
+	if (self.hasSpecializationInfo()) then
+		self.getFirstSpecializationInfo().isTotal()			
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la especialización de la clase de entrada es exclusiva.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Class def : isDisjointHierarchy() : Boolean =
+	if (self.hasSubClassifiers()) then
+		if (self.hasSpecializationInfo()) then
+
+			--si solo hay una clase hija, trataremos
+			--la jerarquía como exclusiva
+			self.getFirstSpecializationInfo().isDisjoint() or self.hasOneSubClass() 
+		else
+			false
+		endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la especialización de la clase de entrada es solapada.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--@LIBRARIES UML_private
+--END DOC
+helper context UML!Class def : isOverlappingHierarchy() : Boolean =
+	if (self.hasSubClassifiers()) then
+		if (self.hasSpecializationInfo()) then
+		
+			--si solo hay una clase hija, trataremos
+			--la jerarquía como exclusiva
+			self.getFirstSpecializationInfo().isOverlapping() and 
+			not self.hasOneSubClass()
+		else
+			false
+		endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve la superclase de la jerarquía de entrada.
+--
+--@CONTEXT UML!GeneralizationSet
+--@RETURN UML!Class
+--END DOC
+helper context UML!GeneralizationSet def : getFirstSuperClass() : UML!Class =
+	self.generalization->first().getFirstSuperClassifier();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la jerarquía de la clase padre 
+--de la clase de entrada es simple (sólo tiene un subhijo), es decir,
+--si el único hijo del padre de la clase de entrada es él mismo.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--END DOC
+helper context UML!Class def : hasSuperClassWithOnlyCoveringParcialHierarchy() :
+		Boolean =
+			
+	if (self.hasSuperClass()) then
+		if (self.getFirstSuperClass().getSubClasses()->size() = 1) then
+			if (self.getFirstSuperClass().getSubClasses()->
+					asSequence()->first() = self) then
+				self.getFirstSuperClass().isCoveringHierarchy() or
+				self.getFirstSuperClass().isPartialHierarchy()
+			else
+				false
+			endif
+		else
+			false
+		endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si una clase padre-hija debe mapearse creando un UDT y una TT
+--sobre dicho UDT, más un tipo que mezcle los UDTs que mapean las clases
+--hijas de ésta y su correspondiente tabla.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--END DOC
+helper context UML!Class def: mapToUDTandTTwithMergeUDTandTT() : Boolean =
+	self.isPartialHierarchy() and
+	self.isOverlappingHierarchy() and
+	not self.hasOneSubClass();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si una clase padre-hija debe mapearse creando SÓLO un UDT.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--END DOC
+helper context UML!Class def: mapToUDT() : Boolean =
+	(
+		self.isCoveringHierarchy() and
+		self.isDisjointHierarchy() and
+		not self.hasOneSubClass()
+	)
+	or
+	(
+		self.isCoveringHierarchy() and
+		self.hasOneSubClass()
+	);
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si una clase padre-hija debe mapearse creando un 
+--UDT SIN TT, más un tipo que mezcle los UDTs que mapean las clases
+--hijas de ésta y su correspondiente tabla.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--END DOC
+helper context UML!Class def: mapToUDTwithMergeUDTandTT() : Boolean =
+	self.isCoveringHierarchy() and
+	self.isOverlappingHierarchy() and
+	not self.hasOneSubClass();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si una clase padre-hija debe mapearse creando 
+--SÓLO un UDT y su correspondiente tabla.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--END DOC
+helper context UML!Class def: mapToUDTandTT() : Boolean =
+	(
+		self.isPartialHierarchy() and
+		self.isDisjointHierarchy() and
+		not self.hasOneSubClass()
+	)
+	or
+	(
+		self.isPartialHierarchy() and
+		self.hasOneSubClass()
+	);
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad de entrada representa un extremo de 
+--asociación de cardinalidad 1. En tal caso, habrá que incluir una restricción
+--de tipo NOTNULL en todas las tablas tipadas que se definan sobre un UDT
+--que contengan dicha propiedad.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : toNotNull() : Boolean =
+	if (self.isCardinalOneOne()) then 
+		(self.isAssociationSimple() or self.isAssociationNavigable())
+	else
+		if (
+			self.isCardinalOneMulti() or
+			self.isCardinalOneN() or
+			self.isCardinalMultiN()
+		) then
+			self.isAssociationSimple() or
+			self.isAssociationNavigable() or
+			self.isAggregation() or
+			self.isComposition()
+		else
+			false
+		endif
+	endif;	
+	
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la clase de entrada y la propiedad que se le pasa 
+--como parámetro deben ser mapeados a uns restricción de tipo NOT_NULL porque:
+--la propiedad define una asociacion de cardinalidad 1 y la clase es la 
+--que contiene dicha propiedad o hereda de ella.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--END DOC
+helper context UML!Class def: ownsMemberEnd(p: UML!Property) : Boolean =
+	if (p.toNotNull()) then
+		if (p.getOppositeAssociation().type.oclIsUndefined()) then
+			false
+		else
+			if (p.getOppositeAssociation().type = self) then
+				true
+			else 
+				if (self.hasSuperClass()) then
+					self.getAncestors()->includes(p.getOppositeAssociation().type)
+				else
+					false
+				endif
+			endif
+		endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la clase de entrada y la propiedad que se le pasa 
+--como parámetro deben ser mapeados a uns restricción de tipo NOT_NULL porque:
+--la propiedad define una asociacion de cardinalidad 1 y la clase es la 
+--que contiene dicha propiedad directamente.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--END DOC
+helper context UML!Class def: isDirectMemberEnd(p: UML!Property) : Boolean =
+	if (
+		p.isAssociationSimple() or
+		p.isAssociationNavigable() or
+		p.isAggregation() or
+		p.isComposition()
+	) then
+		if (p.getOppositeAssociation().type.oclIsUndefined()) then
+			false
+		else
+			if (p.getOppositeAssociation().type = self) then
+				true
+			else 
+				false
+			endif
+		endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper comprueba si la propiedad de entrada representa 
+--una propiedad de una clase.
+--Dicha propiedad no puede ser ni derivada ni multivaluada ni ser otra clase
+--pero sí tipos de datos definidos o básicos.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isClassProperty() : Boolean =
+	if (self.refImmediateComposite().oclIsTypeOf(UML!Class)) then
+	(
+		self.type.oclIsKindOf(UML!DataType) or	
+		self.type.oclIsTypeOf(UML!PrimitiveType)
+	)
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la clase de entrada, o alguna de sus ancestros 
+--contienen a la propiedad que se le pasa como parámetro.
+--
+--@CONTEXT UML!Class
+--@RETURN Boolean
+--END DOC
+helper context UML!Class def: ownsClassProperty(p: UML!Property) : Boolean =
+	if (p.isClassProperty()) then
+		if (p.refImmediateComposite() = self) then
+			true
+		else 
+			if (self.hasSuperClass()) then
+				self.getAncestors()->includes(p.refImmediateComposite())
+			else
+				false
+			endif
+		endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si existe un elemento con la información 
+--sobre la relación de especialización asociada al elemento de entrada.
+--
+--La información de especialización está asociada a las clases hijas.
+--Con leerla de alguna de ellas es suficiente.
+--
+--@CONTEXT UML!Classifier
+--@RETURN UML!Boolean
+--END DOC
+helper context UML!Classifier def : hasSpecializationInfo() : Boolean = 
+	if (thisModule.GENERALIZATIONS()->size() > 0) then
+		let genList : Set(UML!Generalization) =
+			thisModule.GENERALIZATIONS()->
+				select(gen | gen.general = self)
+		in
+			if (genList->size() > 0) then
+				genList->first().generalizationSet->size() > 0
+			else
+				false
+			endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el extremo de entrada perteneciente a 
+--una asociación tiene cardinalidad máxima limitada.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isFixedSizeMemberEnd() : Boolean =
+	(self.isCardinalZeroMulti()) or
+	(self.isCardinalOneMulti());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el extremo de entrada perteneciente a 
+--una asociación tiene cardinalidad máxima no limitada.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--@LIBRARIES UML2SQL2003_AMW
+--END DOC
+helper context UML!Property def : isVarSizeMemberEnd() : Boolean =
+	(self.isCardinalZeroN()) or
+	(self.isCardinalOneN()) or
+	(self.isCardinalMultiN());
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el extremo de asociación de composición de entrada y 
+--el extremo de asociación 'e' están unidos a la misma clase y generan
+--el mismo tipo de dato.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--#PRECONDITION
+--La propiedad de entrada es un extremo de una asociación de composición.
+--END DOC
+helper context UML!Property def : isSameCompositeMemberEndType(e : UML!Property) : Boolean =
+	if (e.type = self.type) then
+		if (e.isFixedSizeMemberEnd() and self.isFixedSizeMemberEnd()) then
+			e.upperValue.value = self.upperValue.value
+		else
+			e.isVarSizeMemberEnd() and self.isVarSizeMemberEnd()
+		endif
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si el extremo de asociación de entrada y 
+--el extremo de asociación 'e' están unidos a la misma clase.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--#PRECONDITION
+--Las dos propiedades son extremos de asociación cuya cardinalidad máxima es 1.
+--END DOC
+helper context UML!Property def : isSameAttributeREFType(e : UML!Property): Boolean= 
+	e.type = self.type;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad multivaluada de entrada y 
+--la propiedad multivaluada 'p' son del mismo tipo.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isSameMultivaluedAttributeType(p : UML!Property) : Boolean= 
+	(p.name = self.name) and
+	(p.type = self.type) and
+	(
+		(
+	 		p.isFixedSizeMultivaluedAttribute() and
+			self.isFixedSizeMultivaluedAttribute()
+	 	) or
+		(
+	 		p.isVarSizeMultivaluedAttribute() and
+			self.isVarSizeMultivaluedAttribute()
+	 	)
+	);
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con todas las clases descendientes de la
+--clase de entrada. Si no tiene descencientes devuelve un conjunto vacío.
+--
+--@CONTEXT UML!Classifier
+--@RETURN Sequence(UML!Classifier)
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!Classifier def : getDescendants() : Sequence(UML!Classifier) =	
+	thisModule.GENERALIZATIONS()->
+		iterate(aux; children : Sequence(UML!Class) = Sequence{} |
+			if (aux.general = self) then
+				if aux.specific.hasSubClasses() then
+					children.append(aux.specific).union(
+						aux.specific.getDescendants())
+				else
+					children.append(aux.specific)
+				endif
+			else
+				children			
+			endif);
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con todas las propiedades de las clases
+--descendientes de la clase de entrada.
+--
+--@CONTEXT UML!Classifier
+--@RETURN Set(UML!Property)
+--END DOC
+helper context UML!Classifier def : getDescendantsProperties() : Set(UML!Property) =
+	self.getDescendants()->
+		collect(c | c.ownedAttribute)->
+			union(self.ownedAttribute)->flatten();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con todas las clases ascentras de la
+--clase de entrada. Si no tiene ancestros devuelve un conjunto vacío.
+--
+--@CONTEXT UML!Classifier
+--@RETURN Sequence(UML!Classifier)
+--@LIBRARIES UML_constants
+--END DOC
+helper context UML!Classifier def : getAncestors() : Sequence(UML!Classifier) =	
+	if (self.hasSuperClass()) then
+		self.getFirstSuperClass().getAncestors()->
+			union(self)
+	else
+		Sequence{self}
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper devuelve un conjunto con todas las propiedades de las clases
+--descendientes y ascentras de la clase de entrada.
+--
+--@CONTEXT UML!Classifier
+--@RETURN Set(UML!Property)
+--END DOC
+helper context UML!Classifier def : getAncestorsDescendantsProperties() : 
+		Set(UML!Property) =
+			
+	self.getAncestors()->
+		collect(c | c.ownedAttribute)->
+			union(self.getDescendantsProperties())->flatten();
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si una superclase sólo tiene elementos hoja sin descendencia.
+--
+--@CONTEXT UML!Classifier
+--@RETURN Boolean
+--END DOC
+helper context UML!Classifier def : isLastHierarchy() : Boolean =
+	if (self.hasSubClasses()) then
+		(self.getLeafSubClasses().size() = self.getSubClasses().size())
+	else
+		false
+	endif;
+
+
+--BEGIN DOC
+--#DESCRIPTION
+--Este helper indica si la propiedad de entrada pertenece a una clase abstracta.
+--
+--@CONTEXT UML!Property
+--@RETURN Boolean
+--END DOC
+helper context UML!Property def : isAbstractClassProperty() : Boolean =
+	if (self->refImmediateComposite().oclIsTypeOf(UML!Class)) then
+		self->refImmediateComposite().isAbstract
+	else
+		false
+	endif;
