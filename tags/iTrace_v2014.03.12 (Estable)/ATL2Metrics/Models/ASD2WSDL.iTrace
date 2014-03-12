@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<iTrace:iTraceModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iTrace="org.eclipse.kybele.iTrace" version="1.0" projectName="ASD2WSDL">
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="ServiceDescription2Definitions">
+    <sourceElements model="//@artefacts.0" type="ASD!ServiceDescription">
+      <object href="model.asd#/"/>
+    </sourceElements>
+    <sourceElements/>
+    <targetElements model="//@artefacts.1" type="WSDL!Definitions">
+      <object href="model_generated.wsdl#/0"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="WSDL!ElementType">
+      <object href="model_generated.wsdl#/0/@types"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Schema">
+      <object href="model_generated.wsdl#/0/@types/@schema.0"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Message2PortTypeInput{">
+    <sourceElements model="//@artefacts.0" type="ASD!Message">
+      <object href="model.asd#//@operations.0/@contents.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!PortTypeInput">
+      <object href="model_generated.wsdl#/0/@portType.0/@operation.0/@input"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Operation2PortTypeOperation">
+    <sourceElements model="//@artefacts.0" type="ASD!Operation">
+      <object href="model.asd#//@operations.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!PortType">
+      <object href="model_generated.wsdl#/0/@portType.0"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="WSDL!PortTypeOperation">
+      <object href="model_generated.wsdl#/0/@portType.0/@operation.0"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Message2PortTypeOutput{">
+    <sourceElements model="//@artefacts.0" type="ASD!Message">
+      <object href="model.asd#//@operations.1/@contents.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!PortTypeOutput">
+      <object href="model_generated.wsdl#/0/@portType.1/@operation.0/@output"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Operation2PortTypeOperation">
+    <sourceElements model="//@artefacts.0" type="ASD!Operation">
+      <object href="model.asd#//@operations.1"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!PortType">
+      <object href="model_generated.wsdl#/0/@portType.1"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="WSDL!PortTypeOperation">
+      <object href="model_generated.wsdl#/0/@portType.1/@operation.0"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="InfoType2Part{">
+    <sourceElements model="//@artefacts.0" type="Sequence(OclAny)">
+      <object href="model.asd#//@infotypes.1"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Part">
+      <object href="model_generated.wsdl#/0/@message.0/@part.0"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Message2Mesage{">
+    <sourceElements model="//@artefacts.0" type="ASD!Message">
+      <object href="model.asd#//@operations.0/@contents.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Message">
+      <object href="model_generated.wsdl#/0/@message.0"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="InfoType2Part{">
+    <sourceElements model="//@artefacts.0" type="ASD!InfoTypeImported">
+      <object href="model.asd#//@infotypes.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Part">
+      <object href="model_generated.wsdl#/0/@message.1/@part.0"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="InfoType2Part{">
+    <sourceElements model="//@artefacts.0" type="Sequence(OclAny)">
+      <object href="model.asd#//@infotypes.2"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Part">
+      <object href="model_generated.wsdl#/0/@message.1/@part.1"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Message2Mesage{">
+    <sourceElements model="//@artefacts.0" type="ASD!Message">
+      <object href="model.asd#//@operations.1/@contents.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Message">
+      <object href="model_generated.wsdl#/0/@message.1"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="InfoTypeImported2ElementImported{">
+    <sourceElements model="//@artefacts.0" type="ASD!InfoTypeImported">
+      <object href="model.asd#//@infotypes.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!ElementImported">
+      <object href="model_generated.wsdl#/1"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="InfoType2ComplexType{">
+    <sourceElements model="//@artefacts.0" type="ASD!InfoType">
+      <object href="model.asd#//@infotypes.1"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!ComplexType">
+      <object href="model_generated.wsdl#/0/@types/@schema.0/@complexType.0"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="WSDL!SequenceType">
+      <object href="model_generated.wsdl#/0/@types/@schema.0/@complexType.0/@sequenceDef"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="InfoType2SimpleType{">
+    <sourceElements model="//@artefacts.0" type="ASD!InfoType">
+      <object href="model.asd#//@infotypes.2"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!SimpleType">
+      <object href="model_generated.wsdl#/0/@types/@schema.0/@simpleType.0"/>
+    </targetElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Restriction">
+      <object href="model_generated.wsdl#/0/@types/@schema.0/@simpleType.0/@restriction"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="InfoType2Element{">
+    <sourceElements model="//@artefacts.0" type="ASD!InfoType">
+      <object href="model.asd#//@infotypes.1/@infoType.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Element">
+      <object href="model_generated.wsdl#/0/@types/@schema.0/@complexType.0/@sequenceDef/@element.0"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="InfoType2Element{">
+    <sourceElements model="//@artefacts.0" type="ASD!InfoType">
+      <object href="model.asd#//@infotypes.1/@infoType.1"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Element">
+      <object href="model_generated.wsdl#/0/@types/@schema.0/@complexType.0/@sequenceDef/@element.1"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="27-3-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="InfoType2Element{">
+    <sourceElements model="//@artefacts.0" type="ASD!InfoType">
+      <object href="model.asd#//@infotypes.1/@infoType.2"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="WSDL!Element">
+      <object href="model_generated.wsdl#/0/@types/@schema.0/@complexType.0/@sequenceDef/@element.2"/>
+    </targetElements>
+  </traceLinks>
+  <artefacts xsi:type="iTrace:Model" name="ASD" path="/ATL2Metrics/Models/model.asd" elements="//@traceLinks.0/@sourceElements.0 //@traceLinks.1/@sourceElements.0 //@traceLinks.2/@sourceElements.0 //@traceLinks.3/@sourceElements.0 //@traceLinks.4/@sourceElements.0 //@traceLinks.5/@sourceElements.0 //@traceLinks.6/@sourceElements.0 //@traceLinks.7/@sourceElements.0 //@traceLinks.8/@sourceElements.0 //@traceLinks.9/@sourceElements.0 //@traceLinks.10/@sourceElements.0 //@traceLinks.11/@sourceElements.0 //@traceLinks.12/@sourceElements.0 //@traceLinks.13/@sourceElements.0 //@traceLinks.14/@sourceElements.0 //@traceLinks.15/@sourceElements.0" metamodel="/ATL2Metrics/Metamodels/ASD.ecore"/>
+  <artefacts xsi:type="iTrace:Model" name="WSDL" path="/ATL2Metrics/Models/model.wsdl" elements="//@traceLinks.0/@targetElements.0 //@traceLinks.0/@targetElements.1 //@traceLinks.0/@targetElements.2 //@traceLinks.1/@targetElements.0 //@traceLinks.2/@targetElements.0 //@traceLinks.2/@targetElements.1 //@traceLinks.3/@targetElements.0 //@traceLinks.4/@targetElements.0 //@traceLinks.4/@targetElements.1 //@traceLinks.5/@targetElements.0 //@traceLinks.6/@targetElements.0 //@traceLinks.7/@targetElements.0 //@traceLinks.8/@targetElements.0 //@traceLinks.9/@targetElements.0 //@traceLinks.10/@targetElements.0 //@traceLinks.11/@targetElements.0 //@traceLinks.11/@targetElements.1 //@traceLinks.12/@targetElements.0 //@traceLinks.12/@targetElements.1 //@traceLinks.13/@targetElements.0 //@traceLinks.14/@targetElements.0 //@traceLinks.15/@targetElements.0" metamodel="/ATL2Metrics/Metamodels/wsdl1_1.ecore"/>
+</iTrace:iTraceModel>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ASCII"?>
+<AnnotationModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="mmw_annotation" xmi:id="AnnotationModel1" name="Online Movie Database">
+  <ownedElement xsi:type="Annotation" xmi:id="Annotation1">
+    <properties key="NULL" value="Table"/>
+    <annotatedModelElement xmi:id="AnnotatedModelElement1" name="product_type" element="//@referencedModel/@ownedElementRef.0"/>
+  </ownedElement>
+  <ownedElement xsi:type="Annotation" xmi:id="Annotation2">
+    <properties key="NULL" value="Tables"/>
+    <annotatedModelElement xmi:id="AnnotatedModelElement2" name="Person_type" element="//@referencedModel/@ownedElementRef.1"/>
+  </ownedElement>
+  <referencedModel xmi:id="AnnotatedModel1" name="referencedModel" ref="/M2DATDB/models/omdb.uml">
+    <ownedElementRef xsi:type="AnnotatedModelElementRef" name="ref_product_type" ref="_n4D3UPxSEd2qTILnYStnJQ"/>
+    <ownedElementRef xsi:type="AnnotatedModelElementRef" name="ref_Person_type" ref="_tF9VAPxREd2qTILnYStnJQ"/>
+  </referencedModel>
+</AnnotationModel>

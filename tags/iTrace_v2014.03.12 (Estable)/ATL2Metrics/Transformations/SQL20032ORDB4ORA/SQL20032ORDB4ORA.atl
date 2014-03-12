@@ -1,0 +1,1247 @@
+-- @atlcompiler atl2006
+-- @nsURI ORDB4ORA=http:///ORDB4ORA.ecore
+-- @nsURI SQL2003=http://SQL2003.ecore
+module SQL20032ORDB4ORA; -- Module Template
+create OUT : ORDB4ORA from IN : SQL2003;
+
+
+------------------------------------------------------------------------------
+--		HELPERS
+------------------------------------------------------------------------------
+
+-- retorna si el valor de la característica (feature) es válida para el tipo de dato de destino.
+--- Para optimizar la sentencia de if se ha realizado un anidamiento (ATL no soporta evaluación en cortocircuito)
+
+helper context SQL2003!Feature def: haveLegalTarget() : Boolean =
+	if self.refImmediateComposite().type.oclIsKindOf(SQL2003!PredefinedType) then
+		if self.refImmediateComposite().type.descriptor = #CHARACTER and self.key = #length then
+			true
+		else
+			if self.refImmediateComposite().type.descriptor = #CHARACTER and self.key = #unit then
+			true
+		else
+			if self.refImmediateComposite().type.descriptor = #CHARACTERVARYING and self.key = #length then
+				true
+			else
+		if self.refImmediateComposite().type.descriptor = #CHARACTERVARYING and self.key = #unit then
+			true
+		else
+			if self.refImmediateComposite().type.descriptor = #NUMERIC and self.key = #precision then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #NUMERIC and self.key = #scale  then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #DECIMAL and self.key = #precision then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #DECIMAL and self.key = #scale then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #FLOAT and self.key = #precision then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #TIMEWITHOUTTIMEZONE and self.key = #precision then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #TIMEWITHTIMEZONE and self.key = #precision then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #TIMESTAMPWITHOUTTIMEZONE and self.key = #precision then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #TIMESTAMPWITHTIMEZONE and self.key = #precision then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #DAY_SECOND and self.key = #start_leading_precision then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #DAY_SECOND and self.key = #second_precision then
+				true
+		else
+			if self.refImmediateComposite().type.descriptor = #YEAR_MONTH and self.key = #start_leading_precision then
+				true
+		else
+				false
+		endif
+		endif
+		endif
+		endif
+		endif
+		endif
+		endif
+		endif
+		endif
+		endif
+		endif	
+		endif
+		endif
+		endif
+		endif
+		endif
+	else	
+			true
+	endif;
+
+-- retorna el nombre de la característica (feature) en el modelo de destino. Origen: StringFeature
+--- Para optimizar la sentencia de if se ha realizado un anidamiento (ATL no soporta evaluación en cortocircuito)
+
+helper context SQL2003!StringFeature def: targetKey() : ORDB4ORA!CharacterFeatures =
+	if self.refImmediateComposite().type.oclIsKindOf(SQL2003!PredefinedType) then
+		if self.refImmediateComposite().type.descriptor = #CHARACTER and self.key = #length then
+			#size
+			else
+		if self.refImmediateComposite().type.descriptor = #CHARACTER and self.key = #unit then
+			#semantic
+		else
+			if self.refImmediateComposite().type.descriptor = #CHARACTERVARYING and self.key = #length then
+				#size
+			else
+			if self.refImmediateComposite().type.descriptor = #CHARACTERVARYING and self.key = #unit then
+				#semantic
+			else
+				self.key
+			endif
+			endif
+			endif
+		endif		
+	else	
+			self.key
+	endif;
+
+-- retorna el nombre de la característica (feature) en el modelo de destino. Origen: NumericFeature
+--- Para optimizar la sentencia de if se ha realizado un anidamiento (ATL no soporta evaluación en cortocircuito)
+
+helper context SQL2003!NumericFeature def: targetKey() : ORDB4ORA!NumberFeatures =
+	if self.refImmediateComposite().type.oclIsKindOf(SQL2003!PredefinedType) then
+			if self.refImmediateComposite().type.descriptor = #NUMERIC and self.key = #precision then
+				#precision
+		else
+			if self.refImmediateComposite().type.descriptor = #NUMERIC and self.key = #scale  then
+				#scale
+		else
+			if self.refImmediateComposite().type.descriptor = #DECIMAL and self.key = #presicion then
+				#precision
+		else
+			if self.refImmediateComposite().type.descriptor = #DECIMAL and self.key = #scale then
+				#scale
+		else
+			if self.refImmediateComposite().type.descriptor = #FLOAT and self.key = #precision then
+				#size
+		else
+				self.key
+		endif
+		endif
+		endif
+		endif
+		endif
+	else	
+			self.key
+	endif;
+
+-- retorna el nombre de la característica (feature) en el modelo de destino. Origen = DatetimeFeature
+--- Para optimizar la sentencia de if se ha realizado un anidamiento (ATL no soporta evaluación en cortocircuito)
+
+helper context SQL2003!DatetimeFeature def: targetKey() : ORDB4ORA!DatetimeFeatures =
+	if self.refImmediateComposite().type.oclIsKindOf(SQL2003!PredefinedType) then
+			if self.refImmediateComposite().type.descriptor = #TIMEWITHOUTTIMEZONE and self.key = #precision then
+				#precision
+		else
+			if self.refImmediateComposite().type.descriptor = #TIMEWITHTIMEZONE and self.key = #precision then
+				#precision
+		else
+			if self.refImmediateComposite().type.descriptor = #TIMESTAMPWITHOUTTIMEZONE and self.key = #precision then
+				#precision
+		else
+			if self.refImmediateComposite().type.descriptor = #TIMESTAMPWITHTIMEZONE and self.key = #precision then
+				#precision
+		else
+				self.key
+		endif
+		endif
+		endif
+		endif
+	else	
+			self.key
+	endif;
+
+-- retorna el nombre de la característica (feature) en el modelo de destino. Origen IntervalFeature
+--- Para optimizar la sentencia de if se ha realizado un anidamiento (ATL no soporta evaluación en cortocircuito)
+
+helper context SQL2003!IntervalFeature def: targetKey() : ORDB4ORA!IntervalFeatures =
+	if self.refImmediateComposite().type.oclIsKindOf(SQL2003!PredefinedType) then
+			if self.refImmediateComposite().type.descriptor = #DAY_SECOND and self.key = #start_leading_precision then
+				#day_precision
+		else
+			if self.refImmediateComposite().type.descriptor = #DAY_SECOND and self.key = #second_precision then
+				#second_precision
+		else
+			if self.refImmediateComposite().type.descriptor = #YEAR_MONTH and self.key = #start_leading_precision then
+				#year_precision
+		else
+				self.key
+		endif
+		endif
+		endif
+	else	
+			self.key
+	endif;
+
+
+-- retorna el valor de la característica (feature) en el modelo de destino
+--- Para optimizar la sentencia de if se ha realizado un anidamiento (ATL no soporta evaluación en cortocircuito)
+
+helper context SQL2003!Feature def: targetValue() : String = self.value;
+
+-- Se obtiene el elemento raiz de origen.
+-- Esto se utiliza cuando el elemento origen no tiene un atributo del tipo raiz, pero el elemento destino si lo tiene.
+
+helper def : schema : SQL2003!Schema = SQL2003!Schema.allInstances()->asSequence()->first();
+
+-- si el tipo de dato es un tipo predefinido y es de tipo boolean retorna true
+helper context SQL2003!DataType def: isBoolean() : Boolean =
+	if self.oclIsKindOf(SQL2003!PredefinedType) then
+		if self.descriptor = #BOOLEAN then 
+			true
+		else
+			false
+		endif
+	else
+		false
+	endif;
+
+-- retorna si el tipo de dato es un tipo "oculto"". Los tipos de origen  ocultos son aquellos que no están asociado a ningún tipo de destino
+--- En el caso de SQL20032ORDB4ORA los tipos ocultos encontrados han sido: BIGINT y TIME
+--- Para optimizar la sentencia de if se ha realizado un anidamiento (ATL no soporta evaluación en cortocircuito)
+
+helper context SQL2003!DataType def: isHiddenType() : Boolean =
+	if self.oclIsKindOf(SQL2003!PredefinedType) then
+		if self.descriptor = #BIGINT then
+			true
+		else
+				if self.descriptor = #TIMEWITHTIMEZONE then
+					true
+				else
+						if self.descriptor = #TIMEWITHOUTTIMEZONE  then
+							true
+						else
+							if self.descriptor = #DAY_HOUR  then
+							true
+						else
+							if self.descriptor = #DAY_MINUTE  then
+							true
+						else
+							if self.descriptor = #HOUR_MINUTE  then
+							true
+						else
+							if self.descriptor = #HOUR_SECOND  then
+							true
+						else
+							if self.descriptor = #MINUTE_SECOND  then
+							true
+						else
+							if self.descriptor = #YEAR  then
+							true
+						else
+							if self.descriptor = #DAY  then
+							true
+						else
+							if self.descriptor = #HOUR  then
+							true
+						else
+							if self.descriptor = #MINUTE then
+							true
+						else
+							if self.descriptor = #SECOND  then
+							true
+						else
+							if self.descriptor = #MONTH  then
+							true
+						else
+							false
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+				endif
+		endif		
+	else	
+			false
+	endif;
+
+
+-- retorna el valor de tipo de dato de destino, de acuerdo al tipo de dato de origen
+--- Esto se da en el caso de que el tipo de dato de origen tenga que enlazarse con
+--- un tipo de dato de destino YA ENLAZADO con OTRO tipo de dato de origen
+
+helper context SQL2003!DataType def: mirrorType() : SQL2003!DataType =
+	if self.descriptor = #TIMEWITHTIMEZONE then
+			SQL2003!DatetimeType.allInstances()->any(i| i.descriptor = #DATE)
+				else
+				if self.descriptor = #BIGINT then
+					SQL2003!NumericType.allInstances()->any(i| i.descriptor = #NUMERIC)
+				else
+						if self.descriptor = #TIMEWITHOUTTIMEZONE then
+							SQL2003!DatetimeType.allInstances()->any(i| i.descriptor = #DATE)
+						else
+							if self.descriptor = #DAY_HOUR then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #DAY_MINUTE then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #HOUR_MINUTE then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #HOUR_SECOND then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #MINUTE_SECOND then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #YEAR then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #DAY then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #HOUR then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #MINUTE then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #SECOND then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							if self.descriptor = #MONTH then
+								SQL2003!IntervalType.allInstances()->any(i| i.descriptor = #YEAR)
+						else
+							self
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+						endif
+				endif
+	endif;
+
+------------------------------------------------------------------------------
+--		TIPOS DE DATOS
+------------------------------------------------------------------------------
+
+------ ENDPOINT ---------------------------------------------------------
+
+--Se llama a una rule al finalizar el matching. De esta manera  el modelo ya se 
+--encuentra definido (thisModule.schema retorna un valor válido)
+-- Se crean los tipos de datos que solo existen en el destino
+
+endpoint rule generateTypes(){
+	to 
+	dt0: ORDB4ORA!BuiltInCharacterType
+	(
+ 		Descriptor <-#VARCHAR2,
+		model <- thisModule.schema
+	),
+	dt1: ORDB4ORA!BuiltInCharacterType
+	(
+ 		Descriptor <-#NCHAR,
+		model <- thisModule.schema
+	),
+	dt2: ORDB4ORA!BuiltInCharacterType
+	(
+ 		Descriptor <-#NVARCHAR2,
+		model <- thisModule.schema
+    ),
+	dt3: ORDB4ORA!BuiltInNumberType
+	(
+ 		Descriptor <-#NUMBER,
+		model <- thisModule.schema
+	),
+	dt99: ORDB4ORA!BuiltInNumberType
+	(
+ 		Descriptor <-#BINARY_FLOAT,
+		model <- thisModule.schema
+	),
+	d98: ORDB4ORA!BuiltInNumberType
+	(
+ 		Descriptor <-#BINARY_DOUBLE,
+		model <- thisModule.schema
+	),
+	dt4: ORDB4ORA!LongAndRawType
+	(
+ 		Descriptor <-#LONG,
+		model <- thisModule.schema
+	),
+	dt5: ORDB4ORA!LongAndRawType
+	(
+ 		Descriptor <-#LONGRAW,
+		model <- thisModule.schema
+	),
+	dt97: ORDB4ORA!LongAndRawType
+	(
+ 		Descriptor <-#RAW,
+		model <- thisModule.schema
+	),
+	dt96: ORDB4ORA!DatetimeType
+	(
+ 		Descriptor <-#TIMESTAMPWITHLOCALTIMEZONE,
+		model <- thisModule.schema
+	),
+	dt7: ORDB4ORA!ROWIDType
+	(
+ 		Descriptor <-#ROWID,
+		model <- thisModule.schema
+	),
+	dt8: ORDB4ORA!ROWIDType
+	(
+ 		Descriptor <-#UROWID,
+		model <- thisModule.schema
+	),
+	dt9: ORDB4ORA!ANSICharacterType
+	(
+ 		Descriptor <-#CHARVARYING,
+		model <- thisModule.schema
+	),
+		dt80: ORDB4ORA!ANSICharacterType
+	(
+ 		Descriptor <-#NCHARVARYING,
+		model <- thisModule.schema
+	),
+	dt70: ORDB4ORA!ANSICharacterType
+	(
+ 		Descriptor <-#VARCHAR,
+		model <- thisModule.schema
+	),
+	dt11: ORDB4ORA!ANSICharacterType
+	(
+ 		Descriptor <-#NATIONALCHARACTERVARYING,
+		model <- thisModule.schema
+	),
+	dt12: ORDB4ORA!ANSICharacterType
+	(
+ 		Descriptor <-#NATIONALCHARVARYING,
+		model <- thisModule.schema
+	),
+	dt13: ORDB4ORA!ANSICharacterType
+	(
+ 		Descriptor <-#NATIONALCHARACTER,
+		model <- thisModule.schema
+	),
+	dt14: ORDB4ORA!ANSICharacterType
+	(
+ 		Descriptor <-#NATIONALCHAR,
+		model <- thisModule.schema
+	),
+	dt15: ORDB4ORA!ANSINumberType
+	(
+ 		Descriptor <-#DEC,
+		model <- thisModule.schema
+	),
+	dt16: ORDB4ORA!ANSINumberType
+	(
+ 		Descriptor <-#INT,
+		model <- thisModule.schema
+	),
+	dt17: ORDB4ORA!AnyType
+	(
+ 		Descriptor <-#SYSANYDATA,
+		model <- thisModule.schema
+	),
+	dt19: ORDB4ORA!AnyType
+	(
+ 		Descriptor <-#SYSANYDATASET,
+		model <- thisModule.schema
+	),
+	dt20: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#ORDAudio,
+		model <- thisModule.schema
+	),
+	dt21: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#ORDImage,
+		model <- thisModule.schema
+	),
+	dt22: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#ORDDoc,
+		model <- thisModule.schema
+	),
+	dt23: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#ORDVideo,
+		model <- thisModule.schema
+	),
+	dt66: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#ORDImageSignature,
+		model <- thisModule.schema
+	),
+	dt65: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#SI_STILLIMAGE,
+		model <- thisModule.schema
+	),
+	dt64: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#SI_AVERAGECOLOR,
+		model <- thisModule.schema
+	),
+	dt63: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#SI_POSITIONALCOLOR,
+		model <- thisModule.schema
+	),
+	dt62: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#SI_COLORHISTOGRAM,
+		model <- thisModule.schema
+	),
+	dt61: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#SI_TEXTURE,
+		model <- thisModule.schema
+	),
+	dt60: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#SI_FEATURELIST,
+		model <- thisModule.schema
+	),
+	dt55: ORDB4ORA!MediaType
+	(
+ 		Descriptor <-#SI_COLOR,
+		model <- thisModule.schema
+	),
+	dt24: ORDB4ORA!XMLType
+	(
+ 		Descriptor <-#URITYPE,
+		model <- thisModule.schema
+	),
+	dt41: ORDB4ORA!SpacialType
+	(
+ 		Descriptor <-#SDO_GEOMETRY,
+		model <- thisModule.schema
+	),
+	dt42: ORDB4ORA!SpacialType
+	(
+ 		Descriptor <-#SDO_TOPO_GEOMETRY,
+		model <- thisModule.schema
+	),
+	dt43: ORDB4ORA!SpacialType
+	(
+ 		Descriptor <-#SDO_RASTER,
+		model <- thisModule.schema
+	),
+	dt27: ORDB4ORA!LOBType
+	(
+ 		Descriptor <-#BFILE,
+		model <- thisModule.schema
+	),
+	dt28: ORDB4ORA!LOBType
+	(
+ 		Descriptor <-#NLOB,
+		model <- thisModule.schema
+	)
+}
+------1 TIPO DE DATO ORIGEN --> 1 o MAS TIPOS DESTINO------
+
+
+rule DatetimeType2Date {
+	from
+		dt : SQL2003!DatetimeType(dt.descriptor=#DATE)
+	to
+		date : ORDB4ORA!DatetimeType (
+			Descriptor <- #DATE,
+			model <- thisModule.schema
+		)
+}
+
+rule NumericType2Numeric {
+	from
+		dt : SQL2003!NumericType(dt.descriptor = #NUMERIC)
+	to
+		numeric : ORDB4ORA!ANSINumberType (
+			Descriptor <-#NUMERIC,
+			model <- thisModule.schema
+		)	
+}
+
+
+
+rule CharacterStringType2Varchar {
+	from
+		cs : SQL2003!CharacterStringType(cs.descriptor = #CHARACTER)
+	to
+		ch1 : ORDB4ORA!ANSICharacterType (
+			
+			
+			Descriptor <- #CHARACTER,
+			model <- thisModule.schema
+		)
+}
+
+
+rule CharacterStringType2Charvarying {
+	from
+		cs : SQL2003!CharacterStringType(cs.descriptor = #CHARACTERVARYING)
+	to
+		ch2 : ORDB4ORA!ANSICharacterType (
+			
+			Descriptor <- #CHARACTERVARYING,
+			model <- thisModule.schema
+		)
+}
+
+
+rule BooleanType2Boolean {
+	from
+		b : SQL2003!BooleanType(b.descriptor = #BOOLEAN)
+	to
+		ch3 : ORDB4ORA!BuiltInCharacterType (
+			Descriptor <- #CHAR,
+			model <- thisModule.schema
+		)
+}
+
+
+
+
+
+rule DatetimeType2TimestampWTZ{
+	from
+		dt : SQL2003!DatetimeType(dt.descriptor = #TIMESTAMPWITHTIMEZONE)
+	to
+		tmp1 : ORDB4ORA!DatetimeType (
+			Descriptor <- #TIMESTAMPWITHTIMEZONE,
+			model <- thisModule.schema
+		)
+}
+
+rule DatetimeType2TimestampWOTZ {
+	from
+		dt : SQL2003!DatetimeType(dt.descriptor = #TIMESTAMPWITHOUTTIMEZONE)
+	to
+		tmp2 : ORDB4ORA!DatetimeType (
+			Descriptor <- #TIMESTAMP,
+			model <- thisModule.schema
+		)
+}
+
+rule XMLType2XMLType {
+	from
+		x : SQL2003!XMLType(x.descriptor = #XMLTYPE)
+	to
+		xml : ORDB4ORA!XMLType (
+			Descriptor <- #XMLTYPE,
+			model <- thisModule.schema
+		)
+}
+
+
+rule BinaryStringType2LOB {
+	from
+		bin : SQL2003!BinaryStringType
+	to
+		bnr : ORDB4ORA!LOBType (
+			Descriptor <- #BLOB,
+			model <- thisModule.schema
+		)
+}
+
+rule CharacterStringType2CLOB {
+	from
+		cs : SQL2003!CharacterStringType(cs.descriptor = #CHARACTERLARGEOBJECT)
+	to
+		char4 : ORDB4ORA!LOBType (
+			
+			Descriptor <- #CLOB,
+			model <- thisModule.schema
+		)
+}
+
+
+rule NumericType2Decimal {
+	from
+		n : SQL2003!NumericType(n.descriptor = #DECIMAL)
+	to
+		num1 : ORDB4ORA!ANSINumberType (
+			Descriptor <-#DECIMAL,
+			model <- thisModule.schema
+			)
+}
+
+rule NumericType2Small {
+	from
+		n : SQL2003!NumericType(n.descriptor = #SMALLINT)
+	to
+		out : ORDB4ORA!ANSINumberType (
+			Descriptor <-#SMALLINT,
+			model <- thisModule.schema
+			)
+}
+
+rule NumericType2Integer {
+	from
+		n : SQL2003!NumericType(n.descriptor = #INTEGER)
+	to
+		out : ORDB4ORA!ANSINumberType (
+			Descriptor <-#INTEGER,
+			model <- thisModule.schema
+			)
+}
+
+rule NumericType2Float {
+	from
+		n : SQL2003!NumericType(n.descriptor = #FLOAT)
+	to
+		out : ORDB4ORA!ANSINumberType (
+			Descriptor <-#FLOAT,
+			model <- thisModule.schema
+			)
+}
+
+rule NumericType2Real {
+	from
+		n : SQL2003!NumericType(n.descriptor = #REAL)
+	to
+		out : ORDB4ORA!ANSINumberType (
+			Descriptor <-#REAL,
+			model <- thisModule.schema
+			)
+}
+
+rule NumericType2Double {
+	from
+		n : SQL2003!NumericType(n.descriptor = #DOUBLEPRECISION)
+	to
+		out : ORDB4ORA!ANSINumberType (
+			Descriptor <-#DOUBLEPRECISION,
+			model <- thisModule.schema
+			)
+}
+
+rule IntervalYear2Interval {
+	from
+		n : SQL2003!IntervalType(n.descriptor = #YEAR_MONTH)
+	to
+		out : ORDB4ORA!DatetimeType (
+			Descriptor <-#INTERVALYEARTOMONTH,
+			model <- thisModule.schema
+			)
+}
+
+rule IntervalDay2Interval {
+	from
+		n : SQL2003!IntervalType(n.descriptor = #DAY_SECOND)
+	to
+		out : ORDB4ORA!DatetimeType (
+			Descriptor <-#INTERVALDAYTOSECOND,
+			model <- thisModule.schema
+			)
+}
+
+rule IntervalYear2AnyType {
+	from
+		n : SQL2003!IntervalType(n.descriptor = #YEAR)
+	to
+		out : ORDB4ORA!AnyType (
+			Descriptor <-#SYSANYTYPE,
+			model <- thisModule.schema
+			)
+}
+
+------------------------------------------------------------------------------
+--		TRANSFORMACION DE ELEMENTOS
+------------------------------------------------------------------------------
+
+------  RAIZ -------------- -------------------------------------------------
+
+-- se crea el elemento raiz
+		
+rule Schema2Model {
+	from
+		s :SQL2003!Schema
+	to
+		m : ORDB4ORA!Model(
+			Name <- s.name
+		)
+	
+}
+	
+------  RESTRICCIONES -------------------------------------------------
+
+
+-- La regla transforma una restriccion Primary Key de SQL2003 a ORDB4ORA
+
+rule PK2PK {
+	from
+		pk : SQL2003!PrimaryKey
+	to
+		out : ORDB4ORA!PrimaryKey (
+			
+			Name <- pk.name,
+			attributes <-pk.columns
+		)
+}
+
+-- La regla transforma una restriccion CHECK de SQL2003 a ORDB4ORA
+
+rule TableCheckConstraint2Check {
+	from
+		ch : SQL2003!TableCheckConstraint
+	to
+		out : ORDB4ORA!Check (
+			Name <- ch.name,
+			Condition <- ch.expression,
+			attributes <-ch.columns
+		)
+}
+
+-- La regla transforma una restriccion UNIQUE de SQL2003 a ORDB4ORA
+
+rule Unique2Unique {
+	from
+		u : SQL2003!UniqueConstraint(u.oclIsTypeOf(SQL2003!UniqueConstraint))
+	to
+		out : ORDB4ORA!Unique (
+			Name <-u.name,
+			attributes <-u.columns
+			)
+}
+
+-- La regla transforma una restriccion NotNull de SQL2003 a ORDB4ORA
+--- SQL2003 no posee el atributo nombre
+
+rule NotNull2NotNull {
+	from
+		ch : SQL2003!NotNull
+	to
+		out : ORDB4ORA!NotNull (
+			Name <- '<...>',
+			attributes <-ch.columns
+		)
+}
+
+-- la regla transforma una restriccion de tipo Referential Constraint de SQL2003 a ForeignKey de ORDB4ORA
+--- Perdida de Informacion: no se traslada los atributos update_action y match. El atributo delete_action tiene cuatro valores posibles. En el destino se pierden tres valores.
+--- Observaciones: la restricción referencia a una restriccion de tipo UNIQUE. En ORDB4ORA las restriccion referencia directamente a una tabla
+
+rule ReferentialConstraint2ForeignKey {
+	from 
+		rc : SQL2003!ReferentialConstraint
+	to
+		fk : ORDB4ORA!ForeignKey(
+		Name <- rc.name,
+		OnDelete <- if rc.delete_action = #CASCADE then #CASCADE else if rc.delete_action = #SET_NULL then #SETNULL else OclUndefined endif endif, 
+		reference <- rc.references.table,
+		attributes <- rc.columns.union(rc.references.columns),
+		table <- rc.table
+		)
+}
+
+
+------------------------------------------------------------------------------
+--		UDT
+------------------------------------------------------------------------------
+
+-- La regla transforma un Tipo Estructurado de SQL2003 a ORDB4ORA
+-- se crean los métodos, atributos y las tablas tipadas correspondientes
+-- Perdida de información
+
+rule StructuredType2StructuredType{
+	from
+		st : SQL2003!StructuredType
+	to
+		out : ORDB4ORA!StructuredType (
+			Name <-st.name,
+			typed<- st.typed,
+            method <- st.methods,
+			attribute <- st.attributes,
+			supertype <- if(not st.super_type.oclIsUndefined())
+									then
+											st.super_type
+									else
+										OclUndefined
+									endif,
+			is_instantiable <- st.is_instantiable,
+			is_final <- st.is_final,
+			model <-thisModule.schema
+			)
+}
+
+--La regla transforma una tabla tipada de SQ2003 a ORDB4ORA
+-- Perdida de información
+--- supertable
+--- subtable
+
+rule Typed2Typed {
+	from
+		tt : SQL2003!TypedTable
+	to
+		ta : ORDB4ORA!TypedTable (
+			Name <-tt.name,
+			columns <- tt.columns,
+			restriction <- tt.restrictions,
+			structured <- tt.structured,
+			triggers <- tt.triggers,
+			views <- tt.views,
+			model <-thisModule.schema
+		)
+}
+
+--La regla transforma una DerivedTable de SQ2003 a ORDB4ORA
+
+rule Derived2Derived {
+	from
+		dtIN : SQL2003!DerivedTable(dtIN.oclIsTypeOf(SQL2003!DerivedTable))
+	to
+		dtOUT : ORDB4ORA!DerivedTable (
+			Name <-dtIN.name,
+			columns <- dtIN.columns,
+			query_expression <- dtIN.query_expression,
+			triggers<-dtIN.triggers,
+			restriction <- dtIN.restrictions,
+			views <- dtIN.views,
+			model <- thisModule.schema
+		)
+}
+
+--La regla transforma una View de SQ2003 a ORDB4ORA
+
+rule View2View {
+	from
+		dtIN : SQL2003!View
+	to
+		dtOUT :ORDB4ORA!View (
+			Name <-dtIN.name,
+			columns <- dtIN.columns,
+			query_expression <- dtIN.query_expression,
+			triggers<-dtIN.triggers,
+			restriction <- dtIN.restrictions,
+			tables <-dtIN.tables,
+			components <- dtIN.components,
+			model <- thisModule.schema
+		)
+}
+
+-- La regla transforma un Tipo ROW de SQL2003 a un Tipo Estructurado de ORDB4ORA
+
+rule ROW2StructuredType {
+	from
+		row : SQL2003!ROW
+	to
+		out : ORDB4ORA!StructuredType (
+			Name <-row.name,
+			attribute <- row.fields,
+			supertype <- if(not row.oclIsUndefined())
+									then
+										row.super_type
+									else
+										OclUndefined
+									endif,
+			model <-thisModule.schema
+			)
+
+}
+
+-- La regla transforma un Tipo Method de SQL2003 a un Tipo Method de ORDB4ORA
+--- observaciones: el metamodelo de SQL2003 no tiene parametros asociados al método ni tipo retornado
+
+rule Method2Method {
+	from
+		mIN : SQL2003!Method
+	to
+		mOut : ORDB4ORA!Method (
+			Name <-mIN.name,
+			override <-mIN.override,
+			returnType <- if(mIN.oclIsUndefined()) then
+							OclUndefined
+							else
+								if mIN.return_type.isHiddenType() 
+								then 
+									mIN.return_type.mirrorType() else 
+								mIN.return_type endif
+							endif,
+			parameters<-mIN.parameters	
+		)
+}
+
+-- La regla transforma un Parametro de Método de SQL2003 a ORDB4ORA
+
+rule Parameter2Parameter{
+	from
+		pIN : SQL2003!MethodParameter
+	to
+		pOUT : ORDB4ORA!MethodParameter
+		(
+			Name <- pIN.name,
+			Type <- if pIN.type.isHiddenType() then pIN.type.mirrorType() else pIN.type endif
+		)
+}
+
+rule Parameter2Parameter2{
+	from
+		pIN : SQL2003!ParameterWithMode
+	to
+		pOUT : ORDB4ORA!OperationParameter
+		(
+			Name <- pIN.name,
+			Type <-  if pIN.type.isHiddenType() then pIN.type.mirrorType() else pIN.type endif,
+			Mode <- pIN.mode
+		)
+}
+
+rule Trigger2Trigger {
+	from
+		tIN: SQL2003!Trigger
+	to
+		tOUT:ORDB4ORA!Trigger(
+		Name <- tIN.name,
+		Event <- tIN.event,
+		Action <- tIN.actionTime,
+		updateColumns <- tIN.updateColumns,
+		table <- tIN.table,
+		Body <- tIN.triggeredAction
+		)
+}
+
+rule Procedure2Procedure {
+	from
+		pIN: SQL2003!Procedure
+	to
+		pOUT: ORDB4ORA!Procedure
+		(
+			Name <- pIN.name,
+			Body <- pIN.body,
+			operationParameters <- pIN.parametersWithMode,
+			model <- thisModule.schema
+		)
+}
+
+rule Function2Function {
+	from
+		pIN: SQL2003!Function
+	to
+		pOUT: ORDB4ORA!Function
+		(
+			Name <- pIN.name,
+			Body <- pIN.body,
+			operationParameters <- pIN.parametersWithMode,
+			Return <- pIN.return_type,
+			model <- thisModule.schema
+		)
+}
+-- La regla transforma un Tipo Reference de SQL2003 a un Tipo Reference de ORDB4ORA
+
+rule ReferenceType2ReferenceType {
+	from
+		r : SQL2003!ReferenceType
+	to  
+		out : ORDB4ORA!ReferenceType(
+			Name <-r.name,
+			Type <-r.type,
+			model <- thisModule.schema
+			)
+}
+
+-- La regla transforma un ARRAY de SQL2003 a un Tipo VARRAY de ORDB4ORA
+--- Perdida de información
+--- supertype
+
+rule ARRAY2Varray {
+	from
+		a : SQL2003!ARRAY
+	to
+		out : ORDB4ORA!Varray (
+			Name <-'VARRAY_'+a.name.regexReplaceAll('ARRAY_',''),
+			NumElements <-a.num_elements,
+			Type <-  if a.type.isHiddenType() then a.type.mirrorType() else a.type endif,
+			model <- thisModule.schema
+			)
+}
+
+-- La regla transforma un MULTISET de SQL2003 a un Tipo NestedTable de ORDB4ORA
+-- Perdida de información
+--- supertype (ORDB4ORA no lo soporta)
+
+rule MULTISET2NestedTable {
+	from
+		mul : SQL2003!MULTISET
+	to
+		out : ORDB4ORA!NestedTableType (
+			Name <-'NT_'+mul.name.regexReplaceAll('MULTISET_',''),
+			Type <- if mul.type.isHiddenType() then mul.type.mirrorType() else mul.type endif,
+			model <- thisModule.schema
+			)
+}
+
+
+
+-- La regla transforma un Attribute de SQL2003 a un Attribute de ORDB4ORA
+-- Si el tipo origen es Boolean, el atributo size tomará siempre el valor 1
+-- Si el tipo origen es Boolean se crea un elemento CHECK
+-- Perdida de información
+--- default  (ORDB4ORA no lo soporta)
+
+
+rule Attribute2Attribute {
+	from
+		attIN : SQL2003!Attribute(not attIN.type.oclIsTypeOf(SQL2003!MULTISET))
+	to
+		attOUT : ORDB4ORA!Attribute (
+			Name <- attIN.name,
+			Type <- if attIN.type.isHiddenType() then attIN.type.mirrorType() else attIN.type endif,
+			structured <- attIN.structured,
+			features <- attIN.features->select(f|f.haveLegalTarget())->collect(f|thisModule.Feature2Feature(f))
+			)
+}
+
+rule Attribute2AttributeNT {
+	from
+		attIN : SQL2003!Attribute(attIN.type.oclIsTypeOf(SQL2003!MULTISET))
+	to
+		attOUT : ORDB4ORA!Attribute (
+			Name <- attIN.name,
+			Type <- if attIN.type.isHiddenType() then attIN.type.mirrorType() else attIN.type endif,
+			structured <- attIN.structured,
+			features <- attIN.features->select(f|f.haveLegalTarget())->collect(f|thisModule.Feature2Feature(f))
+			),
+		SNT_out : ORDB4ORA!StoredNestedTable(
+			Name<-attIN.type.name+'_Table',
+			attribute<-attIN,
+			typed<-SQL2003!TypedTable.allInstances()->select(tt|tt.structured.equals(attIN.structured))->first()
+			)
+}
+-- La regla transforma un Field de SQL2003 a un Attribute de ORDB4ORA
+-- Si el tipo origen es Boolean, el atributo size tomará siempre el valor 1
+
+
+rule Field2Attribute {
+	from
+		field : SQL2003!Field
+	to
+		att : ORDB4ORA!Attribute (
+			Name <- field.name,
+			Type <- if field.type.isHiddenType() then field.type.mirrorType() else field.type endif,
+			structured<- field.row,
+			features <- field.features->select(f|f.haveLegalTarget())->collect(f|thisModule.Feature2Feature(f))
+			)
+}
+
+
+-- La regla transforma un Column de SQL2003 a un Column de ORDB4ORA
+-- Si el tipo origen es Boolean, el atributo size tomará siempre el valor 1
+-- Si el tipo origen es Boolean se crea un elemento CHECK
+-- Perdida de información
+--- default  (ORDB4ORA no lo soporta)
+
+rule ColumnBoolean2Column {
+	from
+		col : SQL2003!Column(col.type.isBoolean() and not col.refImmediateComposite().oclIsTypeOf(SQL2003!DerivedTable))
+	to
+		att : ORDB4ORA!Column (
+			Name <- col.name,
+			Type <- if col.type.isHiddenType() then col.type.mirrorType() else col.type endif,
+			restrictions <-col.restrictions->append(ch),
+			features <- col.features->select(f|f.haveLegalTarget())->collect(f|thisModule.Feature2Feature(f))
+			),
+		ch : ORDB4ORA!Check (
+			Name <- col.name,
+			Condition <- '(Y,N)',
+			attributes <- Sequence{col},
+			table <- col.table
+			)	
+}
+
+rule ColumnNotBoolean2Column {
+	from
+		col : SQL2003!Column(not col.type.isBoolean() and not col.refImmediateComposite().oclIsTypeOf(SQL2003!DerivedTable))
+	to
+		att : ORDB4ORA!Column (
+				Name <- col.name,
+			Type <- if col.type.isHiddenType() then col.type.mirrorType() else col.type endif,
+			restrictions <-col.restrictions,
+			features <- col.features->select(f|f.haveLegalTarget())->collect(f|thisModule.Feature2Feature(f))
+			)
+}
+
+-- La regla transforma una BaseTable de SQL2003 a un Tipo Table de ORDB4ORA
+
+rule BaseTable2Table {
+	from
+		bt : SQL2003!BaseTable(bt.oclIsTypeOf(SQL2003!BaseTable))
+	to
+		ta : ORDB4ORA!Table (
+			Name <-bt.name,
+			columns <- bt.columns,
+			restriction <- bt.restrictions,
+			views <- bt.views,
+			model <- thisModule.schema
+		)
+}
+
+
+lazy abstract  rule Feature2Feature {
+	from
+		fIN:SQL2003!Feature
+	to fOUT:ORDB4ORA!Feature
+		(
+			key <- fIN.targetKey(),
+			value <- fIN.targetValue()
+		)
+}
+
+
+--La regla transforma una característica de SQL2003 a ORDB4ORA
+
+
+
+ lazy rule StringFeature2CharacterFeature extends Feature2Feature {
+	from
+		fIN:SQL2003!StringFeature(fIN.oclIsTypeOf(SQL2003!StringFeature))
+	to fOUT:ORDB4ORA!CharacterFeature
+
+}
+
+--La regla transforma una característica de SQL2003 a ORDB4ORA
+
+lazy rule NumericFeature2NumberFeature extends Feature2Feature {
+	from
+		fIN:SQL2003!NumericFeature(fIN.oclIsTypeOf(SQL2003!NumericFeature))
+	to fOUT:ORDB4ORA!NumberFeature
+
+}
+
+--La regla transforma una característica de SQL2003 a ORDB4ORA
+
+lazy rule DatetimeFeature2DatetimerFeature extends Feature2Feature {
+	from
+		fIN:SQL2003!DatetimeFeature(fIN.oclIsTypeOf(SQL2003!DatetimeFeature))
+	to fOUT:ORDB4ORA!DatetimeFeature
+
+}
+
+--La regla transforma una característica de SQL2003 a ORDB4ORA
+
+lazy rule IntervalFeature2IntervalFeature extends Feature2Feature {
+	from
+		fIN:SQL2003!IntervalFeature(fIN.oclIsTypeOf(SQL2003!IntervalFeature))
+	to fOUT:ORDB4ORA!IntervalFeature
+
+}

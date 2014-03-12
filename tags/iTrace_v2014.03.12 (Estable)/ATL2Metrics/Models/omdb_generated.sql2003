@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:SQL2003="http://SQL2003.ecore">
+  <SQL2003:DatetimeType descriptor="TIMEWITHTIMEZONE"/>
+  <SQL2003:DatetimeType descriptor="TIMEWITHOUTTIMEZONE"/>
+  <SQL2003:DatetimeType descriptor="TIMESTAMPWITHOUTTIMEZONE"/>
+  <SQL2003:DatetimeType descriptor="TIMESTAMPWITHTIMEZONE"/>
+  <SQL2003:CharacterStringType descriptor="CHARACTERLARGEOBJECT"/>
+  <SQL2003:NumericType/>
+  <SQL2003:NumericType descriptor="DECIMAL"/>
+  <SQL2003:NumericType descriptor="SMALLINT"/>
+  <SQL2003:NumericType descriptor="BIGINT"/>
+  <SQL2003:NumericType descriptor="FLOAT"/>
+  <SQL2003:NumericType descriptor="DOUBLEPRECISION"/>
+  <SQL2003:IntervalType/>
+  <SQL2003:IntervalType descriptor="DAY_HOUR"/>
+  <SQL2003:IntervalType descriptor="DAY_MINUTE"/>
+  <SQL2003:IntervalType descriptor="DAY_SECOND"/>
+  <SQL2003:IntervalType descriptor="HOUR_MINUTE"/>
+  <SQL2003:IntervalType descriptor="HOUR_SECOND"/>
+  <SQL2003:IntervalType descriptor="MINUTE_SECOND"/>
+  <SQL2003:IntervalType descriptor="YEAR"/>
+  <SQL2003:IntervalType descriptor="MONTH"/>
+  <SQL2003:IntervalType descriptor="DAY"/>
+  <SQL2003:IntervalType descriptor="HOUR"/>
+  <SQL2003:IntervalType descriptor="MINUTE"/>
+  <SQL2003:IntervalType descriptor="SECOND"/>
+  <SQL2003:BinaryStringType descriptor="BINARY"/>
+  <SQL2003:BinaryStringType descriptor="BINARYVARYING"/>
+  <SQL2003:XMLType/>
+  <SQL2003:BooleanType/>
+  <SQL2003:CharacterStringType descriptor="CHARACTERVARYING"/>
+  <SQL2003:CharacterStringType/>
+  <SQL2003:DatetimeType/>
+  <SQL2003:NumericType descriptor="INTEGER"/>
+  <SQL2003:NumericType descriptor="REAL"/>
+  <SQL2003:BinaryStringType/>
+</xmi:XMI>

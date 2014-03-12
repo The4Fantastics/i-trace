@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<iTrace:iTraceModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iTrace="org.eclipse.kybele.iTrace" version="1.0" projectName="Families2Persons">
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Male">
+    <sourceElements model="//@artefacts.0" type="FamiliesModel!Member">
+      <object href="Families.families#//@containing.0/@father"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="PersonsModel!Male">
+      <object href="Persons_generated.persons#/0"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Male">
+    <sourceElements model="//@artefacts.0" type="FamiliesModel!Member">
+      <object href="Families.families#//@containing.0/@sons.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="PersonsModel!Male">
+      <object href="Persons_generated.persons#/1"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Male">
+    <sourceElements model="//@artefacts.0" type="FamiliesModel!Member">
+      <object href="Families.families#//@containing.1/@father"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="PersonsModel!Male">
+      <object href="Persons_generated.persons#/2"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Male">
+    <sourceElements model="//@artefacts.0" type="FamiliesModel!Member">
+      <object href="Families.families#//@containing.1/@sons.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="PersonsModel!Male">
+      <object href="Persons_generated.persons#/3"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Female">
+    <sourceElements model="//@artefacts.0" type="FamiliesModel!Member">
+      <object href="Families.families#//@containing.0/@mother"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="PersonsModel!Female">
+      <object href="Persons_generated.persons#/4"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Female">
+    <sourceElements model="//@artefacts.0" type="FamiliesModel!Member">
+      <object href="Families.families#//@containing.0/@daughters.0"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="PersonsModel!Female">
+      <object href="Persons_generated.persons#/5"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Female">
+    <sourceElements model="//@artefacts.0" type="FamiliesModel!Member">
+      <object href="Families.families#//@containing.0/@daughters.1"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="PersonsModel!Female">
+      <object href="Persons_generated.persons#/6"/>
+    </targetElements>
+  </traceLinks>
+  <traceLinks xsi:type="iTrace:M2MLink" createdOn="05-4-2013" fromFileName="" comment="Automatic generation by iTrace" createdBy="iTrace Tool" mode="Automatic" technicalBinding="ATL" ruleName="Member2Female">
+    <sourceElements model="//@artefacts.0" type="FamiliesModel!Member">
+      <object href="Families.families#//@containing.1/@mother"/>
+    </sourceElements>
+    <targetElements model="//@artefacts.1" type="PersonsModel!Female">
+      <object href="Persons_generated.persons#/7"/>
+    </targetElements>
+  </traceLinks>
+  <artefacts xsi:type="iTrace:Model" name="Families" path="D:/Thesis/Eclipse/Juno/f" elements="//@traceLinks.0/@sourceElements.0 //@traceLinks.1/@sourceElements.0 //@traceLinks.2/@sourceElements.0 //@traceLinks.3/@sourceElements.0 //@traceLinks.4/@sourceElements.0 //@traceLinks.5/@sourceElements.0 //@traceLinks.6/@sourceElements.0 //@traceLinks.7/@sourceElements.0" metamodel="D:/Thesis/Eclipse/Juno/f"/>
+  <artefacts xsi:type="iTrace:Model" name="persons" path="D:/Thesis/Eclipse/Juno/p" elements="//@traceLinks.0/@targetElements.0 //@traceLinks.1/@targetElements.0 //@traceLinks.2/@targetElements.0 //@traceLinks.3/@targetElements.0 //@traceLinks.4/@targetElements.0 //@traceLinks.5/@targetElements.0 //@traceLinks.6/@targetElements.0 //@traceLinks.7/@targetElements.0" metamodel="D:/Thesis/Eclipse/Juno/p"/>
+</iTrace:iTraceModel>

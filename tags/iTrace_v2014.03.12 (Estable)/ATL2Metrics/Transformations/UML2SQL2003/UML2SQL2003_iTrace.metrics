@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Metrics:Metrics xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:Metrics="Metrics" TrafoName="UML2SQL2003_iTrace">
+  <SimpleMetrics Metric="Number of Units" Value="1"/>
+  <SimpleMetrics Metric="Number of Unused Units"/>
+  <SimpleMetrics Metric="Number of Input Models" Value="2"/>
+  <SimpleMetrics Metric="Number of Output Models" Value="2"/>
+  <SimpleMetrics Metric="Number of Transformation Rules" Value="70"/>
+  <SimpleMetrics Metric="Number of Matched Rules (Excluding Lazy Matched Rules)" Value="50"/>
+  <SimpleMetrics Metric="Number of Matched Rules (Including Lazy Matched Rules)" Value="65"/>
+  <SimpleMetrics Metric="Number of Lazy Matched Rules (Excluding Unique)"/>
+  <SimpleMetrics Metric="Number of Lazy Matched Rules (Including Unique)" Value="15"/>
+  <SimpleMetrics Metric="Number of Unique Lazy Matched Rules" Value="15"/>
+  <SimpleMetrics Metric="Number of Called Rules" Value="5"/>
+  <SimpleMetrics Metric="Number of Unused Lazy Matched Rules" Value="5"/>
+  <SimpleMetrics Metric="Number of Unused Called Rules" Value="2"/>
+  <SimpleMetrics Metric="Number of Rules with a Filter Condition on the Input Pattern" Value="50"/>
+  <SimpleMetrics Metric="Number of Unused Input Pattern Elements"/>
+  <SimpleMetrics Metric="Number of Rules with a do Section" Value="70"/>
+  <SimpleMetrics Metric="Number of Direct Copies"/>
+  <SimpleMetrics Metric="Number of Abstract Transformation Rules"/>
+  <SimpleMetrics Metric="Number of Abstract Matched Rules"/>
+  <SimpleMetrics Metric="Number of Abstract Lazy Matched Rules"/>
+  <SimpleMetrics Metric="Number of Abstract Unique Lazy Matched Rules"/>
+  <SimpleMetrics Metric="Number of Rule Inheritance Trees" Value="65"/>
+  <SimpleMetrics Metric="Number of Rules with a Using Clause"/>
+  <SimpleMetrics Metric="Number of Unused Variables Defined in Using Clauses"/>
+  <SimpleMetrics Metric="Number of Helpers" Value="4"/>
+  <SimpleMetrics Metric="Number of Helpers with Context"/>
+  <SimpleMetrics Metric="Number of Helpers without Context" Value="4"/>
+  <SimpleMetrics Metric="Number of Attribute Helpers" Value="4"/>
+  <SimpleMetrics Metric="Number of Attribute Helpers with Context"/>
+  <SimpleMetrics Metric="Number of Attribute Helpers without Context" Value="4"/>
+  <SimpleMetrics Metric="Number of Operation Helpers"/>
+  <SimpleMetrics Metric="Number of Operation Helpers with Context"/>
+  <SimpleMetrics Metric="Number of Operation Helpers without Context"/>
+  <SimpleMetrics Metric="Number of Operation Helpers with Parameters"/>
+  <SimpleMetrics Metric="Number of Operation Helpers without Parameters"/>
+  <SimpleMetrics Metric="Number of Overloaded Helpers"/>
+  <SimpleMetrics Metric="Number of Unused Helpers"/>
+  <SimpleMetrics Metric="Number of Unused Helpers with Context"/>
+  <SimpleMetrics Metric="Number of Unused Helpers without Context"/>
+  <SimpleMetrics Metric="Number of Unused Attribute Helpers"/>
+  <SimpleMetrics Metric="Number of Unused Operation Helpers"/>
+  <SimpleMetrics Metric="Number of Helpers with a Let Clause"/>
+  <SimpleMetrics Metric="Number of Unused Variables Defined in Let Clauses"/>
+  <SimpleMetrics Metric="Number of Calls to println()"/>
+  <SimpleMetrics Metric="Number of Calls to debug()" Value="54"/>
+  <SimpleMetrics Metric="Number of Calls to resolveTemp()" Value="16"/>
+  <SimpleMetrics Metric="Number of Calls To Built-In Functions (Built-In Function Fan-In)" Value="912"/>
+  <AggregatedIntegerMetrics Metric="Number of Elements per Input Pattern" Minimum="1" Maximum="2" Median="1" Average="1.1538461" StandardDeviation="0.36360905"/>
+  <AggregatedIntegerMetrics Metric="Number of Elements per Output Pattern" Minimum="1" Maximum="53" Median="4" Average="5.4428573" StandardDeviation="6.0926085"/>
+  <AggregatedIntegerMetrics Metric="Number of Matched Rules per Input Pattern" Minimum="1" Maximum="21" Median="6" Average="7.2222223" StandardDeviation="6.553201"/>
+  <AggregatedIntegerMetrics Metric="Number of Parameters per Called Rule"/>
+  <AggregatedIntegerMetrics Metric="Number of Unused Parameters per Called Rule"/>
+  <AggregatedIntegerMetrics Metric="Number of Variables per Using Clause"/>
+  <AggregatedIntegerMetrics Metric="Number of Statements per do Section" Minimum="1" Maximum="34" Median="3" Average="3.7571428" StandardDeviation="3.9505484"/>
+  <AggregatedIntegerMetrics Metric="Number of Children per Matched Rule"/>
+  <AggregatedIntegerMetrics Metric="Depth of Rule Inheritance Tree" Minimum="1" Maximum="1" Median="1" Average="1.0"/>
+  <AggregatedIntegerMetrics Metric="Width of Rule Inheritance Tree" Minimum="1" Maximum="1" Median="1" Average="1.0"/>
+  <AggregatedIntegerMetrics Metric="Number of Bindings per Rule" Maximum="142" Median="19" Average="22.714285" StandardDeviation="16.71686"/>
+  <AggregatedIntegerMetrics Metric="Number of Helpers per Unit" Minimum="4" Maximum="4" Median="4" Average="4.0"/>
+  <AggregatedIntegerMetrics Metric="Number of Attribute Helpers per Unit" Minimum="4" Maximum="4" Median="4" Average="4.0"/>
+  <AggregatedIntegerMetrics Metric="Number of Operation Helpers per Unit"/>
+  <AggregatedIntegerMetrics Metric="Number of Helpers per Context"/>
+  <AggregatedIntegerMetrics Metric="Number of Helpers per Helper Name (Overloadings)" Minimum="1" Maximum="1" Median="1" Average="1.0"/>
+  <AggregatedIntegerMetrics Metric="Helper Cyclomatic Complexity" Minimum="1" Maximum="1" Median="1" Average="1.0"/>
+  <AggregatedIntegerMetrics Metric="Number of Operations on Collections per Helper"/>
+  <AggregatedIntegerMetrics Metric="Number of Variables per Helper"/>
+  <AggregatedIntegerMetrics Metric="Number of Parameters per Operation Helper"/>
+  <AggregatedIntegerMetrics Metric="Number of Unused Parameters per Operation Helper"/>
+  <AggregatedIntegerMetrics Metric="Number of Imported Units" Minimum="4" Maximum="4" Median="4" Average="4.0"/>
+  <AggregatedIntegerMetrics Metric="Number of Times a Unit is Imported" Minimum="1" Maximum="1" Median="1" Average="1.0"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls to Lazy Matched Rules per Lazy Matched Rule (Fan-In)" Maximum="4" Median="1" Average="1.0666667" StandardDeviation="1.279881"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls to Called Rules per Called Rule (Fan-In)" Maximum="1" Median="1" Average="0.6" StandardDeviation="0.5477226"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls to Helpers per Helper (Fan-In)" Minimum="5" Maximum="119" Median="70" Average="66.5" StandardDeviation="46.836594"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls to Attribute Helpers per Attribute Helper (Fan-In)" Minimum="5" Maximum="119" Median="70" Average="66.5" StandardDeviation="46.836594"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls to Operation Helpers per Operation Helper (Fan-In)"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls from Helpers to Called Rules per Helper (Fan-Out)"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls from Helpers to Helpers per Helper (Fan-Out)"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls from Helpers to Attribute Helpers per Helper (Fan-Out)"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls from Helpers to Operation Helpers per Helper (Fan-Out)"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls from Rules to Helpers per Rule (Fan-Out)" Minimum="1" Maximum="27" Median="3" Average="3.8" StandardDeviation="2.9810998"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls from Rules to Rules per Rule (Fan-Out)" Maximum="8" Average="0.27142859" StandardDeviation="1.102322"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls from Rules to Called Rules per Rule (Fan-Out)" Maximum="3" Average="0.042857144" StandardDeviation="0.35856858"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls from Rules to Lazy Matched Rules per Rule (Fan-Out)" Maximum="8" Average="0.22857143" StandardDeviation="1.0518641"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls from Helpers in Other Units (Unit Fan-In)"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls to Helpers in Other Units (Unit Fan-Out)"/>
+  <AggregatedIntegerMetrics Metric="Number of Calls to resolveTemp() per Rule" Maximum="3" Average="0.22857143" StandardDeviation="0.6178839"/>
+  <AggregatedRealMetrics Metric="Rule Complexity Increase" Minimum="2.5" Maximum="12.0" Median="4.0" Average="4.6" StandardDeviation="2.012073"/>
+</Metrics:Metrics>

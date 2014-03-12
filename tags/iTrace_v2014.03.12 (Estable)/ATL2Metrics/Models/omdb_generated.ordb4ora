@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ORDB4ORA="http:///ORDB4ORA.ecore">
+  <ORDB4ORA:DatetimeType/>
+  <ORDB4ORA:ANSINumberType/>
+  <ORDB4ORA:ANSICharacterType/>
+  <ORDB4ORA:ANSICharacterType Descriptor="CHARACTERVARYING"/>
+  <ORDB4ORA:BuiltInCharacterType/>
+  <ORDB4ORA:DatetimeType Descriptor="TIMESTAMPWITHTIMEZONE"/>
+  <ORDB4ORA:DatetimeType Descriptor="TIMESTAMP"/>
+  <ORDB4ORA:XMLType/>
+  <ORDB4ORA:LOBType/>
+  <ORDB4ORA:LOBType/>
+  <ORDB4ORA:LOBType/>
+  <ORDB4ORA:LOBType Descriptor="CLOB"/>
+  <ORDB4ORA:ANSINumberType Descriptor="DECIMAL"/>
+  <ORDB4ORA:ANSINumberType Descriptor="SMALLINT"/>
+  <ORDB4ORA:ANSINumberType Descriptor="INTEGER"/>
+  <ORDB4ORA:ANSINumberType Descriptor="FLOAT"/>
+  <ORDB4ORA:ANSINumberType Descriptor="REAL"/>
+  <ORDB4ORA:ANSINumberType Descriptor="DOUBLEPRECISION"/>
+  <ORDB4ORA:DatetimeType Descriptor="INTERVALDAYTOSECOND"/>
+  <ORDB4ORA:AnyType Descriptor="SYSANYTYPE"/>
+  <ORDB4ORA:BuiltInCharacterType Descriptor="VARCHAR2"/>
+  <ORDB4ORA:BuiltInCharacterType Descriptor="NCHAR"/>
+  <ORDB4ORA:BuiltInCharacterType Descriptor="NVARCHAR2"/>
+  <ORDB4ORA:BuiltInNumberType/>
+  <ORDB4ORA:BuiltInNumberType Descriptor="BINARY_FLOAT"/>
+  <ORDB4ORA:BuiltInNumberType Descriptor="BINARY_DOUBLE"/>
+  <ORDB4ORA:LongAndRawType/>
+  <ORDB4ORA:LongAndRawType Descriptor="LONGRAW"/>
+  <ORDB4ORA:LongAndRawType Descriptor="RAW"/>
+  <ORDB4ORA:DatetimeType Descriptor="TIMESTAMPWITHLOCALTIMEZONE"/>
+  <ORDB4ORA:ROWIDType/>
+  <ORDB4ORA:ROWIDType Descriptor="UROWID"/>
+  <ORDB4ORA:ANSICharacterType Descriptor="CHARVARYING"/>
+  <ORDB4ORA:ANSICharacterType Descriptor="NCHARVARYING"/>
+  <ORDB4ORA:ANSICharacterType Descriptor="VARCHAR"/>
+  <ORDB4ORA:ANSICharacterType Descriptor="NATIONALCHARACTERVARYING"/>
+  <ORDB4ORA:ANSICharacterType Descriptor="NATIONALCHARVARYING"/>
+  <ORDB4ORA:ANSICharacterType Descriptor="NATIONALCHARACTER"/>
+  <ORDB4ORA:ANSICharacterType Descriptor="NATIONALCHAR"/>
+  <ORDB4ORA:ANSINumberType Descriptor="DEC"/>
+  <ORDB4ORA:ANSINumberType Descriptor="INT"/>
+  <ORDB4ORA:AnyType/>
+  <ORDB4ORA:AnyType Descriptor="SYSANYDATASET"/>
+  <ORDB4ORA:MediaType/>
+  <ORDB4ORA:MediaType Descriptor="ORDImage"/>
+  <ORDB4ORA:MediaType Descriptor="ORDDoc"/>
+  <ORDB4ORA:MediaType Descriptor="ORDVideo"/>
+  <ORDB4ORA:MediaType Descriptor="ORDImageSignature"/>
+  <ORDB4ORA:MediaType Descriptor="SI_STILLIMAGE"/>
+  <ORDB4ORA:MediaType Descriptor="SI_AVERAGECOLOR"/>
+  <ORDB4ORA:MediaType Descriptor="SI_POSITIONALCOLOR"/>
+  <ORDB4ORA:MediaType Descriptor="SI_COLORHISTOGRAM"/>
+  <ORDB4ORA:MediaType Descriptor="SI_TEXTURE"/>
+  <ORDB4ORA:MediaType Descriptor="SI_FEATURELIST"/>
+  <ORDB4ORA:MediaType Descriptor="SI_COLOR"/>
+  <ORDB4ORA:XMLType Descriptor="URITYPE"/>
+  <ORDB4ORA:SpacialType/>
+  <ORDB4ORA:SpacialType Descriptor="SDO_TOPO_GEOMETRY"/>
+  <ORDB4ORA:SpacialType Descriptor="SDO_RASTER"/>
+  <ORDB4ORA:LOBType Descriptor="BFILE"/>
+  <ORDB4ORA:LOBType Descriptor="NLOB"/>
+</xmi:XMI>
