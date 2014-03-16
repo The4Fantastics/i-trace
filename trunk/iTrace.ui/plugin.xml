@@ -55,14 +55,14 @@
              delegate="iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_LaunchConfigurationDelegate"
              id="iTrace.ui.transformations.MofScriptTrace_LCT"
              modes="run, debug"
-             name="Transformations to iTrace"
+             name="MOFScript Trace -&gt; iTrace"
              public="true">
        </launchConfigurationType>
        <launchConfigurationType
              delegate="iTrace.ui.transformations.launchs.MXML2KDM.MXML2KDM_LaunchConfigurationDelegate"
              id="iTrace.ui.transformations.MXML2KDM_LCT"
              modes="run, debug"
-             name="Transformations to iTrace"
+             name="MXML2KDM -&gt; iTrace"
              public="true">
        </launchConfigurationType>
     </extension>
@@ -70,12 +70,12 @@
           point="org.eclipse.debug.ui.launchConfigurationTypeImages">
        <launchConfigurationTypeImage
              configTypeID="iTrace.ui.transformations.MofScriptTrace_LCT"
-             icon="icons/iTraceModel.png"
+             icon="icons/iTrace.png"
              id="iTrace.ui.transformations.MofScriptTrace_LCTI">
        </launchConfigurationTypeImage>
        <launchConfigurationTypeImage
              configTypeID="iTrace.ui.transformations.MXML2KDM_LCT"
-             icon="icons/iTraceModel.png"
+             icon="icons/iTrace.png"
              id="iTrace.ui.transformations.MXML2KDM_LCTI">
        </launchConfigurationTypeImage>
     </extension>
@@ -96,16 +96,16 @@
           point="org.eclipse.debug.ui.launchShortcuts">
        <shortcut
              class="iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_Shortcut"
-             icon="icons/ok.png"
+             icon="icons/iTraceNormalizator.png"
              id="iTrace.ui.transformations.launch.MofScriptTrace_Shortcut"
-             label="MofScript -&gt; iTrace"
+             label="MOFScript Trace -&gt; iTrace"
              modes="run, debug">
              <configurationType
                id="iTrace.ui.transformations.MofScriptTrace_LCT">
          	</configurationType>
          <contextualLaunch>
             <contextLabel
-                  label="MofScript Trace -&gt; iTrace"
+                  label="MOFScript Trace -&gt; iTrace"
                   mode="run">
             </contextLabel>
             <enablement>
@@ -129,7 +129,7 @@
        </shortcut>
        <shortcut
              class="iTrace.ui.transformations.launchs.MofScriptTrace.MXML2KDM_Shortcut"
-             icon="icons/ok.png"
+             icon="icons/iTraceNormalizator.png"
              id="iTrace.ui.transformations.launch.MXML2KDM_Shortcut"
              label="MXML2KDM -&gt; iTrace"
              modes="run, debug">
@@ -138,7 +138,7 @@
           </configurationType>
           <contextualLaunch>
              <contextLabel
-                   label="MofScript Trace -&gt; iTrace"
+                   label="MXML2KDM -&gt; iTrace"
                    mode="run">
              </contextLabel>
              <enablement>
@@ -153,7 +153,7 @@
                       </instanceof>
                       <test
                             property="org.eclipse.debug.ui.matchesPattern"
-                            value="*.traceabilitymodel">
+                            value="*.mxml2kdm">
                       </test>
                    </iterate>
                 </with>
