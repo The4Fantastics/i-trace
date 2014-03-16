@@ -55,7 +55,7 @@ ILaunchConfigurationDelegate {
 		
 		try{
 			Transformations transf = Transformations.getInstance();
-			transf.MofScriptTrace(uri_IN, uri_OUT);
+			transf.MOFScript2iTrace(uri_IN, uri_OUT);
 			monitor.worked(85);		
 			
 			if(monitor.isCanceled())

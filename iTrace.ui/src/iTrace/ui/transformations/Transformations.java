@@ -31,23 +31,26 @@ public class Transformations {
 	
 	static private Transformations transformations = null;
 
-	private Properties MofScriptTrace_properties;
+	private Properties MOFScript2iTrace_properties;
+//	private Properties MXML2KDM2iTrace_properties;
 	
-	final static int _MofScriptTrace=1;
+	final static int _MOFScript2iTrace=1;
+//	final static int _MXML2KDM2iTrace=2;
 
 		
 	private Transformations() throws IOException {
 		
-		MofScriptTrace_properties = new Properties();
-		MofScriptTrace_properties.load(Tools.getFileURL("MofScriptTrace.properties").openStream());
+		MOFScript2iTrace_properties = new Properties();
+		MOFScript2iTrace_properties.load(Tools.getFileURL("MOFScript2iTrace.properties").openStream());
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
+
 	}
 		
-	public void MofScriptTrace(String inFilePath, String outFilePath) throws Exception {
+	public void MOFScript2iTrace(String inFilePath, String outFilePath) throws Exception {
 		
 		try{
-			Map<String, Object> models = loadModels_MofScriptTrace(inFilePath);
-			do_MofScriptTrace(models,new NullProgressMonitor());
+			Map<String, Object> models = loadModels_MOFScript2iTrace(inFilePath);
+			do_MOFScript2iTrace(models,new NullProgressMonitor());
 			
 			IModel outModel = ((IModel)models.get("OUT")); 
 			// TODO Modelo de salida. Podemos reescribir las propiedades
@@ -78,16 +81,16 @@ public class Transformations {
 		
 	}
 	
-	private void do_MofScriptTrace(Map<String, Object> models, NullProgressMonitor nullProgressMonitor) throws Exception {
+	private void do_MOFScript2iTrace(Map<String, Object> models, NullProgressMonitor nullProgressMonitor) throws Exception {
 		ILauncher launcher = new EMFVMLauncher();
-		Map<String, Object> launcherOptions = getOptions(_MofScriptTrace);
+		Map<String, Object> launcherOptions = getOptions(_MOFScript2iTrace);
 		launcher.initialize(launcherOptions);
 		launcher.addInModel(((IModel)models.get("IN")), "IN", "MofTrace");
 		launcher.addOutModel(((IModel)models.get("OUT")), "OUT", "iTrace");
-		launcher.launch("run", nullProgressMonitor, launcherOptions, (Object[]) getModulesList(_MofScriptTrace));
+		launcher.launch("run", nullProgressMonitor, launcherOptions, (Object[]) getModulesList(_MOFScript2iTrace));
 	}
 	
-	private Map<String, Object> loadModels_MofScriptTrace(String inFilePath) throws Exception {
+	private Map<String, Object> loadModels_MOFScript2iTrace(String inFilePath) throws Exception {
 		Map<String, Object> models = new HashMap<String, Object>();
 		ModelFactory factory = new EMFModelFactory();
 		IInjector injector = new EMFInjector();
@@ -127,7 +130,7 @@ public class Transformations {
 		String modulesList="";
 		
 		switch (process){
-		case 1: modulesList = MofScriptTrace_properties.getProperty("MofScriptTrace.modules");
+		case 1: modulesList = MOFScript2iTrace_properties.getProperty("MOFScript2iTrace.modules");
 					break;
 		}
 		
@@ -162,11 +165,11 @@ public class Transformations {
 		String text="";
 		
 		switch(process){
-			case 1: property=MofScriptTrace_properties;
-					  text="MofScriptTrace.options.";
+			case 1: property=MOFScript2iTrace_properties;
+					  text="MOFScript2iTrace.options.";
 					  break;
-		/*	case 2: property=HYBRID2ATL_properties;
-			  		text="Hybrid2ATL.options.";
+		/*	case 2: property=MXML2KDM2iTrace_properties;
+			  		text="MXML2KDAM2iTrace.options.";
 			  		break;
 			case 3: property=HYBRID2RUBYTL_properties;
 	  				text="Hybrid2RubyTL.options.";

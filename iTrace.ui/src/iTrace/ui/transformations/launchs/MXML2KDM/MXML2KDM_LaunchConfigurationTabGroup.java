@@ -1,6 +1,6 @@
 package iTrace.ui.transformations.launchs.MXML2KDM;
 
-import iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_LaunchConfigurationTab;
+import iTrace.ui.transformations.launchs.MOFScript2iTrace.MOFScript2iTrace_LaunchConfigurationTab;
 
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
@@ -13,7 +13,7 @@ AbstractLaunchConfigurationTabGroup {
 public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 	
 	ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-			new MofScriptTrace_LaunchConfigurationTab(),
+			new MOFScript2iTrace_LaunchConfigurationTab(),
 			new CommonTab()
 	};
 	setTabs(tabs);		

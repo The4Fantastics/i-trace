@@ -1,6 +1,6 @@
 package iTrace.ui.transformations.launchs.MXML2KDM;
 
-import iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_Constants;
+import iTrace.ui.transformations.launchs.MOFScript2iTrace.MOFScript2iTrace_Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class MXML2KDM_Shortcut implements ILaunchShortcut {
 	// Funcion que nos devuelve el Launch Configuration Type de las transformaciones de modelo
 	protected ILaunchConfigurationType getConfigurationType() {
 		
-		return getLaunchManager().getLaunchConfigurationType(MofScriptTrace_Constants.MODEL_CONFIGTYPE_ID);
+		return getLaunchManager().getLaunchConfigurationType(MOFScript2iTrace_Constants.MODEL_CONFIGTYPE_ID);
 	}
 	
 	// Funci�n que nos devuelve el Launch Manager
@@ -84,7 +84,7 @@ public class MXML2KDM_Shortcut implements ILaunchShortcut {
 			candidateConfigs = new ArrayList<ILaunchConfiguration>(configs.length);
 			for (int i = 0; i < configs.length; i++) {
 				ILaunchConfiguration config = configs[i];
-				if (config.getAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_IN, "").equals(pathIN)) { 
+				if (config.getAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_IN, "").equals(pathIN)) { 
 					candidateConfigs.add(config);
 				}
 			}
@@ -119,8 +119,8 @@ public class MXML2KDM_Shortcut implements ILaunchShortcut {
 		try {
 			ILaunchConfigurationType configType = getConfigurationType();
 			wc = configType.newInstance(null, getLaunchManager().generateLaunchConfigurationName("New_configuration"));
-			wc.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_IN, pathIN);
-			wc.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_OUT, new Path(pathIN).removeFileExtension().toOSString() + ".iTrace");
+			wc.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_IN, pathIN);
+			wc.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_OUT, new Path(pathIN).removeFileExtension().toOSString() + ".iTrace");
 			config = wc.doSave();
 		} catch (CoreException exception) {
 			System.out.println("Error en createConfiguration");

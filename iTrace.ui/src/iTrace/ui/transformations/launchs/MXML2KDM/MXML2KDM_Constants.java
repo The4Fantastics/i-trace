@@ -6,5 +6,5 @@ public interface MXML2KDM_Constants {
 	// Nombre de los atributos de la configuracion
 		public final static String ATTR_TRANSFORMATION_IN = "Transformation_IN";
 		public final static String ATTR_TRANSFORMATION_OUT = "Transformation_OUT";	
-		public final static String MODEL_CONFIGTYPE_ID = Activator.PLUGIN_ID + ".transformations.MofScriptTrace_LCT";
+		public final static String MODEL_CONFIGTYPE_ID = Activator.PLUGIN_ID + ".transformations.MXML2KDM2iTrace_LCT";
 }

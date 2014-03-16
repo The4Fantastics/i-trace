@@ -1,7 +1,7 @@
 package iTrace.ui.transformations.launchs.MXML2KDM;
 
 import iTrace.ui.Constants;
-import iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_Constants;
+import iTrace.ui.transformations.launchs.MOFScript2iTrace.MOFScript2iTrace_Constants;
 import iTrace.ui.transformations.launchs.core.AbstractExtendedLaunchConfigurationTab;
 
 import org.eclipse.core.resources.IFile;
@@ -87,9 +87,9 @@ public class MXML2KDM_LaunchConfigurationTab extends AbstractExtendedLaunchConfi
 	protected void updateLaunchConfigurationDialog() {
 
 		 IPath orLoc = getHybridLocation();
-		   if (orLoc == null || !orLoc.toFile().exists() || !orLoc.getFileExtension().equals(Constants.MofScriptTrace_Extension)) {
+		   if (orLoc == null || !orLoc.toFile().exists() || !orLoc.getFileExtension().equals(Constants.MXML2KDM_Extension)) {
 		      setMessage(null);
-		      setErrorMessage("Select a valid MofScript Trace file");
+		      setErrorMessage("Select a valid MOFScript trace file");
 		      super.updateLaunchConfigurationDialog();
 		      return;
 		   }
@@ -171,13 +171,13 @@ public class MXML2KDM_LaunchConfigurationTab extends AbstractExtendedLaunchConfi
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
 			tProviderTextIN.setText(configuration.getAttribute(
-					MofScriptTrace_Constants.ATTR_TRANSFORMATION_IN, ""));
+					MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_IN, ""));
 		} catch (CoreException ce) {
 			tProviderTextIN.setText("");
 		}	
 		try {
 			tProviderTextOUT.setText(configuration.getAttribute(
-					MofScriptTrace_Constants.ATTR_TRANSFORMATION_OUT, ""));
+					MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_OUT, ""));
 		} catch (CoreException ce) {
 			tProviderTextOUT.setText("");
 		}
@@ -190,14 +190,14 @@ public class MXML2KDM_LaunchConfigurationTab extends AbstractExtendedLaunchConfi
 		//		Ojo con getAttributeValueFrom 
 		String in = getAttributeValueFrom(tProviderTextIN);
 		String out = getAttributeValueFrom(tProviderTextOUT);
-		configuration.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_IN, in);
-		configuration.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_OUT, out);
+		configuration.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_IN, in);
+		configuration.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_OUT, out);
 	}
 
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 	
-		configuration.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_IN, "");
-		configuration.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_OUT, "");
+		configuration.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_IN, "");
+		configuration.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_OUT, "");
 	}	
 	
 	
