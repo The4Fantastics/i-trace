@@ -1,7 +1,7 @@
-package iTrace.ui.transformations.launchs.MofScriptTrace;
+package iTrace.ui.transformations.launchs.MOFScript2iTrace;
 
 import iTrace.ui.Constants;
-import iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_Constants;
+import iTrace.ui.transformations.launchs.MOFScript2iTrace.MOFScript2iTrace_Constants;
 import iTrace.ui.transformations.launchs.core.AbstractExtendedLaunchConfigurationTab;
 
 import org.eclipse.core.resources.IFile;
@@ -32,7 +32,7 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
-public class MofScriptTrace_LaunchConfigurationTab extends AbstractExtendedLaunchConfigurationTab {
+public class MOFScript2iTrace_LaunchConfigurationTab extends AbstractExtendedLaunchConfigurationTab {
 
 	private ScrolledComposite sc = null;
 	private Composite modelExtentComp = null;	
@@ -86,8 +86,8 @@ public class MofScriptTrace_LaunchConfigurationTab extends AbstractExtendedLaunc
 	@Override
 	protected void updateLaunchConfigurationDialog() {
 
-		 IPath orLoc = getHybridLocation();
-		   if (orLoc == null || !orLoc.toFile().exists() || !orLoc.getFileExtension().equals(Constants.MofScriptTrace_Extension)) {
+		 IPath orLoc = getMOFScriptLocation();
+		   if (orLoc == null || !orLoc.toFile().exists() || !orLoc.getFileExtension().equals(Constants.MOFScript_Extension)) {
 		      setMessage(null);
 		      setErrorMessage("Select a valid MofScript Trace file");
 		      super.updateLaunchConfigurationDialog();
@@ -130,10 +130,10 @@ public class MofScriptTrace_LaunchConfigurationTab extends AbstractExtendedLaunc
 		setControl(sc);
 		
 		// Primer grupo de controles, para seleccionar el fichero de trazas de MofScript
-		Group tProviderGroup = createGroup(modelExtentComp, "MofScript Trace Model to transform", 3);
+		Group tProviderGroup = createGroup(modelExtentComp, "MOFScript trace model to transform", 3);
 		TProviderGroupListener tProviderListener = new TProviderGroupListener(0);
 
-		createLabel(tProviderGroup, "MofScript Trace Model: ");		
+		createLabel(tProviderGroup, "MOFScript trace model: ");		
 		tProviderTextIN = createText(tProviderGroup);		
 		tProviderTextIN.addModifyListener(tProviderListener);
 		
@@ -141,7 +141,7 @@ public class MofScriptTrace_LaunchConfigurationTab extends AbstractExtendedLaunc
 		tProviderBrowse.addSelectionListener(tProviderListener);
 		
 		// Segundo grupo de controles, para seleccionar el fichero de salida
-		Group tProviderGroup2 = createGroup(modelExtentComp, "iTrace Model, transformation result", 3);
+		Group tProviderGroup2 = createGroup(modelExtentComp, "iTrace Model result of the transformation", 3);
 		TProviderGroupListener tProviderListener2 = new TProviderGroupListener(1);
 
 		createLabel(tProviderGroup2, "iTrace Model: ");		
@@ -171,13 +171,13 @@ public class MofScriptTrace_LaunchConfigurationTab extends AbstractExtendedLaunc
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
 			tProviderTextIN.setText(configuration.getAttribute(
-					MofScriptTrace_Constants.ATTR_TRANSFORMATION_IN, ""));
+					MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_IN, ""));
 		} catch (CoreException ce) {
 			tProviderTextIN.setText("");
 		}	
 		try {
 			tProviderTextOUT.setText(configuration.getAttribute(
-					MofScriptTrace_Constants.ATTR_TRANSFORMATION_OUT, ""));
+					MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_OUT, ""));
 		} catch (CoreException ce) {
 			tProviderTextOUT.setText("");
 		}
@@ -190,14 +190,14 @@ public class MofScriptTrace_LaunchConfigurationTab extends AbstractExtendedLaunc
 		//		Ojo con getAttributeValueFrom 
 		String in = getAttributeValueFrom(tProviderTextIN);
 		String out = getAttributeValueFrom(tProviderTextOUT);
-		configuration.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_IN, in);
-		configuration.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_OUT, out);
+		configuration.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_IN, in);
+		configuration.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_OUT, out);
 	}
 
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 	
-		configuration.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_IN, "");
-		configuration.setAttribute(MofScriptTrace_Constants.ATTR_TRANSFORMATION_OUT, "");
+		configuration.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_IN, "");
+		configuration.setAttribute(MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_OUT, "");
 	}	
 	
 	
@@ -215,9 +215,9 @@ public class MofScriptTrace_LaunchConfigurationTab extends AbstractExtendedLaunc
 	protected void browseForHybridFile(boolean workspace) {
 		IPath path = null;
 		if (workspace)
-			path = browseWorkspace(getHybridLocation(), true);
+			path = browseWorkspace(getMOFScriptLocation(), true);
 		else
-			path = browse(getHybridLocation(), true);
+			path = browse(getMOFScriptLocation(), true);
 		   if (path == null)
 		      return;
 		   IPath rootLoc = ResourcesPlugin.getWorkspace()
@@ -279,7 +279,7 @@ public class MofScriptTrace_LaunchConfigurationTab extends AbstractExtendedLaunc
 			   return file.getFullPath();
 			}
 		
-		public IPath getHybridLocation() {
+		public IPath getMOFScriptLocation() {
 		   String text = tProviderTextIN.getText().trim();
 		   if (text.length() == 0)
 		       return null;

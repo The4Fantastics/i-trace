@@ -52,8 +52,8 @@
     <extension
           point="org.eclipse.debug.core.launchConfigurationTypes">
        <launchConfigurationType
-             delegate="iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_LaunchConfigurationDelegate"
-             id="iTrace.ui.transformations.MofScriptTrace_LCT"
+             delegate="iTrace.ui.transformations.launchs.MOFScript2iTrace.MOFScript2iTrace_LaunchConfigurationDelegate"
+             id="iTrace.ui.transformations.MOFScript2iTrace_LCT"
              modes="run, debug"
              name="MOFScript Trace -&gt; iTrace"
              public="true">
@@ -69,9 +69,9 @@
     <extension
           point="org.eclipse.debug.ui.launchConfigurationTypeImages">
        <launchConfigurationTypeImage
-             configTypeID="iTrace.ui.transformations.MofScriptTrace_LCT"
+             configTypeID="iTrace.ui.transformations.MOFScript2iTrace_LCT"
              icon="icons/iTrace.png"
-             id="iTrace.ui.transformations.MofScriptTrace_LCTI">
+             id="iTrace.ui.transformations.MOFScript2iTrace_LCTI">
        </launchConfigurationTypeImage>
        <launchConfigurationTypeImage
              configTypeID="iTrace.ui.transformations.MXML2KDM_LCT"
@@ -82,9 +82,9 @@
     <extension
           point="org.eclipse.debug.ui.launchConfigurationTabGroups">
        <launchConfigurationTabGroup
-             class="iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_LaunchConfigurationTabGroup"
-             id="iTrace.ui.transformations.MofScriptTrace_LCTG"
-             type="iTrace.ui.transformations.MofScriptTrace_LCT">
+             class="iTrace.ui.transformations.launchs.MOFScript2iTrace.MOFScript2iTrace_LaunchConfigurationTabGroup"
+             id="iTrace.ui.transformations.MOFScript2iTrace_LCTG"
+             type="iTrace.ui.transformations.MOFScript2iTrace_LCT">
        </launchConfigurationTabGroup>
        <launchConfigurationTabGroup
              class="iTrace.ui.transformations.launchs.MXML2KDM.MXML2KDM_LaunchConfigurationTabGroup"
@@ -95,13 +95,13 @@
     <extension
           point="org.eclipse.debug.ui.launchShortcuts">
        <shortcut
-             class="iTrace.ui.transformations.launchs.MofScriptTrace.MofScriptTrace_Shortcut"
+             class="iTrace.ui.transformations.launchs.MOFScript2iTrace.MOFScript2iTrace_Shortcut"
              icon="icons/iTraceNormalizator.png"
-             id="iTrace.ui.transformations.launch.MofScriptTrace_Shortcut"
+             id="iTrace.ui.transformations.launch.MOFScript2iTrace_Shortcut"
              label="MOFScript Trace -&gt; iTrace"
              modes="run, debug">
              <configurationType
-               id="iTrace.ui.transformations.MofScriptTrace_LCT">
+               id="iTrace.ui.transformations.MOFScript2iTrace_LCT">
          	</configurationType>
          <contextualLaunch>
             <contextLabel
@@ -128,13 +128,13 @@
          </contextualLaunch>
        </shortcut>
        <shortcut
-             class="iTrace.ui.transformations.launchs.MofScriptTrace.MXML2KDM_Shortcut"
+             class="iTrace.ui.transformations.launchs.MOFScript2iTrace.MXML2KDM_Shortcut"
              icon="icons/iTraceNormalizator.png"
              id="iTrace.ui.transformations.launch.MXML2KDM_Shortcut"
              label="MXML2KDM -&gt; iTrace"
              modes="run, debug">
           <configurationType
-                id="iTrace.ui.transformations.MofScriptTrace_LCT">
+                id="iTrace.ui.transformations.MOFScript2iTrace_LCT">
           </configurationType>
           <contextualLaunch>
              <contextLabel

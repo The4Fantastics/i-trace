@@ -1,4 +1,4 @@
-package iTrace.ui.transformations.launchs.MofScriptTrace;
+package iTrace.ui.transformations.launchs.MOFScript2iTrace;
 
 import java.io.File;
 
@@ -16,7 +16,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 
-public class MofScriptTrace_LaunchConfigurationDelegate implements
+public class MOFScript2iTrace_LaunchConfigurationDelegate implements
 ILaunchConfigurationDelegate {
 	
 	@Override
@@ -55,7 +55,7 @@ ILaunchConfigurationDelegate {
 		
 		try{
 			Transformations transf = Transformations.getInstance();
-			transf.MofScriptTrace(uri_IN, uri_OUT);
+			transf.MOFScript2iTrace(uri_IN, uri_OUT);
 			monitor.worked(85);		
 			
 			if(monitor.isCanceled())
@@ -74,13 +74,13 @@ ILaunchConfigurationDelegate {
 	
 	private String getINAtt(ILaunchConfiguration configuration) throws CoreException
 	{
-		return getTransformationAtt(configuration, MofScriptTrace_Constants.ATTR_TRANSFORMATION_IN);
+		return getTransformationAtt(configuration, MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_IN);
 	}
 	
 		
 	private String getOUTAtt(ILaunchConfiguration configuration) throws CoreException
 	{
-		return getTransformationAtt(configuration, MofScriptTrace_Constants.ATTR_TRANSFORMATION_OUT);
+		return getTransformationAtt(configuration, MOFScript2iTrace_Constants.ATTR_TRANSFORMATION_OUT);
 	}
 	
 	private String getTransformationAtt(ILaunchConfiguration configuration,String id) throws CoreException{
